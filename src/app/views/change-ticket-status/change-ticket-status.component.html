@@ -1,0 +1,106 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div style="display: flex;">
+      <div class="header_left" style="width: 60%; margin-top: 0px">
+          <input [(ngModel)]="ticketId" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="Enter Ticket ID" (keydown)="getDetails($event)">
+          <select [(ngModel)]="status" (change)="selectStatus($event.target.value)" [disabled]="enableOptions">
+            <option>Select Status</option>
+            <option *ngFor="let option of statuses; let i = index" [value]="option.id">
+              {{option.label}}
+            </option>
+        </select>
+        <textarea [(ngModel)]="remarks" [ngClass]="{'qbcolor': remarkcolor, 'qncolor': !remarkcolor}" rows="3" name="address" placeholder="Remarks here..."></textarea>
+        <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 40%; margin: auto;" class="btn btn-block btn-outline-primary" (click)="changeStatus(confirm_alert_temp)">Change Status</button>
+        <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+      </div>
+  </div>
+  <div style="display: flex;">
+      <div class="header_left" style="width: 40%; margin-top: 1rem ">
+          <div class="col-md-12" *ngIf="csError !== ''" style="text-align: center; color: red">
+              <i class="material-icons">info</i>&nbsp; {{csError}}
+          </div>
+          <div class="card" *ngIf="isDetails && csError === ''">
+            <div class="card-header" style="text-align: center">
+              Ticket Details
+            </div>
+            <div class="card-body">
+              <div class="info_row">
+                <div class="col-md-4">
+                    <label>Customer Name</label>
+                </div>
+                <div class="col-md-8">
+                    <input class="information" [(ngModel)]="data.customer_name" type="text" name="Name" placeholder="N/A" readonly>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                    <label>Product</label>
+                </div>
+                <div class="col-md-8">
+                    <input class="information" [(ngModel)]="data.product_description" type="text" name="User Role" placeholder="N/A" readonly>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                    <label>Current Status</label>
+                </div>
+                <div class="col-md-8">
+                    <input [(ngModel)]="data.status" class="information" type="text" name="Site Type" placeholder="N/A" readonly>
+                </div>
+                </div>
+                <div class="info_row">
+                  <div class="col-md-4">
+                      <label>Assigned to</label>
+                  </div>
+                  <div class="col-md-8">
+                      <input [(ngModel)]="data.assigned_user_name" class="information" type="text" name="Branch" placeholder="N/A" readonly>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+ <!-- ******************* Popup Modals ************************* -->
+ <ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 80px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template class="modal fade" #confirm_alert_temp>
+    <div class="modal-dialog" role="document" style="margin: 0px">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{confirmAlert.msg}}</p>
+        </div>
+        <div class="modal-footer" style="height: 80px">
+          <button type="button" class="btn btn-secondary" (click)="confirmChangeStatus(confirmAlert.id, simple_alert_temp)">Yes</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+        </div>
+
+      </div>
+    </div>
+  </ng-template>

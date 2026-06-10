@@ -1,0 +1,114 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - SVR 2Hrs Dashboard
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="date" id="date-input" type="date" name="date-input"
+            placeholder="dd-mm-yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display: block !important">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+  <div class="info_row">
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card">
+        <div class="card-header">
+          <strong>RAF-SVR 2Hrs Promise Dashboard - {{this.preday}}</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr>
+                <td rowspan="2" class="loc-tot">
+                  CITY
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  LOCATION
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  Total RAF's
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  SDR/SVR Eligible RAF's
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  Total SDR+SVR Percentage
+                </td>
+                <td colspan="2" class="loc-tot">
+                  SVR
+                </td>
+                <td colspan="2" class="loc-tot">
+                  SDR
+                </td>
+              </tr>
+              <tr>
+                <td class="loc-tot">SVR Achieved RAF's</td>
+                <td class="loc-tot">SVR Achieved Percentage</td>
+                <td class="loc-tot">SDR Achieved RAF's</td>
+                <td class="loc-tot">SDR Achieved Percentage</td>
+              </tr>
+            </thead>
+            <tbody *ngFor="let eligibleData of eligibleDatas">
+              <tr style="display: contents;">
+                <td [attr.class]="eligibleData.colors" [attr.rowspan]="eligibleData.rowspancount-1"
+                  style="font-weight: bold;">{{eligibleData.cityName}}</td>
+              </tr>
+              <tr *ngFor="let promiseData of eligibleData.branchData">
+                <td [attr.class]="eligibleData.colors">{{promiseData.branch_code}}</td>
+                <td>{{promiseData.raf_count}}</td>
+                <td>{{promiseData.eligible_raf_count}}</td>
+                <td>{{promiseData.sdr_svr_percent}}%</td>
+                <td>{{promiseData.achieved_raf_count}}</td>
+                <td>{{promiseData.percent}}%</td>
+                <td>{{promiseData.sdr_raf_count}}</td>
+                <td>{{promiseData.sdr_percent}}%</td>
+              </tr>
+              <tr *ngFor="let promiseTotal of eligibleData.cityData">
+                <td [attr.class]="eligibleData.colors"></td>
+                <td [attr.class]="eligibleData.colors">TOTAL</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.total_raf_count}}</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.total_eligible_raf_count}}</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.overall_sdr_svr_percent}}%</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.total_achieved_raf_count}}</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.overall_percent}}%</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.total_sdr_raf_count}}</td>
+                <td [attr.class]="eligibleData.colors">{{promiseTotal.overall_sdr_percent}}%</td>
+              </tr>
+            </tbody>
+            <tr *ngFor="let grandTotal of grandTotals">
+              <td class="gtotal" colspan="2">Grand Total</td>
+              <td class="gtotal">{{grandTotal.total_raf}}</td>
+              <td class="gtotal">{{grandTotal.total_eligible_raf}}</td>
+              <td class="gtotal">{{grandTotal.total_svr_sdr_percentage}}%</td>
+              <td class="gtotal">{{grandTotal.total_achieved_raf}}</td>
+              <td class="gtotal">{{grandTotal.total_raf_percentage}}%</td>
+              <td class="gtotal">{{grandTotal.total_sdr_raf}}</td>
+              <td class="gtotal">{{grandTotal.total_sdr_raf_percentage}}%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

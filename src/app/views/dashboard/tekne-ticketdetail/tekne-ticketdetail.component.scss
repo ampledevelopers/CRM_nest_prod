@@ -1,0 +1,1143 @@
+.ticketDiv {
+  border-right: 1px solid lightgray;
+  text-align: center;
+}
+
+.namebox {
+  float: left !important;
+  margin-top: 0.3rem !important;
+  background-color: transparent !important;
+  width: 60px !important;
+}
+
+.ticketId {
+  padding-left: 0px;
+  // padding-top: 1%;
+  padding-top: 0.7rem;
+  display: table;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+}
+
+.namebox i {
+  color: gray !important;
+}
+
+.ticketId b {
+  font-size: .85rem;
+}
+
+select {
+  background-color: transparent !important;
+}
+
+.closeButton {
+  border: 1px solid red;
+  border-radius: 4px;
+  width: 90%;
+  height: 25px;
+  margin-top: 0.5rem;
+  background-color: transparent;
+  color: red;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.qcbutton {
+  border: 1px solid green;
+  border-radius: 4px;
+  width: 90% !important;
+  height: 25px;
+  margin: auto;
+  margin-top: 0.5rem !important;
+  background-color: transparent;
+  color: green;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.qcAbutton {
+  border: 1px solid green;
+  border-radius: 4px;
+  width: 42%;
+  height: 25px;
+  margin-left: 0.5rem;
+  background-color: transparent;
+  color: green;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  font-size: 0.7rem;
+
+  :hover {
+    background-color: green;
+    color: white;
+  }
+}
+
+.qcDbutton {
+  border: 1px solid red;
+  border-radius: 4px;
+  width: 42%;
+  height: 25px;
+  margin-top: 0rem;
+  background-color: transparent;
+  color: red;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.token {
+  padding-left: 1rem;
+  padding-top: 0.8rem;
+  padding-right: 1rem;
+  border-right: 1px solid lightgray;
+  padding-bottom: 1%;
+}
+
+.token b {
+  float: left;
+}
+
+.token button {
+  padding: 0px;
+  border: 0px;
+  background-color: transparent;
+  font-weight: bold;
+}
+
+.token button:hover {
+  padding: 0px;
+  border: 0px;
+  background-color: transparent;
+  color: black !important
+}
+
+.butn i:hover {
+  padding: 0px;
+  border: 0px;
+  color: black !important;
+}
+
+/*
+.token i {
+  float: right;
+  font-size: 1rem !important;
+  margin-left: 0.5rem;
+  margin: 0px;
+} */
+
+.status {
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-right: 1px solid lightgray;
+  padding-bottom: 1%;
+  text-align: center;
+}
+
+.pending {
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-right: 1px solid lightgray;
+  padding-bottom: 1%;
+}
+
+.assignee {
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1%;
+}
+
+.assignee select {
+  border: 0px;
+  width: auto;
+  border-radius: 3px;
+  overflow: hidden;
+  min-height: 30px;
+  height: 30px;
+  background-color: white;
+}
+
+.customer_info_row {
+  flex-wrap: wrap;
+  margin-left: -15px;
+  margin-right: 0px;
+
+  label {
+    border-bottom: 1px solid lightgray !important;
+    width: 80% !important;
+    margin-bottom: 0.2rem;
+    color: gray;
+  }
+
+  input {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.callHistory {
+  float: right;
+  color: #20a8d8;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 20%;
+
+  i {
+    margin-top: 0px !important;
+  }
+}
+
+.makeCall {
+  float: right;
+  color: #04c104;
+  margin-right: 1rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+
+  i {
+    margin-top: 0px !important;
+  }
+}
+
+.gsxPartRightIcon {
+  float: right;
+
+  i {
+    margin-top: 0px !important;
+    cursor: pointer;
+  }
+
+  a {
+    cursor: pointer;
+  }
+}
+
+a {
+  cursor: pointer;
+}
+
+.scrollDiv {
+  height: 440px !important;
+}
+
+#div1,
+#div2,
+#div3,
+#div4,
+#div5,
+#div6,
+#div7,
+#div8,
+#div9,
+#div10,
+#div11,
+#div12,
+#div13 {
+  width: 44% !important;
+  overflow-y: auto;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  // margin-top: .5rem;
+  margin-right: .8rem;
+  flex-shrink: 0;
+  display: grid;
+
+  .card-header {
+    background-color: #f7f7f7 !important;
+    margin: 0px !important;
+    border-bottom: 1px solid lightgray !important;
+    display: flex;
+
+  }
+
+  b {
+    margin-top: 0.1rem !important;
+    margin-left: 0.5rem !important;
+  }
+
+  button {
+    width: 48%;
+    margin: auto;
+  }
+}
+
+.scrollDiv {
+  overflow-x: scroll;
+  width: 100%;
+  display: flex;
+  flex-wrap: inherit;
+  padding-bottom: 1rem;
+  height: 350px;
+
+  .info_row {
+    margin: 0px !important;
+  }
+}
+
+.scrollDiv .card-header {
+  display: table-cell;
+}
+
+.scrollDiv .card-body {
+  overflow-y: auto;
+  padding: 0.8rem;
+}
+
+.scrollDiv .header_left {
+  width: 100% !important;
+}
+
+.card-footer {
+  border: 1px solid #c8ced3;
+  padding: 0.5rem 1.25rem !important;
+  margin-bottom: 1rem;
+
+  i {
+    margin-top: 0px !important;
+  }
+
+  a {
+    color: #20a8d8 !important;
+  }
+}
+
+.Quote-card {
+  flex: 1 1 auto;
+  padding: 1.25rem;
+  // border: 1px solid lightgray;
+  // width: 45%;
+  margin: 1rem;
+}
+
+.headerInfo {
+  float: left;
+}
+
+.headerInfo div {
+  float: left;
+  padding-right: 1rem;
+}
+
+.card-header-actions i {
+  margin-top: 0px !important;
+  color: #9f9f9f;
+}
+
+.card-header .col-md-12 {
+  padding-left: 0px;
+  width: 90%;
+  font-size: 0.7rem;
+}
+
+.card-header .col-md-2 {
+  float: left;
+  padding-left: 0px;
+}
+
+.timeline {
+  margin: auto;
+  margin-right: 0px;
+  cursor: pointer;
+  text-align: right;
+}
+
+.timeline button {
+  background-color: transparent;
+  border: 0px;
+}
+
+.timeline i {
+  color: #20a8d8;
+  margin-top: 0px !important;
+  font-size: 2.5rem;
+  margin-left: 1rem;
+}
+
+.row_line {
+  height: 540px !important;
+  overflow-y: auto !important;
+  width: 90% !important;
+  margin: auto !important;
+}
+
+.deviceInfo {
+  font-size: 0.7rem;
+  width: 30%;
+  padding: 1rem;
+  float: left;
+  border-right: 1px solid lightgray;
+  display: grid;
+
+  label {
+    margin-bottom: 0rem;
+    font-weight: 650;
+  }
+
+  input {
+    color: gray;
+  }
+
+  a {
+    color: #20a8d8 !important;
+    cursor: pointer;
+    // margin-left: 0.5rem;
+  }
+}
+
+.acBtn {
+  display:flex !important;
+  --cui-btn-hover-color:black !important;
+  background-color: transparent;
+  border: none !important;
+  text-align: left !important;
+  color: gray;
+  i {
+    margin-top: 0.5rem !important;
+    font-size: 18px !important;
+    display: flex !important;
+    color: black;
+  }
+}
+
+.issueToken {
+  border: 1px solid #39b3ff;
+  border-radius: 4px;
+  width: 100%;
+  height: 25px;
+  margin-top: 0.5rem;
+  background-color: transparent;
+  color: #39b3ff;
+  cursor: pointer
+}
+
+.customerInfo {
+  font-size: 0.7rem;
+  width: 70%;
+  padding: 1rem 1rem 0rem 1rem;
+  float: right;
+
+  input,
+  textarea {
+    border-bottom: 0px;
+    ;
+  }
+}
+
+.customerPhoneSec {
+  margin: 0px !important;
+  width: 80% !important;
+  margin-bottom: 0.5rem !important;
+  color: gray !important;
+}
+
+#div5 .details-card {
+  .card-header {
+    background-color: #f7f7f7 !important;
+    cursor: pointer;
+  }
+
+  .headerInfo {
+    margin-left: 0.5rem;
+  }
+
+  p {
+    word-wrap: anywhere;
+    margin-left: 0.5rem;
+  }
+
+  a {
+    color: #20a8d8 !important;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    font-style: italic;
+  }
+}
+
+
+#div8 .details-card .card-header {
+  background-color: transparent !important;
+  // border-bottom: 0px !important;
+  cursor: pointer;
+}
+
+#div8 .details-card .card-body {
+  font-size: 0.7rem !important;
+}
+
+#div8 .col-md-5 {
+  padding-left: 0px;
+}
+
+#div8 .details-card i {
+  font-size: medium;
+}
+
+
+/* .repair_details .info_row{
+    width: 50%;
+    margin: auto;
+}
+
+.repair_details .col-md-6 {
+    text-align: center;
+}
+
+.repair_details input {
+    text-align: center;
+} */
+
+.repair_details .card .info_row {
+  width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  .repair_details .col-md-6 {
+    text-align: right;
+  }
+}
+
+.bluedart {
+  height: 500px !important;
+  overflow: auto;
+}
+
+.bluedart table {
+  width: 100%;
+}
+
+.popTableBody {
+  display: block;
+  height: 340px;
+  overflow: auto;
+}
+
+.popthead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.popTableBody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+@media only screen and (min-width: 1000px) {
+  .modal-dialog {
+    margin: auto;
+    margin-top: 5%;
+    width: 100%;
+  }
+
+  .modal-lg {
+    min-width: 600px !important;
+  }
+}
+
+.list {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* box-sizing: border-box;
+  border: 1px solid #e8f8ff; */
+}
+
+.list p {
+  margin-bottom: 0.1rem;
+}
+
+.list-item {
+  border-bottom: 1px solid #eee;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  margin-bottom: .3rem;
+}
+
+.gsxdiagnosis .col-md-6 {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+
+  input {
+    width: 95% !important;
+  }
+
+  ng-select {
+    width: 95% !important;
+  }
+}
+
+#div5 a {
+  color: #20a8d8;
+  cursor: pointer;
+}
+
+#div6 .col-md-6 {
+  padding-left: 0px !important;
+}
+
+.refnocolor {
+  border: 1px solid red;
+}
+
+.refcolor {
+  border: 1px solid #eee;
+}
+
+.datenocolor {
+  border: 1px solid red;
+}
+
+.datecolor {
+  border: 1px solid #eee;
+}
+
+.timenocolor {
+  border: 1px solid red;
+}
+
+.timecolor {
+  border: 1px solid #eee;
+}
+
+.timePicker .btn btn-link {
+  display: none;
+}
+
+.applereview {
+  float: right;
+}
+
+.applereview p {
+  padding-right: .5rem;
+  text-align: right;
+  width: 100%;
+  float: left;
+  margin-top: .3rem;
+  margin-bottom: 0.5rem;
+}
+
+.applereview input {
+  margin-left: 0px;
+  margin-top: .6rem;
+}
+
+.disableDiv {
+  pointer-events: none;
+}
+
+.viewQuoteDialog {
+  i {
+    color: #20a8d8;
+    cursor: pointer;
+    margin-top: 0px !important;
+    margin-right: 0.8rem;
+  }
+}
+
+.repairStage {
+  border: none;
+  //width: 100%;
+  overflow: hidden;
+  //min-height: 30px;
+  border-radius: 3px;
+  background-color: transparent;
+  float: right;
+  text-align: right;
+}
+
+.repairstatus .col-md-3 {
+  float: right;
+  margin-right: 0px;
+  margin-left: auto;
+}
+
+.repairstatus .card {
+  background-color: whitesmoke;
+  border: 0px;
+}
+
+.repairLog {
+  font-size: 0.7rem;
+
+  .card-body {
+    padding: 0px;
+  }
+}
+
+.eligibilityTable {
+  .col-md-12 {
+    padding: 0px;
+    display: flex;
+  }
+
+  label {
+    margin-bottom: 0px;
+  }
+}
+
+.gsxQuesNext {
+  text-align: center;
+  padding-right: 1rem;
+  padding-bottom: 0.5rem;
+  cursor: pointer;
+  color: #20a8d8;
+}
+
+.gprDoaDialog {
+  .col-md-3 {
+    color: gray;
+  }
+
+  select {
+    border: 1px solid #d3d3d3;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+    min-height: 30px;
+    height: 30px;
+  }
+}
+
+.clicktocallBanner {
+  background-color: rgb(253, 124, 124);
+  text-align: center;
+  height: 30px;
+
+  p {
+    font-weight: bold;
+    padding-top: 0.2rem !important;
+    margin-bottom: 0px !important;
+  }
+}
+
+.customerRate {
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+  color: white;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 5vw);
+  grid-gap: 15px;
+}
+
+.gallery__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery__item {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.checkList {
+  display: flex;
+  margin-top: .4rem;
+
+  p {
+    margin-bottom: 0px;
+    margin-left: 2rem !important;
+  }
+
+  input {
+    margin-left: .5rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.deviceAwayStatus {
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+
+  .info_row {
+    padding-bottom: 0px !important;
+  }
+}
+
+.alert-checklist {
+  color: white !important;
+  background-color: #ff3548 !important;
+  border-color: red !important;
+}
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.kbb {
+  color: white !important;
+  background-color: #ff3548 !important;
+  border-color: red !important;
+}
+
+.kbbZoomin {
+  width: auto !important;
+  max-height: none;
+}
+
+.kbbZoomout {
+  width: 40% !important;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  h4 {
+    color: red;
+    font-weight: bold;
+    margin-top: 0px !important;
+  }
+}
+
+.gsxDiagnosisView {
+  p {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  a {
+    color: #20a8d8 !important;
+    cursor: pointer;
+  }
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #ff9a2f !important;
+  color: #ff9a2f !important;
+}
+
+.swal2-styled.swal2-confirm {
+  background-color: #ff9a2f !important;
+}
+
+.swal2-html-container {
+  font-weight: bold !important;
+}
+
+.swal2-popup {
+  width: 42em !important;
+}
+
+.alert-warning {
+  color: black;
+  background-color: #ff9a2f;
+  border-color: #ff9a2f;
+  text-align: center;
+}
+
+.moving-text:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+
+  30% {
+    transform: translateX(35%);
+  }
+
+  80% {
+    transform: translateX(-35%);
+  }
+
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .moving-text {
+    animation: marquee 15s linear infinite;
+    margin-bottom: 0px !important;
+  }
+}
+
+.popover-header {
+  margin-bottom: 0px !important;
+}
+
+::after {
+  color: black !important;
+}
+
+.consumableCharge {
+  b {
+    color: #20a8d8;
+  }
+
+  i {
+    color: black;
+  }
+}
+
+.dlPickup {
+  text-align: center;
+  margin-top: 0.5rem;
+  border: 1px solid #D73E00;
+  border-radius: 5px;
+  background-color: #E84E0F;
+  color: white;
+}
+
+
+.modal-body {
+  .col-md-3 {
+    text-align: left;
+  }
+
+  .col-md-9 {
+    padding-left: 0.5rem;
+  }
+}
+
+
+/* Reservation */
+
+.selectTime {
+  background-color: white;
+  border: thin solid black;
+  border-radius: 20px;
+  display: block;
+  font: inherit;
+  line-height: 1.5em;
+  padding: 0.5em 3.5em 0.5em 1em;
+  width: 90%;
+  margin-top: 8px !important;
+  /* reset */
+
+  margin: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.selectTime.round {
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    radial-gradient(#ddd 70%, transparent 72%);
+  background-position:
+  calc(100% - 17px) calc(1em + 2px), calc(100% - 12px) calc(1em + 2px), calc(100% - .5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1.5em 1.5em;
+  background-repeat: no-repeat;
+}
+
+.selectTime.round:focus {
+  background-image:
+    linear-gradient(45deg, white 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, white 50%),
+    radial-gradient(gray 70%, transparent 72%);
+  background-position:
+    calc(100% - 13px) 1em,
+    calc(100% - 18px) 1em,
+    calc(100% - .5em) .5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1.5em 1.5em;
+  background-repeat: no-repeat;
+  border-color: green;
+  outline: 0;
+}
+
+.rounded-btn {
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+  color: rgba(255, 255, 255, 0.8);
+  background: #000;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+  line-height: 40px;
+  padding: 0 25px;
+}
+
+.rounded-btn:hover,
+.rounded-btn:focus,
+.rounded-btn:active,
+.rounded-btn:visited {
+  color: rgba(255, 255, 255, 1);
+  border: 2px solid rgba(255, 255, 255, 1);
+  outline: none;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.dayButton {
+  border-radius: 30px !important;
+  line-height: 2.5rem !important;
+  width: 3rem !important;
+  border: 1px solid lightgray;
+
+}
+
+.touched {
+  background-color: black;
+  color : white;
+}
+
+.dayButton:disabled {
+  color: red;
+  background-color: white;
+}
+
+.disabledLabel {
+  color: red;
+}
+
+.deliveryTemp {
+  input {
+    margin-right: 4px;
+  }
+  label {
+    margin-right: 2rem;
+  }
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.countdownTimer {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.DLReservation {
+  text-align: center;
+  margin-top: 0.2rem;
+
+  span {
+    color: #ababab !important;
+    display: block !important;
+  }
+
+  a {
+    color: #20a8d8 !important;
+    cursor: pointer !important;
+  }
+}
+
+.internalAsset {
+  text-align: center;
+  margin-top: 0.2rem;
+  background-color: rgb(240, 240, 204);
+  span {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px;
+    color: rgb(0, 128, 64);
+  }
+}
+
+
+/* Style for the overlay background */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  z-index: 1000; /* Adjust the z-index as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Style for the content container (image or video) */
+.popup-container {
+  background-color: #fff; /* Popup background color */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Box shadow for a subtle effect */
+  text-align: center;
+  max-width: 80%; /* Adjust the maximum width as needed */
+  max-height: 80%; /* Adjust the maximum height as needed */
+  overflow: auto; /* Enable scrolling for large content */
+  position: relative;
+}
+
+/* Style for the close button (optional) */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Style for the image */
+img {
+  max-width: 100%; /* Adjust the maximum width as needed */
+  max-height: 100%; /* Adjust the maximum height as needed */
+  display: block;
+  margin: 0 auto;
+}
+
+/* Style for the video */
+video {
+  max-width: 100%; /* Adjust the maximum width as needed */
+  max-height: 100%; /* Adjust the maximum height as needed */
+  display: block;
+  margin: 0 auto;
+}
+
+.kbbZoomin {
+  max-width: 300% !important;
+  max-height: none;
+}
+
+.gsx-repair_btn {
+  width: 100% !important;
+  border: 1px solid lightgray !important;
+  border-radius: 5px !important;
+  padding-top: 0.2rem !important;
+  padding-bottom: 0.2rem !important;
+}
+
+.pogrn {
+  a {
+    color:#20a8d8 !important;
+  }
+
+  span {
+    color: #b7b7b7;
+  }
+}
+.material-icons.close-button {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  font-size: 24px;
+  color: lightgray;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.material-icons.close-button:hover {
+  color: red;
+}

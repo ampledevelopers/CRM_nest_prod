@@ -1,0 +1,36 @@
+.actionButton {
+  border: 1px solid #39b3ff;
+  background-color: transparent;
+  color: #39b3ff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.qrCodeShow {
+  display: block !important;
+  text-align: center;
+}
+
+.form-control {
+  color: black !important;
+  border-radius: 0% !important;
+}
+
+p {
+  margin-top: 25% !important;
+  text-align: center;
+}
+
+a {
+  color: #20a8d8 !important;
+  cursor: pointer;
+  float: inline-end;
+  // margin-bottom: 1rem;
+  text-decoration: underline !important;
+  padding: 10px;
+}
+
+h5 {
+  text-align: center;
+  margin-top: 12%;
+}

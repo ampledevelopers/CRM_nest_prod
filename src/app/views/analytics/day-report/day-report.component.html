@@ -1,0 +1,180 @@
+<div class="card" style="border: 1px solid lightgray;">
+    <div class="card-header">
+        Filters 
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Product Family<sup style="color: red">*</sup></label>
+                <select class="form-control" [(ngModel)]="productFamily">
+                    <option value="Select Product Family" selected disabled>Select Product Family</option>
+                    <option value="">All</option>
+                    <option *ngFor="let product of productFamilies" [value]="product.id">{{product.label}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>From Date<sup style="color: red">*</sup></label>
+                <input class="form-control" type="date" [(ngModel)]="fromDate">
+            </div>
+            <div class="col-md-4">
+                <label>To Date<sup style="color: red">*</sup></label>
+                <input class="form-control" type="date" [(ngModel)]="toDate">
+            </div>
+        </div>
+        <div *ngIf="errorMessage !== ''" class="error">
+            <p>{{errorMessage}}!</p>
+        </div>
+        <div style="display: flex;margin-top: 1rem;">
+            <div class="header_left" style="display:block !important;">
+                <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                    <button (click)="exportAsXLSX()">Export</button>
+                </div>
+                <div style="margin-left: 1rem;" class="acceptbtns">
+                    <button (click)="clear()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 2rem; width: 100%; text-align: center;">
+    <c-spinner size="sm" style="margin-left: 0 !important;"></c-spinner>
+</div>
+<div *ngIf="showNoData && loading === false" class="card" style="margin-top: 1rem;">
+    <div class="card-header" style="background-color: #ECA098 !important;">
+        NO DATA AVAILABLE
+    </div>
+</div>
+<div class="card" style="margin-bottom: 1rem;margin-top: 1.5rem;overflow-x: scroll;">
+    <div class="card-body" style="text-align: center;">
+        <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+            <tbody style="text-align: center;">
+                <tr style="background-color: lightgrey;font-weight: bold;">
+                    <td>
+                        Location
+                    </td>
+                    <td>
+                        Total Token
+                    </td>
+                    <td >
+                        Service Token
+                    </td>
+                    <td >
+                        Enquiry IW
+                    </td>
+                    <td >
+                        Enquiry OOW
+                    </td>
+                    <td>
+                        Delivery Token
+                    </td>
+                    <td>
+                        Unattended Token
+                    </td>
+                    <td>
+                        T1 Collected
+                    </td>
+                    <td>
+                        In Warranty RAF
+                    </td>
+                    <td>
+                        Out of Warranty RAF
+                    </td>
+                    <td>
+                        Total RAF
+                    </td>
+                    <td>
+                        In Warranty RAF %
+                    </td>
+                    <td>
+                        Out of Warranty RAF %
+                    </td>
+                    <td>
+                        Total RAF %
+                    </td>
+                    <td>
+                        Avg Waiting Time(Service & Enquiry)
+                    </td>
+                    <td>
+                        Avg handling Time(Service & Enquiry)
+                    </td>
+                    <td>
+                        Avg Waiting Time(Delivery)
+                    </td>
+                    <td>
+                        Avg handling Time(Delivery)
+                    </td>
+                </tr>
+                <tr>
+
+                </tr>
+            <tbody>
+                <tr>
+                    <th colspan="18" style="text-align: center;background-color: #e9e9e9; font-weight: bold;">iCare
+                        Location</th>
+                </tr>
+                <tr *ngFor="let data of this.nonDlDataTemp">
+                    <td style="background-color: #e9e9e9;">{{data.location}}</td>
+                    <td>{{data.totalToken}}</td>
+                    <td>{{data.serviceToken}}</td>
+                    <td>{{data.enquiryTokenIw}}</td>
+                    <td>{{data.enquiryTokenOow}}</td>
+                    <td>{{data.deliveryToken}}</td>
+                    <td>{{data.unattendedToken}}</td>
+                    <td>{{data.t1Collected}}</td>
+                    <td>{{data.inWarrantyRaf}}</td>
+                    <td>{{data.outOfWarrRAF}}</td>
+                    <td>{{data.totalRAF}}</td>
+                    <td>{{data.inWarrantyPer}}</td>
+                    <td>{{data.outofWarrantyPer}}</td>
+                    <td>{{data.totalRafPer}}</td>
+                    <td>{{data.avgWaitingService}}</td>
+                    <td>{{data.avgHandlingServiceData}}</td>
+                    <td>{{data.avgWaitingDeliveryData}}</td>
+                    <td>{{data.avgHandlingDeliveryData}}</td>
+                </tr>
+                <tr>
+                    <th colspan="18" style="text-align: center;background-color: #e9e9e9; font-weight: bold;">Drop
+                        Location</th>
+                </tr>
+                <tr *ngFor="let data of this.dlDataTemp">
+                    <td style="background-color: #e9e9e9;">{{data.location}}</td>
+                    <td>{{data.totalToken}}</td>
+                    <td>{{data.serviceToken}}</td>
+                    <td>{{data.enquiryTokenIw}}</td>
+                    <td>{{data.enquiryTokenOow}}</td>
+                    <td>{{data.deliveryToken}}</td>
+                    <td>{{data.unattendedToken}}</td>
+                    <td>{{data.t1Collected}}</td>
+                    <td>{{data.inWarrantyRaf}}</td>
+                    <td>{{data.outOfWarrRAF}}</td>
+                    <td>{{data.totalRAF}}</td>
+                    <td>{{data.inWarrantyPer}}</td>
+                    <td>{{data.outofWarrantyPer}}</td>
+                    <td>{{data.totalRafPer}}</td>
+                    <td>{{data.avgWaitingService}}</td>
+                    <td>{{data.avgHandlingServiceData}}</td>
+                    <td>{{data.avgWaitingDeliveryData}}</td>
+                    <td>{{data.avgHandlingDeliveryData}}</td>
+                </tr>
+                <tr style="background-color: #e9e9e9;font-weight: bold;color:black;text-align: center;">Total Footfall
+                    <td>{{totalToken}}</td>
+                    <td>{{serviceToken}}</td>
+                    <td>{{enquiryTokenIw}}</td>
+                    <td>{{enquiryTokenOow}}</td>
+                    <td>{{deliveryToken}}</td>
+                    <td>{{unattendedToken}}</td>
+                    <td>{{t1Collected}}</td>
+                    <td>{{inWarrantyRaf}}</td>
+                    <td>{{outOfWarrRAF}}</td>
+                    <td>{{totalRAF}}</td>
+                    <td>{{inWarrantyPer}}</td>
+                    <td>{{outofWarrantyPer}}</td>
+                    <td>{{totalRafPer}}</td>
+                    <td>{{avgWaitingService}}</td>
+                    <td>{{avgHandlingServiceData}}</td>
+                    <td>{{avgWaitingDeliveryData}}</td>
+                    <td>{{avgHandlingDeliveryData}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>

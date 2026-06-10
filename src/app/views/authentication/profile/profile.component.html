@@ -1,0 +1,130 @@
+<div class="animated fadeIn" style="margin-bottom: 2rem;">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header" style="display: flex !important" *ngIf="userRole !== '26'">
+          <i class="material-icons" style="margin-right:0.5rem !important ;">person</i> Profile
+        </div>
+        <div class="card-body">
+          <div [ngClass]="{'forConceirge': userRole === '26', 'row' : userRole !== '26'}">
+            <div class="col-md-6">
+              <form [formGroup]="simpleForm" novalidate (ngSubmit)="onSubmit()" class="needs-validation">
+                <div class="form-group">
+                  <label class="col-form-label" for="firstName">User Name</label>
+                  <input class="form-control"
+                         id="user_name"
+                         type="text"
+                         formControlName="user_name"
+                         placeholder="User Name"
+                         autocomplete="given-name"
+                         required
+                         autofocus
+                         [ngClass]="{ 'is-invalid': submitted && f.user_name.errors, 'is-valid': f.user_name.touched && !f.user_name.errors }" readonly />
+                  <div *ngIf="submitted && f['user_name'].errors" class="invalid-feedback">
+                    <div *ngIf="f['user_name'].errors.required">User Name is required</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-form-label" for="mobileNo">Mobile Number</label>
+                  <input class="form-control"
+                         id="mobile"
+                         type="text"
+                         formControlName="mobile"
+                         placeholder="Mobile"
+                         autocomplete="Mobile"
+                         required
+                         [ngClass]="{ 'is-invalid': submitted && f.mobile.errors, 'is-valid': f.mobile.touched && !f.mobile.errors }" readonly />
+                  <div *ngIf="submitted && simpleForm.controls['mobile'].errors" class="invalid-feedback">
+                    <div *ngIf="f['mobile'].errors.required">Mobile is required</div>
+                    <div *ngIf="f['mobile'].errors.minlength">{{formErrors.mobile.minLength}}</div>
+                     <div *ngIf="f['mobile'].errors.mobilePattern">{{formErrors.mobile.mobilePattern}}</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label" for="email">Email</label>
+                  <input class="form-control"
+                         id="email"
+                         type="text"
+                         formControlName="email"
+                         placeholder="Email"
+                         autocomplete="email"
+                         required
+                         [ngClass]="{ 'is-invalid': submitted && f.email.errors, 'is-valid': f.email.touched && !f.email.errors }" readonly />
+                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                    <div *ngIf="f['email'].errors.required">Email is required</div>
+                    <div *ngIf="f['email'].errors.email">{{formErrors.email.email}}</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label" for="gsxID">GSX ID</label>
+                  <input class="form-control"
+                         id="gsx_id"
+                         type="text"
+                         formControlName="gsx_id"
+                         placeholder="GSX ID"
+                         autocomplete="gsx-id"
+                         required
+                         autofocus
+                         [readonly]="isExGsxID"
+                         [ngClass]="{ 'is-invalid': submitted && f.gsx_id.errors, 'is-valid': f.gsx_id.touched && !f.gsx_id.errors }" />
+                  <div *ngIf="submitted && f['gsx_id'].errors" class="invalid-feedback">
+                    <div *ngIf="f['gsx_id'].errors.required">GSX Id is required</div>
+                  </div>
+                </div>
+
+                  <div class="form-group">
+                  <label class="col-form-label" for="gsx_api_token">GSX API Token (Generate from url) <a rel="noopener" href="https://login-partner-connect.apple.com/" target="_blank">Generate API Token</a></label>
+                  <input class="form-control"
+                         id="gsx_api_token"
+                         type="text"
+                         formControlName="gsx_api_token"
+                         placeholder="GSX API Token"
+                         autocomplete="gsx_api_token"
+                         required
+                         autofocus
+                         [ngClass]="{ 'is-invalid': submitted && f.gsx_api_token.errors, 'is-valid': f.gsx_api_token.touched && !f.gsx_api_token.errors }" />
+                  <div *ngIf="submitted && f['gsx_api_token'].errors" class="invalid-feedback">
+                    <div *ngIf="f['gsx_api_token'].errors.required">GSX API Token is required</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-form-label" for="tech_id">Technician ID</label>
+                  <input class="form-control"
+                         id="tech_id"
+                         type="text"
+                         formControlName="tech_id"
+                         placeholder="Tech ID"
+                         autocomplete="given-name"
+                         required
+                         autofocus
+                         [ngClass]="{ 'is-invalid': submitted && f.tech_id.errors, 'is-valid': f.tech_id.touched && !f.tech_id.errors }" />
+                  <div *ngIf="submitted && f['tech_id'].errors" class="invalid-feedback">
+                    <div *ngIf="f['tech_id'].errors.required">Tech ID is required</div>
+                  </div>
+                </div>
+
+                <div class="form-group" *ngIf="(siteType === '1')|| ((userRole === '20') || (userRole === '6'))">
+                  <label class="col-form-label" for="call_api_key">Click to Call API Key</label>
+                  <input class="form-control"
+                         id="call_api_key"
+                         type="text"
+                         formControlName="call_api_key"
+                         placeholder="Click to Call API Key"
+                         autocomplete="call_api_key"
+                         autofocus />
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem !important;">
+                  <button class="btn btn-primary mr-1" type="submit" [disabled]="simpleForm.invalid" style="margin-right: 1rem !important; background-color: #20a8d8 !important;">Submit</button>
+                  <!-- <button class="btn btn-danger" type="reset" [disabled]="simpleForm.pristine && !submitted" (click)="onReset()">Reset</button> -->
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

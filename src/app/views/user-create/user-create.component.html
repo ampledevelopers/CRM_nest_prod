@@ -1,0 +1,225 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+      <div class="card" style="margin-bottom:2.5rem !important">
+        <div class="card-header">
+          User Create / Edit
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <input [(ngModel)]="empId" style="width: 100%" class="form-control" type="text"
+              class="form-control-file" id="empID" placeholder="Employee ID" (keydown)="checkUser($event)">
+          </div>
+          <div class="form-group">
+            <select [(ngModel)]="serviceType" name='serviceType' style="width: 100%" class="form-control"
+              (change)="selectServiceType($event.target.value)" [disabled]="!isManager">
+              <option>Select Service Type</option>
+              <option *ngFor="let sType of serviceTypeList; let i = index" [value]="sType.id">
+                {{sType.label}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select [(ngModel)]="branch" style="width: 100%" class="form-control"
+              (change)="selectLocation($event.target.value)" [disabled]="!isManager">
+              <option>Select Branch</option>
+              <option *ngFor="let branch of branchList; let i = index" [value]="branch.id">
+                {{branch.label}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select [(ngModel)]="userRole" name='userRole' style="width: 100%" class="form-control"
+              (change)="selectUserRole($event.target.value)" [disabled]="!isManager">
+              <option>Select User Role</option>
+              <option *ngFor="let uRole of userRoleList; let i = index" [value]="uRole.id">
+                {{uRole.label}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="userName" [disabled]="!isManager" id="user_name" name="user_name"
+                class="form-control" placeholder="Username">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="email" [(ngModel)]="email" [disabled]="!isManager" id="email" name="email"
+                class="form-control" placeholder="Email" autocomplete="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="mobile" [disabled]="!isManager" id="mobile" name="mobile"
+                class="form-control" placeholder="Mobile" autocomplete="Mobile">
+            </div>
+          </div>
+          <div class="form-group">
+            <select [(ngModel)]="status" name='status' [disabled]="!isManager" style="width: 100%" class="form-control">
+              <option selected>Select Status</option>
+              <option value='1'>
+                Active
+              </option>
+              <option value='0'>
+                Inactive
+              </option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="newServiceType === '1'">
+            <select [(ngModel)]="userType" name='status' style="width: 100%" class="form-control">
+              <option value='F'>
+                Front End Technician
+              </option>
+              <option value='B'>
+                Back End Technician
+              </option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="(loginUserRole === '18') && (isProfile === true) && (branchType === 'A')">
+            <select [(ngModel)]="userRoleType" style="width: 100%" class="form-control">
+              <option value='T'>
+                Technician
+              </option>
+              <option value='C'>
+                Concierge
+              </option>
+            </select>
+          </div>
+          <div style="margin-top: 1rem; display : flex !important">
+            <div class="header_left" style="display: flex !important; margin:auto !important">
+              <div class="acceptbtns" *ngIf="isProfile === false">
+                <button (click)="createUser()">Create</button>
+              </div>
+              <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="(isProfile === true)">
+                <button (click)="updateUser()">Update</button>
+              </div>
+              <div style="margin-left: 1rem !important;" class="acceptbtns">
+                <button (click)="clear()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2"></div>
+  </div>
+
+  <div class="animated fadeIn" *ngIf="(loading === false) && (isManager || (loginUserRole === '2'))" style="margin-bottom: 1rem !important;">
+    <div style="margin-bottom: 1rem !important;">
+      <div style="display: flex; margin: 0.5rem;">
+        <div class="header_left" style="float: none">
+        </div>
+        <div class="header_right" *ngIf="(isManager || (loginUserRole === '8'))">
+          <div class="actionbtns" style="display: flex" >
+            <input type="search" class="form-control" placeholder="Search by Group Id" id="groupSearch" [(ngModel)]="groupSearch" style="margin-right: 0.5rem;" (keyup)="searchGroupid(groupSearch)">
+            <!-- <input type="search" class="form-control" placeholder="Search by Branch Code" id="locationSearch" [(ngModel)]="locationSearch" style="margin-right: 0.5rem;">
+            <input type="search" class="form-control" placeholder="Search by Name" id="namesearch" [(ngModel)]="nameSearch"> -->
+          </div>
+        </div>
+      </div>
+
+  <div  style="float:left; margin-right: 1rem; margin-top: 0rem; padding: 0;" *ngIf="(data.length !== 0)">
+  <c-smart-table
+  [tableFilter]="true"
+    activePage="1"
+    cleaner
+    #smartTable="cSmartTable"
+    [columnFilter]="false"
+    [columnSorter]="false"
+    header
+    [columns]="columns"
+    [itemsPerPage]="20"
+    [items]="dtData"
+    pagination
+    [tableProps]="{ hover: true, striped: true, responsive: true }"
+    >
+
+  <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+  <td>
+    <ng-container [ngSwitch]="columnName">
+
+      <!-- site_type_id: Convert 1 to 'Service', else 'Onsite' -->
+      <ng-container *ngSwitchCase="'site_type_id'">
+        {{ item['site_type_id'] === '1' ? 'Service' : 'Onsite' }}
+      </ng-container>
+
+      <!-- status: Convert 1 to 'Present', else 'Absent' -->
+      <ng-container *ngSwitchCase="'status'">
+        {{ item['status'] === '1' ? 'Present' : 'Absent' }}
+      </ng-container>
+
+      <!-- action: Conditional buttons -->
+      <ng-container *ngSwitchCase="'action'" class="py-2">
+        <button class="actionButton" cButton
+                *ngIf="!buttonSpin && loginUserRole !== '2'"
+                (click)="loadUser(item.emp_id)">
+          Update
+        </button>
+
+        <button class="actionButton" cButton
+                *ngIf="!buttonSpin && loginUserRole === '2' && item.supervisor === 'N'"
+                (click)="updateLICPresents(item.emp_id, item.attendanceStatus, confirm_alert_temp)">
+          {{ item.attendanceStatus }}
+        </button>
+
+        <!-- Loading Spinner -->
+        <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5rem;" *ngIf="buttonSpin">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+      </ng-container>
+
+      <!-- Default case: Display raw content -->
+      <ng-container *ngSwitchDefault>
+        {{ tdContent }}
+      </ng-container>
+
+    </ng-container>
+  </td>
+</ng-template>
+
+</c-smart-table>
+      </div>
+    </div>
+
+    <!-- ******************* Popup Modals ************************* -->
+    <ng-template class="modal fade" #simple_alert_temp>
+      <div class="modal-dialog" role="document" style="margin: 0px">
+        <div class="modal-content">
+          <div class="modal-header" style="height: 55px;">
+            <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+          </div>
+          <div class="modal-body">
+            <p>{{simpleAlert.msg}}</p>
+          </div>
+          <div class="modal-footer" style="height: 80px">
+            <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template class="modal fade" #confirm_alert_temp>
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="height: 55px;">
+            <h4 class="modal-title" style="line-height: 1.2">Update LIC Status</h4>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure want to change the LIC Status?</p>
+          </div>
+          <div class="modal-footer" style="height: 80px">
+            <button type="button" class="btn btn-secondary" (click)="confirmLICStatus()">Yes</button>
+            <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+          </div>
+
+        </div>
+      </div>
+    </ng-template>

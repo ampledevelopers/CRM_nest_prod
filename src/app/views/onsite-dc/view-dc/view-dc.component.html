@@ -1,0 +1,24 @@
+<div class="childSelect">
+  <label style="margin-right:.5rem;">Select the Drop Location</label>
+    <select (change)="locationSelected($event.target.value)" [(ngModel)]="selectedBranch">
+      <option selected disabled>Select</option>
+      <option *ngFor="let child of branchesList">{{child.branch_code}}</option>
+    </select>
+</div>
+<p *ngIf="dcTickets.length == 0">No Dc Available</p>
+<table *ngIf="dcTickets.length > 0" class="table table-bordered table-striped table-sm" style="width: 55%; margin: auto;">
+  <thead>
+    <td>Dc No.</td>
+    <td>Delivery Branch</td>
+    <td>Date</td>
+    <td>Download</td>
+  </thead>
+  <tbody style="text-align: center;">
+    <tr *ngFor="let dc of dcTickets">
+      <td>{{dc.id}}</td>
+      <td>{{dc.drop_branch_code}}</td>
+      <td>{{dc.date_of_delivery | date: 'dd-MM-yyyy'}} </td>
+      <td><button (click)="downloadDC(dc.id)">download</button></td>
+    </tr>
+  </tbody>
+</table>

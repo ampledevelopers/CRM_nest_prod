@@ -1,0 +1,38 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StatusreportService {
+  rootUrl = localStorage.getItem('reportsUrl');
+  reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
+
+  constructor(private http: HttpClient) {
+  }
+
+  getBranches() {
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.rootUrl + 'api/reports/get_branches', form, { headers: this.reqHeader });
+  }
+
+  getStatuses(siteType: string) {
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      '&siteType=' + siteType;
+    return this.http.post(this.rootUrl + 'api/reports/get_status', form, { headers: this.reqHeader });
+  }
+
+  getSitetypes() {
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken');
+    return this.http.post(this.rootUrl + 'api/reports/get_site_types', form, { headers: this.reqHeader });
+  }
+
+  getStatusReport(fromDate: string, toDate: string, branchId: string, statusId: string, reportType: string, sitetype: string) {
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId + '&statusId=' + statusId +
+      '&reportType=' + reportType + '&sitetype=' + sitetype + '&group_id=' + localStorage.getItem('userRole');
+    return this.http.post(this.rootUrl + 'api/reports/status_report', form, { headers: this.reqHeader });
+  }
+}

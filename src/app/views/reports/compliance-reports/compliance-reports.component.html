@@ -1,0 +1,29 @@
+<div class="div1">
+  <label >Select Report Type</label>
+        <fieldset>
+            <ng-select ng-multiple="false"
+            class="bootstrap"
+            placeholder="any"
+            bindLabel="label"
+            bindValue="value"
+            [items]="reports"
+            [multiple]="false"
+            [(ngModel)]="reportType"></ng-select>
+          </fieldset>
+</div>
+<div *ngIf="reportType == 'repairdeviationfraudreport'">
+  <app-repairdeviationfraudreport></app-repairdeviationfraudreport>
+</div>
+<div *ngIf="reportType == 'ageingTicketForSMS'">
+  <app-ageingticketsreport></app-ageingticketsreport>
+</div>
+<div *ngIf="reportType == 'GSXproductLookup'">
+  <app-gsx-lookup-report></app-gsx-lookup-report>
+</div>
+<div *ngIf="reportType == 'atlas'">
+  <app-atlasreport></app-atlasreport>
+</div>
+<div *ngIf="reportType == 'menuLog'">
+  <app-menulogreport></app-menulogreport>
+</div>
+

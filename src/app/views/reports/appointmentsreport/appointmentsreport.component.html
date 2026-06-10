@@ -1,0 +1,131 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 40%;">
+  <c-spinner></c-spinner>
+</div>
+
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - Appointments Report
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Appointments<span>*</span></label>
+          <select class="form-control" [(ngModel)]="appointsRange" (ngModelChange)="typeChange()">
+            <option value="Today">Appointments for today</option>
+            <option value="All" selected>All Appointments</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Appointments Type</label>
+          <select class="form-control" [(ngModel)]="appointsType">
+          <option value="" selected>All</option>
+          <option value="Apple">Apple</option>
+          <option value="Ample" selected>Ample</option>
+        </select>
+        </div>
+        <div class="col-md-4">
+          <label>Product Family</label>
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" bindLabel="name" bindValue="value"
+              [items]="productFamilies" [multiple]="false" [(ngModel)]="productFamily"></ng-select>
+        </div>
+        <div class="col-md-4" style="margin-top: 1rem" >
+          <label>Status</label>
+          <select class="form-control" [(ngModel)]="appointStatus">
+            <option selected value="">any</option>
+            <option value="RESERVED">RESERVED</option>
+            <option value="RESCHEDULED">RESCHEDULED</option>
+            <option value="CANCELLED">CANCELLED</option>
+            <option value="NO_SHOW">NO_SHOW</option>
+          </select>
+        </div>
+        <div class="col-md-4" *ngIf="appointsRange == 'All'" style="margin-top: 1rem" >
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd-mm-yyyy">
+        </div>
+        <div class="col-md-4" *ngIf="appointsRange == 'All'" style="margin-top: 1rem" >
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd-mm-yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:  block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem; text-align: center;">
+    <c-spinner size="sm" style="margin: auto !important;"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport === true && reportLoading === false" style="margin-top: 2rem; margin-bottom: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header" style="margin-bottom: 1rem; display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Appointment Details
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <!-- <div class="row">
+          <div class="col-md-4" style="margin: auto; margin-bottom: 1rem;">
+            <fieldset class="form-group">
+              <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="filters" [multiple]="false"
+                bindLabel="label" bindValue="value" [(ngModel)]="filter" (change)="filterSearch(filter)"></ng-select>
+            </fieldset>
+          </div>
+        </div> -->
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="reservationsData" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td [cTableActive]="tableDataCellProps(item, columnName)?.active"
+                [cTableColor]="tableDataCellProps(item, columnName)?.color"
+                [cAlign]="tableDataCellProps(item, columnName)?.align"
+                [ngClass]="tableDataCellClasses(item, columnName)">
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchCase="'reservation_id'">
+                    {{(item['current_status']) !== 'RESCHEDULED' && item['rescheduled_to'] == '' ? item['reservation_id'] : 'NA'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'rescheduled_to'">
+                    {{(item['current_status'])=='RESCHEDULED' || item['rescheduled_to'] !== ''  ? item['rescheduled_to'] : 'NA'}}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{tdContent}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords === 1" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Appointment Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

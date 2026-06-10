@@ -1,0 +1,110 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - GSX Product Look-Up Report
+    </div>
+    <div class="card-body">
+
+```
+  <div class="row">
+    <div class="col-md-4">
+      <label>From Date<sup style="color: red">*</sup></label>
+      <input class="form-control" [(ngModel)]="fromDate" type="date" name="date-input"
+        placeholder="dd-mm-yyyy">
+    </div>
+    <div class="col-md-4">
+      <label>To Date<sup style="color: red">*</sup></label>
+      <input class="form-control" [(ngModel)]="toDate" type="date" name="date-input"
+        placeholder="dd-mm-yyyy">
+    </div>
+  </div>
+
+  <div style="display: flex;margin-top: 1rem ">
+    <div class="header_left" style="display: block !important;">
+      <div class="acceptbtns" style="float: left">
+        <button (click)="load()">Load</button>
+      </div>
+      <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+        <button (click)="exportAsXLSX()">Export</button>
+      </div>
+      <div style="margin-left: 1rem;" class="acceptbtns">
+        <button (click)="clear()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{ reportName }}
+      </div>
+
+```
+  <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+
+    <c-smart-table
+      [tableFilter]="true"
+      activePage="1"
+      [columnFilter]="false"
+      [columnSorter]="false"
+      header
+      [columns]="columns"
+      [itemsPerPage]="100"
+      [items]="data"
+      pagination
+      [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+      <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+        <td
+          [cTableActive]="tableDataCellProps(item, columnName)?.['active']"
+          [cTableColor]="tableDataCellProps(item, columnName)?.color"
+          [cAlign]="tableDataCellProps(item, columnName)?.align"
+          [ngClass]="tableDataCellClasses(item, columnName)">
+
+          <ng-container [ngSwitch]="columnName">
+            <ng-container *ngSwitchDefault>
+              {{tdContent}}
+            </ng-container>
+          </ng-container>
+
+        </td>
+      </ng-template>
+
+    </c-smart-table>
+
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Enquiry Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

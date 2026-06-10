@@ -1,0 +1,220 @@
+@media only screen and (min-width: 1000px) {
+  .modal-lg {
+      min-width: 800px;
+      margin-left: 20% !important;
+      margin-right: 20% !important;
+      margin-top: 6% !important;
+  }
+  .modal-xlg {
+    min-width: 1000px;
+    margin-left: 16% !important;
+    margin-right: 16% !important;
+    margin-top: 6% !important;
+}
+}
+
+.backdrop {
+  background-color:rgba(0,0,0,0.6);
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+}
+
+  .modal-body {
+    max-height: 450px !important;
+    overflow: auto;
+  }
+
+  .textArea {
+    width: 100%;
+  }
+
+  .textArea textarea {
+    width: 100%;
+    border: 1px solid lightgray;
+    margin-top: 0.5rem !important;
+  }
+
+  .messageTicket {
+    width: 48%;
+    float: left;
+  }
+
+  .messageTicket input {
+    height: 33px;
+    border-radius: 0px;
+  }
+
+  .messageType {
+    width: 48%;
+    float: right;
+  }
+
+  .modal-content {
+    display: block;
+    border: 0;
+    border-radius: 3px;
+}
+
+@media only screen and (min-width: 1000px) {
+    .modal-lg {
+        min-width: 800px;
+        margin-left: -20%;
+        margin-right: -20%;
+    }
+    .modal-xlg {
+      min-width: 1000px;
+      margin-left: -45%;
+      margin-right: -20%;
+  }
+}
+
+.widget i {
+  margin-top: 0px !important;
+}
+
+button {
+  border: 0px;
+  background: transparent;
+  margin-top: 0px !important;
+}
+
+/* app-footer {
+  position: fixed !important;
+  bottom: 0px !important;
+  width: 100% !important;
+  height: 50px !important;
+} */
+
+.breadcrumb {
+  border-bottom: 0px !important;
+  padding: 0px !important;
+}
+
+.main {
+  margin-left: 300px !important;
+}
+
+app-footer {
+  margin-left: 300px !important;
+}
+
+nav{
+  width: 100%;
+}
+.avatar-md {
+  width: 20rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+c-nav-item{
+  padding-left: 20% !important;
+}
+
+app-default-header .mb-4{
+  margin-bottom: 0px !important;
+}
+
+.sidebar-nav .nav-group.show .nav-group-toggle{
+  color: black !important;
+}
+
+.sidebar{
+  word-wrap: break-word !important;
+  --cui-sidebar-bg: lightgray !important;
+  --cui-sidebar-width: 19rem;
+  --cui-sidebar-nav-link-color: black !important;
+  --cui-sidebar-brand-bg: #fff;
+  --cui-sidebar-nav-link-active-color: white;
+  --cui-sidebar-nav-link-padding-left: 0.5rem !important;
+  --cui-sidebar-nav-link-active-bg: #3a4248;
+  --cui-sidebar-nav-link-hover-bg: #20a8d8;
+  --cui-sidebar-nav-link-hover-color: black;
+  --cui-sidebar-nav-link-icon-color:  #73818f !important;
+  --cui-sidebar-nav-group-toggle-show-color: black !important;
+  // --cui-sidebar-nav-link{
+  //   white-space: normal !important;
+   height: 100vh;           // Ensure it takes full viewport height
+  overflow-y: auto;        // Enable vertical scrolling when content overflows
+  .nav-link{
+    white-space: normal !important;
+  }
+}
+
+.nav-link.nav-group-toggle{
+  color: black !important;
+}
+
+.sidebar-nav .nav-link {
+  white-space: normal !important;
+  --cui-sidebar-nav-link-padding-y: 0.6rem !important;
+  --cui-sidebar-nav-link-padding-x: 1rem !important;
+  // padding: 0.6rem 1rem !important;
+}
+
+c-sidebar-nav-link.nav-item {
+  white-space: normal !important;
+}
+
+.sidebar:not(.sidebar-end) ~ *{
+  --cui-sidebar-occupy-start: 19rem !important
+}
+
+.sidebar-nav .nav-group .nav-group-items {
+  padding-left: 3rem !important;
+}
+
+ul {
+  padding-left: 0rem !important;
+  padding-bottom: 0rem;
+  margin-bottom: 0rem !important;
+}
+
+li {
+  width: 100% !important;
+  display: block;
+  padding: 0.4rem 1rem !important;
+  color: black;
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+  }
+
+.show {
+display: block;
+list-style: none;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+  font-size: 0.8rem !important;
+}
+
+.active {
+  background-color: #384248;
+  color: white;
+}
+
+.nonActive {
+  background-color: transparent;
+  color: black;
+}
+
+.sub:hover {
+  background-color: rgb(198, 198, 198);
+}
+
+.parent:hover {
+  background-color: rgb(198, 198, 198);
+}
+
+.sub {
+  padding-left: 1rem !important;
+}
+
+

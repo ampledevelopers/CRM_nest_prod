@@ -1,0 +1,142 @@
+<div class="card" style="border: 1px solid lightgray;">
+  <div class="card-header" >
+    Foofall and RAF Conversion Dashboard
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3">
+        <label>Report Type<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="reportType" name="year" class="form-control">
+          <option value="" selected disabled>Select Report Type</option>
+          <option value="footFall">Footfall Report</option>
+          <option value="RAF Conversion">RAF Conversion Rate</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Financial Year<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="year" name="year" class="form-control" (change)="onSelectYear()">
+          <option value="" selected disabled>Select Year</option>
+          <option value="2023">FY 2022-23</option>
+          <option value="2024">FY 2023-24</option>
+          <option value="2025">FY 2024-25</option>
+          <option value="2026">FY 2025-26</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Period<sup style="color: red">*</sup></label>
+        <select id="period" name="period" class="form-control" [(ngModel)]="period" (change)="onPeriodSelect()">
+          <option value="" selected disabled>Select Period</option>
+          <option value="1">P1</option>
+          <option value="2">P2</option>
+          <option value="3">P3</option>
+          <option value="4">P4</option>
+          <option value="5">P5</option>
+          <option value="6">P6</option>
+          <option value="7">P7</option>
+          <option value="8">P8</option>
+          <option value="9">P9</option>
+          <option value="10">P10</option>
+          <option value="11">P11</option>
+          <option value="12">P12</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Select Week<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="week" name="year" class="form-control">
+          <option value="" selected disabled>Select Week</option>
+          <option value="1">W1</option>
+          <option value="2">W2</option>
+          <option value="3">W3</option>
+          <option value="4">W4</option>
+          <option value="5" *ngIf="showFifthWeek">W5</option>
+        </select>
+      </div>
+      <div style="margin: auto; margin-top: 1.3rem !important; width: 15% !important;">
+        <button class="loadBtn" (click)="load()">Load</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading === true" class="spinnerDiv">
+  <c-spinner color="secondary" style="margin-left: 0px !important;"></c-spinner>
+</div>
+<div class="card" *ngIf="loading === false && showFootfallTable === true"style="margin-bottom: 1rem;margin-top: 1.5rem;">
+  <div class="card-body">
+  <table class="table table-bordered table-sm">
+    <tr class="head">
+      <td>Location</td>
+      <td>{{previousTitle}}</td>
+      <td>{{currentTitle}}</td>
+      <td>{{days[0] | date: 'dd/MM/yyyy'}}</td>
+      <td>{{days[1] | date: 'dd/MM/yyyy'}}</td>
+      <td>{{days[2] | date: 'dd/MM/yyyy'}}</td>
+      <td>{{days[3] | date: 'dd/MM/yyyy'}}</td>
+      <td>{{days[4] | date: 'dd/MM/yyyy'}}</td>
+      <td>{{days[5] | date: 'dd/MM/yyyy'}}</td>
+      <td>{{days[6] | date: 'dd/MM/yyyy'}}</td>
+    </tr>
+    <tr *ngFor="let data of entireData; let i=index;">
+      <td style="background-color: #e9e9e9;">{{data.branch}}</td>
+      <td>{{data.lastWeekData === '0' ? ' ' : data.lastWeekData}}</td>
+      <td>{{data.presentData === '0' ? ' ' : data.presentData}}</td>
+      <td>{{data.day1 === 0 ? ' ' : data.day1}}</td>
+      <td>{{data.day2 === 0 ? ' ' : data.day2}}</td>
+      <td>{{data.day3 === 0 ? ' ' : data.day3}}</td>
+      <td>{{data.day4 === 0 ? ' ' : data.day4}}</td>
+      <td>{{data.day5 === 0 ? ' ' : data.day5}}</td>
+      <td>{{data.day6 === 0 ? ' ' : data.day6}}</td>
+      <td>{{data.day7 === 0 ? ' ' : data.day7}}</td>
+    </tr>
+    <tr class="total">
+      <td style="background-color: #e9e9e9; font-weight: bold;">Grand Total</td>
+      <td>{{totLastWeekData}}</td>
+      <td>{{totalPresentData}}</td>
+      <td>{{day1Total}}</td>
+      <td>{{day2Total}}</td>
+      <td>{{day3Total}}</td>
+      <td>{{day4Total}}</td>
+      <td>{{day5Total}}</td>
+      <td>{{day6Total}}</td>
+      <td>{{day7Total}}</td>
+    </tr>
+  </table>
+</div>
+</div>
+
+<div *ngIf="showNoData" class="noDataDiv">
+  <i class="material-icons" style="margin-right: 0.3rem !important; font-size: 1.2rem;">info</i>
+  <h6> Data not Available</h6>
+</div>
+
+<div class="card" *ngIf="loading === false && showRafTable === true" style="margin-bottom: 1rem;margin-top: 1.5rem;">
+  <div class="card-body">
+  <table class="table table-bordered table-sm">
+    <tr class="head">
+      <td>Location</td>
+      <td>Footfall</td>
+      <td>Delivery Count</td>
+      <td>Service Count</td>
+      <td>RAF Count</td>
+      <td>Conversion Rate</td>
+    </tr>
+    <tr *ngFor="let data of entireData; let i=index;">
+      <td style="background-color: #e9e9e9;">{{data.branch}}</td>
+      <td id="footfall">{{data.footfallData}}</td>
+      <td>{{data.deliveryTokenData}}</td>
+      <td>{{data.serviceTokenData}}</td>
+      <td>{{data.rafData}}</td>
+      <td>{{data.conversionRate}}%</td>
+    </tr>
+    <tr class="total">
+      <td style="background-color: #e9e9e9;">Grand Total</td>
+      <td>{{totalFootfall}}</td>
+      <td>{{totalDeliveryToken}}</td>
+      <td>{{totalServiceToken}}</td>
+      <td>{{totalRafData}}</td>
+      <td>{{totalConversionRate}}%</td>
+    </tr>
+  </table>
+</div>
+</div>
+

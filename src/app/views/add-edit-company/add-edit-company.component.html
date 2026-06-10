@@ -1,0 +1,134 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-header">
+          Create Organization
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <input [(ngModel)]="orgName" style="width: 100%" class="form-control" type="text" class="form-control-file"
+              placeholder="Organization Name">
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="address1" id="user_name" name="user_name" class="form-control"
+                placeholder="Address 1">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="address2" class="form-control" placeholder="Address 2">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="city" class="form-control" placeholder="City">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="state" class="form-control" placeholder="State">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" [(ngModel)]="pin" maxlength="6" class="form-control" placeholder="Pincode">
+            </div>
+          </div>
+          <div style="display: flex;margin-top: 1rem ">
+            <div class="header_left">
+              <div class="acceptbtns" style="float: left">
+                <button (click)="createOrg()">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2"></div>
+  </div>
+  <div class="card col-md-12" style="float:left; margin-right: 1rem; padding: 0; padding-top: 1rem !important;">
+    <table datatable class="table table-bordered table-striped table-sm" style="margin-bottom: 0;"
+      [dtOptions]="dtOptions">
+      <thead>
+        <tr style="text-align: center; font-weight: normal;">
+          <th>
+            Id
+          </th>
+          <th>
+            Organization Name
+          </th>
+          <th>
+            Address 1
+          </th>
+          <th>
+            Address 2
+          </th>
+          <th>
+            City
+          </th>
+          <th>
+            State
+          </th>
+          <th>
+            Pin
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="grid-container" *ngFor="let item of data; let idx = index">
+          <td>
+            {{item.id}}
+          </td>
+          <td>
+            {{item.company_name}}
+          </td>
+          <td>
+            {{item.address1}}
+          </td>
+          <td>
+            {{item.address2}}
+          </td>
+          <td>
+            {{item.city}}
+          </td>
+          <td>
+            {{item.state}}
+          </td>
+          <td>
+            {{item.pin}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <!-- ******************* Popup Modals ************************* -->
+  <ng-template class="modal fade" #simple_alert_temp>
+    <div class="modal-dialog" role="document" style="margin: 0px">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{simpleAlert.msg}}</p>
+        </div>
+        <div class="modal-footer" style="height: 60px">
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>

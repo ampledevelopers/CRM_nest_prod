@@ -1,0 +1,72 @@
+<c-sidebar #sidebar1="cSidebar" class="d-print-none sidebar sidebar-fixed" id="sidebar1" visible>
+<c-sidebar-brand
+  [brandFull]="{
+    src: 'assets/img/brand/iCare.png',
+    width: 126,
+    height: 30,
+    alt: 'CRM'
+  }"
+  [brandNarrow]="{
+    src: 'assets/img/brand/iCare.png',
+    width: 46,
+    height: 46,
+    alt: 'CRM'
+  }"
+  [routerLink]="[]"
+  style="background-color: white; display: flex; align-items: center; justify-content: center; height: 51px;position: sticky;top: 0px;  z-index: 100;">
+</c-sidebar-brand>
+
+
+
+  <mat-progress-bar mode="query" *ngIf="menuProgress"></mat-progress-bar>
+  <div
+  #scrollContainer
+  *ngIf="userRole !== '26'"
+  style="flex:1; overflow-y:auto; overflow-x:hidden;"
+>
+  <ul *ngFor="let menu of filteredMenus; let i = index" style="padding-left: 1rem;">
+    <li>
+      <ul class="parent">
+        <li style="padding-right: 0rem !important; padding-left: 0rem !important;">
+          <div style="display: flex;" (click)="menuToggle(i)">
+            <svg cIcon name="{{ menu.iconComponent.name }}" style="margin-right: 0.8rem; margin-left: 0rem; width: 1.2rem;"></svg>
+            <a style="display: block; width: 100%">{{ menu.name }}</a>
+            <i *ngIf="menu.showChild" class="material-icons" style="font-size: 15px !important;">keyboard_arrow_down</i>
+            <i *ngIf="!menu.showChild" class="material-icons" style="font-size: 15px !important;">keyboard_arrow_left</i>
+          </div>
+        </li>
+      </ul>
+      <ul [ngClass]="menu.showChild ? 'show' : 'hide'">
+        <div class="sub" *ngFor="let sub of menu.children">
+          <li (click)="activeChild = sub" [ngClass]="activeChild === sub ? 'active' : 'nonActive'" (click)="menuClick($event, sub)">
+            <svg *ngIf="sub.icon_v2" cIcon name="{{ sub.icon_v2 }}" style="margin-right: 0.8rem; margin-left: 0rem; width: 0.9rem !important;"></svg>
+            <svg *ngIf="!sub.icon_v2" cIcon name="{{ sub.iconComponent.name }}" style="margin-right: 0.8rem; margin-left: 0rem; width: 0.9rem !important;"></svg>
+            <a>{{ sub.name }}</a>
+          </li>
+        </div>
+      </ul>
+    </li>
+  </ul>
+</div>
+</c-sidebar>
+
+<!--aside-->
+<div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent">
+  <app-default-aside></app-default-aside>
+
+  <!-- app-header -->
+  <app-default-header class="mb-4 d-print-none header header-sticky"
+    position="sticky" sidebarId="sidebar1"
+    style="margin-bottom: 0rem !important;">
+  </app-default-header>
+
+  <div class="body flex-grow-1 px-3" style="background-color:white; padding-top: 1.5rem;">
+    <c-container breakpoint="lg" class="h-auto">
+      <router-outlet></router-outlet>
+    </c-container>
+  </div>
+
+
+  <!--app footer-->
+  <app-default-footer></app-default-footer>
+</div>

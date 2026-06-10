@@ -1,0 +1,179 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+  </div>
+<div class="animated fadeIn" *ngIf="loading === false">
+    <div *ngIf="isReport===true" style="margin-bottom: 1rem !important;">
+        <div class="col-lg-16">
+      <!-- <div class="card-header">
+        Replenishment Entry
+      </div> -->
+      <!-- <div class="header_right" style="width: 100%;padding: 1rem;">
+          <div class="actionbtns">
+              <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch" [(ngModel)]="ticketSearch">
+          </div>
+      </div> -->
+      <div  >
+        <div style="overflow-x: auto;padding-top: 0px;">
+        <table class="table table-bordered table-striped table-sm" datatable>
+          <thead>
+            <tr style="text-align: center;">
+              <!-- <th>Sl No</th> -->
+              <th>Ticket Id</th>
+              <!-- <th>Branch Code</th> -->
+              <th>Repair Part No</th>
+              <th>Part orderStatusDescription</th>
+              <!-- <th>PO Number</th> -->
+              <!-- <th>Part No</th> -->
+              <th>GSX Number</th>
+              <th>Issued ASN</th>
+              <th>Stock Type</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let idx = index">
+              <!-- <td>{{idx}}</td> -->
+              <td>{{item.ticket_id}}</td>
+              <!-- <td>{{item.branch_code}}</td> -->
+              <td>{{item.part_number}}</td>
+              <td>{{item.description}}</td>
+              <!-- <td>{{item.po_number}}</td> -->
+              <!-- <td>{{item.part_no}}</td> -->
+              <td>{{item.g_number}}</td>
+              <td>{{item.consignment_asn_no}}</td>
+              <td>{{ item.consignment_type === 'AM' || item.consignment_type === 'Am' ? 'Ample' : 'Apple' }}</td>
+              <td style="text-align: center;">
+                <button *ngIf="buttonSpin === false" (click)="getKgbDetails(item.consignment_asn_no, item.ticket_id, item.part_number, item.description, kgb_details_temp)">Replenishment Update</button>
+                <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+                <!-- <button *ngIf="buttonSpin === false" style="margin-left: 0.5rem;" (click)="updateKgbRepair(item.ticket_id, item.g_number)">Fetch</button> -->
+              </td>
+            </tr>
+            </tbody>
+          </table>
+      </div>
+      </div>
+      </div>
+      </div>
+      <div class="card" *ngIf="isRecords===1" >
+          <div class="col-lg-16">
+          <div class="card-header">
+            Replenishment Update
+          </div>
+          <div class="card-body">
+          <table class="table table-bordered table-striped table-sm" >
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+          </table>
+          </div>
+          </div>
+          </div>
+</div>
+<ng-template class="modal fade" #kgb_details_temp>
+    <div class="modal-dialog" role="document" style="margin:0px;">
+      <div class="modal-content" >
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">Replenishment Update</h4>
+        </div>
+        <div class="modal-body">
+            <div>
+                <div class="info_row" >
+                  <div class="col-md-6">
+                      <label>Part Number</label>
+                  </div>
+                  <div class="col-md-6">
+                      <input [(ngModel)]="repair_partid" class="information" type="text" placeholder="Part Number" readonly>
+                  </div>
+                </div>
+                <div class="info_row" >
+                  <div class="col-md-6">
+                      <label>KBB Serial Number<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.kbb_slno" class="information" type="text" placeholder="Enter KBB Serial No">
+                  </div>
+                </div>
+                <div class="info_row" >
+                  <div class="col-md-6">
+                      <label>KGB Serial Number<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.kgb_slno" class="information" type="text" placeholder="Enter KGB Serial No">
+                  </div>
+                </div>
+                <div class="info_row">
+                  <div class="col-md-6">
+                      <label>KGB Airwaybill Number<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.kgb_airway" class="information" type="text" placeholder="Enter AWB Number">
+                  </div>
+                </div>
+                <div class="info_row" *ngIf="asnType === 'Ample'">
+                  <div class="col-md-6">
+                      <label>ERP ASN</label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.erpAsn" class="information" type="text" placeholder="Enter ERP ASN" readonly>
+                  </div>
+                </div>
+                <div class="info_row" *ngIf="asnType === 'Apple'">
+                  <div class="col-md-6">
+                      <label>Delivery No<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.deliveryNo" class="information" type="text" placeholder="Enter Delivery No">
+                  </div>
+                </div>
+                <div class="info_row">
+                  <div class="col-md-6">
+                      <label>Delivery Date<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.deliveryDate" class="information" type="text" placeholder="Enter YYYY-MM-DD">
+                  </div>
+                </div>
+                <!-- <div class="info_row">
+                  <div class="col-md-6">
+                      <label>Replenishment Ticket Id<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input required [(ngModel)]="kgbInput.replenishmentTicketId" class="information" type="text" placeholder="Enter Replenishment Ticket Id">
+                  </div>
+                </div> -->
+
+                <!-- <div class="info_row" >
+                  <div class="col-md-6">
+                      <label>KGB Airway Bill Number<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input [(ngModel)]="kgbInput.kgb_airway" class="information" type="text" placeholder="Enter KGB Airway No">
+                  </div>
+                </div> -->
+                <div class="info_row" >
+                  <div class="col-md-6">
+                      <label>Tote Id<sup style="color: red;">*</sup></label>
+                  </div>
+                  <div class="col-md-6">
+                      <input [(ngModel)]="kgbInput.tote_id" class="information" type="text" placeholder="Enter Tote Id">
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+                <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill all mandatory fields
+              </div>
+        </div>
+        <div class="modal-footer" style="height: 65px">
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="saveKgbDetails(kgbInput)">Save</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>

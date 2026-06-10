@@ -1,0 +1,193 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div style="display: flex; margin-top: 1rem;">
+    <div class="header_left" style="width: 80%; margin-top: 0px">
+      <!-- <div style="display: flex;" *ngIf="siteType === '1'">
+        <div class="col-md-2"></div>
+        <div class="col-md-4" style="text-align: center; margin-right: 1rem !important">
+          <label style="font-weight: bold;">Repair Created From Date<sup style="color: red;">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input" placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-4" style="text-align: center;">
+            <label style="font-weight: bold;">Repair Created To Date<sup style="color: red;">*</sup></label>
+            <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-2"></div>
+      </div> -->
+      <div style="display: flex;"> <!-- *ngIf="siteType === '2'" -->
+        <input type="text" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="gNumber" class="form-control"
+        placeholder="Enter G Number" style="width: 40%; margin: auto; text-align: center;" (keypress)="getGSXDataFetch($event)">
+      </div>
+<!--       <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input" style="width: 40%; margin: auto; text-align: center; float: left; margin-left: 8%;" placeholder="dd/mm/yyyy">
+      <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" style="width: 40%; margin: auto; text-align: center;" placeholder="dd/mm/yyyy">
+ -->        <!-- <input type="text" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="ticketId"class="form-control"
+          placeholder="Enter Ticket Id" style="width: 40%; margin: auto; text-align: center; float: left; margin-left: 8%;" (keydown)="getData($event, simple_alert_temp)">
+        <input type="text" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="gNumber" class="form-control"
+        placeholder="Enter G Number" style="width: 40%; margin: auto; text-align: center;" (keydown)="getGSXData($event, simple_alert_temp)"> -->
+        <div>
+          <!-- <button *ngIf="(buttonSpin === false) && (siteType === '1')" style="margin-top: 1rem !important; width: 32%; margin: auto; display:block !important; text-align: center;" class="btn btn-block btn-outline-primary" (click)="getTicketDetails(pageNo)">Search</button> -->
+          <button *ngIf="(buttonSpin === false)" style="margin-top: 1rem !important; width: 32%; margin: auto; display:block !important; text-align: center;" class="btn btn-block btn-outline-primary" (click)="getGSXData()">Search</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="notes" *ngIf="(!showList) && (selectedPartList.length === 0)">
+    <h5><b>Important Note</b></h5>
+    <h6>Please follow the KBB outward SOP before sending the device's to RC or DC</h6>
+    <ul>
+      <li>As per the Article OP1584 before sending the iOS devices like iPad/ iPhone/Watch/iPod to Repair Centre( RC ) or Dispatch Centre ( DC ) Ensure the products are in Activation mode only ( Hello Screen Mode) Refer the image 1.1
+        <br/><b style="color: red;">Note: </b><i style="color: red;">If you don't send it in (*Hello Screen Mode *) activation mode this will be considered as customer data in the device which will lead to compliance Issue
+        </i>
+      </li>
+      <li>Kindly verify the Shipping Address DC or RC / AWB No / Total Boxes / Total Items / Mode of Transport / Tote Id, Tag Id, Carton Box No / E-Way Bill No to be scan by Bar code reader</li>
+      <li>Ensure the Tote’s and Tag’s are not interchanged Refer the image 1.2 Eg: Blue tote with yellow tag to be used only for DC shipments (Carry in Repair Only ), Grey Tote and Grey Tag to be used for RC shipment ( Mail in repair’s only ) and RED tote with yellow tag to be used Battery shipment only for DC (Carry in Repair Only )</li>
+      <li>E-Way bill is required if the amount exceeding ₹50000 and above</li>
+      <li>Separate the KBB standalone battery from all other KBB parts, When shipping expanded batteries (either expanded within a device or a standalone battery for all devices), ship using ground transportation only,( Use RED tote with yellow tag )</li>
+      <li>Maximum 7 Totes / Boxes can be use to create one NRDC</li>
+    </ul>
+  </div>
+  <div class="col-md-12" *ngIf="(!showList) && (selectedPartList.length === 0)">
+    <div class="col-md-3">
+      <img style="width: 50%; margin-top: 0px;" src="assets/img/hello_img.jpeg">
+    </div>
+    <div class="col-md-3">
+      <img src="assets/img/blue_box.jpg">
+    </div>
+    <div class="col-md-3">
+      <img src="assets/img/grey_box.jpg">
+    </div>
+    <div class="col-md-3">
+      <img src="assets/img/red_box.jpg">
+    </div>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;" *ngIf="showList">
+    <div class="card" style="width: 100%; overflow: auto !important">
+      <div class="header_right" style="width: 100%;padding: 1rem;">
+        <div class="actionbtns">
+            <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch" [(ngModel)]="ticketSearch" (input)="searchTicketList()">
+        </div>
+        <div class="actionbtns" style="margin-right: 0.5rem;">
+          <input type="search" class="form-control" placeholder="Search by Repair No" id="namesearch" [(ngModel)]="repairSearch" (input)="searchRepairList()">
+        </div>
+      </div>
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+            <tr>
+              <th>Select</th>
+              <th>Ticket Id</th>
+              <th>Serial No</th>
+              <th>Part No</th>
+              <th>Part Description</th>
+              <th>Return Order</th>
+              <th>Repair No</th>
+              <th>Repair Type</th>
+              <th>Repair Status</th>
+              <th>Return Status</th>
+              <th>Value</th>
+              <th>PO Number</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sPart of partList; let indx = index" class="exPartList">
+            <td>
+              <div class="docBtn" style="float: right; margin: auto; display: block; width: 100%;">
+                <input type="checkbox" [(ngModel)]="sPart.isSelectPart" (change)="partSelect($event.target.checked, sPart, indx)">
+              </div>
+            </td>
+            <td>{{sPart.ticket_no}}</td>
+            <td>{{sPart.serial_no}}</td>
+            <td>{{sPart.part_no}}</td>
+            <td><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sPart.part_description}}</p>
+            <td>{{sPart.return_order}}</td>
+            <td>{{sPart.repair_no}}</td>
+            <td>{{sPart.repair_type}}</td>
+            <td>{{sPart.repair_status}}</td>
+            <td>{{sPart.return_status}}</td>
+            <td>{{sPart.value}}</td>
+            <td>{{sPart.po_number}}</td>
+          </tr>
+          <tr>
+              <td colspan="12" style="text-align: center;">
+                <button class="smbtn" (click)="addPart()">Add</button>
+                <!-- <button class="smbtn" (click)="prevPage()" style="margin-left: 1rem;" *ngIf="pageNo > 1">&lt;&lt;Prev</button>
+                <button class="smbtn" (click)="nextPage()" style="margin-left: 1rem;">Next&gt;&gt;</button> -->
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;" *ngIf="selectedPartList.length > 0">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem;">Selected Part List</p>
+    <div class="card" style="width: 100%;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+            <tr>
+              <th>Ticket Id</th>
+              <th>Serial No</th>
+              <th>Part No</th>
+              <th>Part Description</th>
+              <th>Return Order</th>
+              <th>Repair No</th>
+              <th>Return Status</th>
+              <th>Value</th>
+              <th>PO Number</th>
+              <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ssPart of selectedPartList; let indx = index" class="exPartList">
+            <td>{{ssPart.ticket_no}}</td>
+            <td>{{ssPart.serial_no}}</td>
+            <td>{{ssPart.part_no}}</td>
+            <td><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{ssPart.part_description}}</p>
+            <td>{{ssPart.return_order}}</td>
+            <td>{{ssPart.repair_no}}</td>
+            <td>{{ssPart.return_status}}</td>
+            <td>{{ssPart.value}}</td>
+            <td>{{ssPart.po_number}}</td>
+            <td>
+              <div class="docBtn" style="float: right; margin: auto; display: block">
+                <a (click)="deleterow(indx)"><i class="material-icons" alt="Delete">delete</i></a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+              <td colspan="10" style="text-align: center;"><button class="smbtn" (click)="goToForm()">Next</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<router-outlet></router-outlet>

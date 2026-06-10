@@ -1,0 +1,57 @@
+// Here you can add other styles
+
+// Here you can add other styles
+.namebox {
+  background-color:burlywood;
+  width: 50px;
+  height: 50px;
+  /* margin-left: 20px;  */
+  margin-top: 10px;
+  display: table;
+}
+
+.listview {
+  width:80%;
+}
+
+.noofitems{
+  margin: auto;
+  margin-right: 0;
+}
+
+.grid-container{
+  max-width:100%;
+  margin-left: 0.1rem;
+  height: 5em;
+  background-color:lightgray;
+  margin-bottom: 0.5rem;
+}
+
+select#soflow, select#soflow-color {
+  -webkit-appearance: button;
+  -webkit-border-radius: 2px;
+  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-padding-end: 20px;
+  -webkit-padding-start: 2px;
+  -webkit-user-select: none;
+  background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+  background-position: 97% center;
+  background-repeat: no-repeat;
+  border: 1px solid #AAA;
+  color: #555;
+  font-size: inherit;
+  overflow: hidden;
+  padding: 5px 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
+  margin-top: 10px;
+}
+
+.statusbox{
+  float:left;
+  margin-left: 5px;
+  margin-top: 15px;
+  display: table;
+}
+

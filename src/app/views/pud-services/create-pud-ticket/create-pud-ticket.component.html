@@ -1,0 +1,304 @@
+<div class="animated fadeIn" style="position:  inherit;">
+  <div class="row" style="width: 100%; margin: auto;">
+    <div class="col-md-6" style="margin: 0px; padding-top: 0px; margin-bottom: 1rem !important;">
+      <div class="card">
+        <div class="card-header">
+          Customer Details
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Phone Number<sup style="color: red">*</sup></label>
+                <input [ngStyle]="{'background-color': validPhone? 'white' : '#fabfbf'}" [(ngModel)]="phoneNo" maxlength="10" type="text" class="form-control"
+                  placeholder="Primary Number" (keydown)="getCustomer($event)">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <div style=" display: block ruby;">
+                  <div style="width:50% !important; margin-right:0.5rem !important;">
+                    <label>First Name<sup style="color: red">*</sup></label>
+                    <input [(ngModel)]="firstName" type="text" class="form-control" placeholder="First Name"
+                      [disabled]="detailsEdited">
+                  </div>
+                  <div style="width:48% !important;">
+                    <label style="width: 75%;">Last Name<sup style="color: red">*</sup></label>
+                    <a style="width: 20%; cursor: pointer;margin-top: 8px !important; font-weight: bold;"
+                      (click)="customerEdit()" *ngIf="isExCustomer">{{editCancel}}</a>
+                    <input [(ngModel)]="lastName" type="text" class="form-control" placeholder="Last Name"
+                      [disabled]="detailsEdited">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>E-mail<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="emailId" type="text" class="form-control" placeholder="eMail"
+                  [disabled]="detailsEdited">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Alternate Number</label>
+                <input [(ngModel)]="secondphoneNo" maxlength="10" type="text" class="form-control"
+                  placeholder="Secondary Number" style="margin-top: 0.5rem;">
+              </div>
+            </div>
+          </div>
+          <div class="checkboxDiv" style="text-align: left !important;">
+            <input type="radio" [(ngModel)]="isAmpleCustomer"
+              value="true"><label style="margin-right: 2rem;">Ample Customer</label>
+            <input type="radio" [(ngModel)]="isAmpleCustomer"
+              value="false"><label>nonAmple Customer</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1rem;">
+        <div class="card-header">
+          Pickup Address
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Address<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="address1" type="text" class="form-control" placeholder="Address line 1"
+                  [readOnly]="isSame">
+                <input [(ngModel)]="address2" type="text" class="form-control" placeholder="Address line 2"
+                  [readOnly]="isSame" style="margin-top: 0.5rem;">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>City<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="city" type="text" class="form-control" placeholder="City" [readOnly]="isSame">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>State<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="state" class="form-control" [disabled]="isSame">
+                  <option selected Disabled value="">Select State</option>
+                  <option *ngFor="let state of states">{{state}}</option>
+                </select>
+                <!-- <input  type="text" class="form-control" placeholder="State"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Landmark<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="landMark" type="text" class="form-control" placeholder="Landmark"
+                  [readOnly]="isSame">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Pin Code<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="pin" type="text" class="form-control" placeholder="Pin" [readOnly]="isSame">
+              </div>
+            </div>
+          </div>
+          <div class="checkboxDiv">
+            <input type="checkbox" [(ngModel)]="dlvrySameAsPickup" (change)="checkboxToggle()" id="checkBox1"
+              [value]="dlvrySameAsPickup"><label>Delivery Address Same as above</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6" style="margin: 0px; padding-top: 0px;">
+      <div class="card">
+        <div class="card-header">
+          Delivery Address
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Address<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="dlvryAddress1" type="text" class="form-control" placeholder="Address line 1"
+                  [readOnly]="isSame">
+                <input [(ngModel)]="dlvryAddress2" type="text" class="form-control" placeholder="Address line 2"
+                  [readOnly]="isSame" style="margin-top: 0.5rem;">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>City<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="dlvryCity" type="text" class="form-control" placeholder="City" [readOnly]="isSame">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>State<sup style="color: red">*</sup></label>
+                <!-- <input [(ngModel)]="dlvryState" type="text" class="form-control" placeholder="State" [readOnly]="isSame"> -->
+                <select [(ngModel)]="dlvryState" [disabled]="isSame" class="form-control">
+                  <option selected Disabled value="">Select State</option>
+                  <option *ngFor="let state of states">{{state}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Landmark<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="dlvryLandMark" type="text" class="form-control" placeholder="Landmark"
+                  [readOnly]="isSame">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Pin Code<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="dlvryPin" type="text" class="form-control" placeholder="Pin" [readOnly]="isSame">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card" style="margin-top: 1rem">
+        <div class="card-header">
+          Product Details
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Product Family<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="productFamily" style="width: 100%; overflow: hidden; min-height: 30px;"
+                  class="form-control">
+                  <option disabled selected>Select Product Family</option>
+                  <option *ngFor="let product of productFamilies; let i = index" [value]="product.id">
+                    {{product.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
+                      <div class="col-sm-12">
+                          <div class="form-group">
+                              <label>Serial No</label>
+                              <div style="display: flex;">
+                                  <input [(ngModel)]="serialNo" type="text" class="form-control"
+                                      placeholder="Enter Serial No">
+                              </div>
+                          </div>
+                      </div>
+                  </div> -->
+          <div class="row" *ngIf="state !== ''">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Location<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="Branch" style="width: 100%; overflow: hidden; min-height: 30px;"
+                  class="form-control">
+                  <option selected disabled> Select Location </option>
+                  <!-- <optgroup *ngFor="let state of states" label="{{state}}"> -->
+                  <option *ngFor="let branch of filterBranchesOfThisState(state)"> {{branch.label}} </option>
+                  <!-- </optgroup> -->
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1rem">
+        <div class="card-header">
+          Problem Report
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <textarea [ngClass]="{'bcolor': !bcolor, 'ncolor': bcolor}" [(ngModel)]="problem"
+                  placeholder="Detailed Summary of the problem" class="information" rows="2"
+                  style="width:100%"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" style="margin: 0px; padding-top: 1rem; margin-bottom: 1rem !important; width: 98% !important; margin-left: 1% !important;">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group" style="display: flex !important;">
+            <label style="width: 13%;">Quote Charges<sup style="color: red">*</sup> : </label>
+            <select style="width: 25%;" class="form-control" [(ngModel)]="quoteCharges" (change)="quoteChange()">
+              <option selected disabled value="Select Quote Charges">Select Quote Charges</option>
+              <option value='{"data":["300","Zone 1O", "Pickup Service - PUZ1O"]}'>Zone 1O (0 to 10Kms) - Rs.300</option>
+              <option value='{"data":["500","Zone 1T", "Pickup & Drop service - PUDZ1T"]}'>Zone 1T (0 to 10Kms) - Rs.500</option>
+              <option value='{"data":["400","Zone 2O", "Pickup Service - PUZ2O"]}'>Zone 2O (10 to 25Kms) - Rs.400</option>
+              <option value='{"data":["750","Zone 2T", "Pickup & Drop service - PUDZ2T"]}'>Zone 2T (10 to 25Kms) - Rs.750</option>
+              <option value='{"data":["750","Zone 3O", "Pickup Service - PUZ3O"]}'>Zone 3O (25 to 40Kms) - Rs.750</option>
+              <option value='{"data":["1000","Zone 3T", "Pickup & Drop service - PUDZ3T"]}'>Zone 3T (25 to 40Kms) - Rs.1000</option>
+            </select>
+          </div>
+          <div class="checkboxDiv1">
+            <input type="checkbox" id="checkBox2" [(ngModel)]="fmipCheck" [value]="fmipCheck"><label>Please ensure <b style="color: rgb(0, 0, 153);">"Find My" device is
+              "Turned-Off”</b> for necessary diagnosis before you reach our FDE.This proactive approach will reduce delays to other customers.</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="ErrorMessage != ''" class="error">
+    <span style="color: red; font-size: large; margin-right: 0.2rem;" class="material-icons">info</span>
+    <span style="color: red;">{{ErrorMessage}}</span>
+  </div>
+
+  <div style="display: flex; margin-top: 2rem; margin-bottom: 2rem;">
+    <div class="header_left" style="margin: auto;">
+      <div class="acceptbtns" style="border: 0;">
+        <div class="btn-control" style="margin-top: 0px;">
+          <button *ngIf="buttonLoading === false" class="btn rounded-btn" (click)="submit(retry_temp)" [disabled]="!fmipCheck || buttonLoading">Create</button>
+          <button class="btn btn-secondary" type="button" disabled *ngIf="buttonLoading === true"><span
+              class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+              style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right:.3rem;"></span>Loading...
+          </button>
+          <button class="btn rounded-btn" (click)="cancel()" style="margin-left: 0.5rem;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template class="modal fade" #retry_temp>
+    <div class="modal-content" style="padding: 1rem !important;">
+      <div class="modal-body" style="border: 1px solid lightgray;">
+        <p style="text-align: center">{{retryText}}</p>
+        <div style="text-align: center;">
+          <button type="button" class="btn btn-secondary" (click)="retry(retryType, retry_temp)">Retry</button>
+        </div>
+      </div>
+  </div>
+</ng-template>

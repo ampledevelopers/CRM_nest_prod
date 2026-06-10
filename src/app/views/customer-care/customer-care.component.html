@@ -1,0 +1,95 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="animated fadeIn" *ngIf="((loading === false) && (isEnquiry === false))" style="margin-top: 5%;">
+  <p style="text-align: center;">No Enquiries available for Update</p>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false) && (isEnquiry)">
+  <div class="card" style="border: 0px;">
+      <div class="col-lg-16">
+    <div class="header_right" style="width: 100%;padding: 1rem;">
+        <div class="actionbtns">
+            <input type="search" class="form-control" placeholder="Search" id="search" [(ngModel)]="ticketSearch">
+        </div>
+    </div>
+    <div class="card-body" style="padding-top: 0px;">
+      <div style="overflow-x: auto;padding-top: 0px;">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr class="card-header">
+                <th>Id</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Date</th>
+                <!-- <th>Ticket Id</th> -->
+                <th>Customer Name</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data | dataFilter : [ticketSearch] | paginate: { itemsPerPage: 10, currentPage: p }">
+              <td>{{item.id}}</td>
+                <td>{{item.enquiry_category}}</td>
+                <td>{{item.enquiry_type}}</td>
+                <td>{{item.date}}</td>
+                <!-- <td>{{item.ticket_id}}</td> -->
+                <td>{{item.first_name}} {{item.last_name}}</td>
+                <td>{{item.mobile1}}</td>
+                <td>{{item.email}}</td>
+                <td>
+                  <select [(ngModel)]="item.status" (change)="selectCallStatus($event.target.value, item.id, confirm_alert_temp)">
+                    <option *ngFor="let callState of callStatuses; let i = index">
+                      {{callState.label}}
+                    </option>
+                </select>
+                </td>
+            </tr>
+            </tbody>
+          </table>
+          <div>
+            <pagination-controls style="display:block ruby; margin-top: 1rem;" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ******************* Popup Modals ************************* -->
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 50px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirm_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="confirmUpdate(confirmAlert.id, simple_alert_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+

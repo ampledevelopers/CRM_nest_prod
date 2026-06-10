@@ -1,0 +1,47 @@
+<div class="animated fadeIn" style="margin-bottom: 2rem;">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <i class="material-icons">format_quote</i>Analytics Data upload
+          </div>
+          <div class="card-body">
+            <div class="row">
+                <div style="text-align: center;margin-top: 0.5rem;">
+                      <select style="margin: auto;" id="document" name="document" class="form-control" [(ngModel)]="documentType" [ngStyle]="{'border-color': !typeSelected ? 'red' : 'gray'}">
+                        <option value="Select document type" selected disabled>Select document type</option>
+                        <option *ngIf="userRole === '3'" value="CSAT CEO Dashboard">CSAT CEO Dashboard</option>
+                        <option value="Apple CSAT">Apple CSAT</option>
+                        <option value="Apple DSAT">Apple DSAT</option>
+                        <option value="AC Plus">AC+ CEO Dashboard</option>
+                      </select>
+                  </div>
+            </div>
+            <div class="row" style="margin-top: 1rem;">
+              <div class="header_left" style="display: grid;">
+                <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput type="file" name="file" class="form-control-file" id="exampleFormControlFile1" (change)="onFileUploadfun($event)">
+              </div>
+            </div>
+            <div class="row" style="margin-top: 2rem; display:grid !important; text-align: center !important;">
+              <div class="header_left"  style="display: table !important;" >
+                <button class="btn btn-primary mr-1" type="submit" (click)="onSubmit()" *ngIf="buttonSpin === false">Submit</button>
+                <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ </div>
+ <div class="disclaimer">
+    <div style="text-align: center;margin-bottom: 1.5rem;font-weight: bold;">
+        <label>*Disclaimer</label>
+    </div>
+        <p>1. Upload should be in .csv format</p>
+        <p>2. Please use , as delimiter in CSV</p>
+        <p>3. Remove header before uploading CSV</p>
+ </div>

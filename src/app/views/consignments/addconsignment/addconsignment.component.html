@@ -1,0 +1,158 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')" style="text-align: center;">
+    <p>Location - <b>{{branch}}</b></p>
+  </div>
+  <div class="card" *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')"
+    style="margin-bottom: 2rem !important;">
+    <div class="card-header">
+      Add Consignment
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm" style="margin-bottom: 0; border: 0px;">
+        <tbody class="addNew">
+          <tr style="font-weight: normal; border: 0px;">
+            <td style="width: 15% !important;">
+              Stock Type<sup style="color: red;">*</sup>
+              <ng-select class="bootstrap" placeholder="Select Stock Type" [items]="stockTypes" [(ngModel)]="stockType"
+                bindLabel="label" bindValue="value" [multiple]="false" (change)="selectStock($event)"
+                [clearable]="false"></ng-select>
+            </td>
+            <td>
+              Serial No<sup style="color: red;">*</sup>
+              <input [(ngModel)]="serialNo" class="information" style="border: 1px solid gray;" type="text"
+                placeholder="Serial Number" [disabled]="isSerialised">
+            </td>
+            <td>
+              Part No<sup style="color: red;">*</sup>
+              <input [(ngModel)]="partNo" class="information" style="border: 1px solid gray;" type="text"
+                placeholder="Part Number">
+            </td>
+            <td>
+              Part Description<sup style="color: red;">*</sup>
+              <input [(ngModel)]="partDescription" class="information" style="border: 1px solid gray;" type="text"
+                placeholder="Part Description">
+            </td>
+            <td *ngIf="stockType === 'Ample'">
+              ERP ASN<sup style="color: red;">*</sup>
+              <input [(ngModel)]="asnNo" class="information" style="border: 1px solid gray;" type="text"
+                placeholder="ERP ASN" [disabled]="isSerialised">
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="stockType === 'Apple'">
+              Delivery No<sup style="color: red;">*</sup>
+              <input [(ngModel)]="deliveryNo" class="information" style="border: 1px solid gray;" type="text"
+                placeholder="Delivery Number" [disabled]="isApple">
+            </td>
+            <td *ngIf="stockType === 'Apple'">
+              Delivery Date<sup style="color: red;">*</sup>
+              <input class="form-control" [(ngModel)]="dlDate" id="date-input" type="date" name="date-input"
+                placeholder="yyyy-mm-dd">
+              <!-- <input type="text"
+                      class="information"
+                      #dp="bsDatepicker"
+                      [bsConfig]="bsConfig"
+                      bsDatepicker [(bsValue)]="bsValue"> -->
+            </td>
+            <td *ngIf="stockType === 'Apple'">
+              Replishement Ticket Id
+              <input [(ngModel)]="replishementTicketId" class="information" style="border: 1px solid gray;" type="text"
+                placeholder="Ticket Id">
+            </td>
+            <td *ngIf="stockType === 'Apple'">
+              GSX Acknowledged?<sup style="color: red;">*</sup>
+              <ng-select class="bootstrap" placeholder="Select Stock Type" [items]="acknowledgedTypes"
+                [(ngModel)]="acknowledgedType" bindLabel="label" bindValue="value" [multiple]="false"></ng-select>
+            </td>
+            <tr>
+            <td *ngIf="stockType === 'Apple'">
+               Serialized<sup style="color: red;">*</sup>
+              <ng-select class="bootstrap" placeholder="Select" [items]="acknowledgedTypes"
+                [(ngModel)]="serialized" bindLabel="label" bindValue="value" [multiple]="false"></ng-select>
+            </td>
+            </tr>
+        </tbody>
+      </table>
+      <div style="display: flex;">
+        <div class="header_left" style="width: 30%; display: flex;">
+          <button *ngIf="buttonSpin === false"
+            style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table"
+            class="btn btn-block btn-outline-primary" (click)="saveAcknowledge(simple_alert_temp)">Save</button>
+          <button *ngIf="buttonSpin === false"
+            style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table; margin-left: 1rem;"
+            class="btn btn-block btn-outline-primary" (click)="reset()">Reset</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')">
+    <div class="card-header">
+      Add Bulk Consignments
+    </div>
+    <div class="card-body">
+      <div class="row" style="margin-top: 0.5rem;">
+        <div class="header_left">
+          <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput type="file" name="file"
+            class="form-control-file" id="exampleFormControlFile1" (change)="onFileUploadfun($event)">
+        </div>
+      </div>
+      <div style="display: flex;">
+        <div class="header_left" style="width: 30%; display: flex;">
+          <!-- <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table" class="btn btn-block btn-outline-primary" (click)="bulkUpload()">Save</button> -->
+          <button *ngIf="buttonSpin === false"
+            style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table"
+            class="btn btn-block btn-outline-primary" (click)="confirmLocation()">
+            Save
+          </button>
+          <button *ngIf="buttonSpin === false"
+            style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table; margin-left: 1rem;"
+            class="btn btn-block btn-outline-primary" (click)="cancel()">Cancel</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <ng-template #confirmLocationModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Confirm Upload</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to add in “{{ branch }}”?
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+      <button class="btn btn-primary" (click)="openSecondModal(); modal.close()">OK</button>
+    </div>
+  </ng-template>
+
+  <!-- Step 2: Final Confirmation Modal -->
+  <ng-template #finalConfirmModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Final Confirmation</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      Change cannot be made once uploaded. Do you want to continue?
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" (click)="modal.close()">No</button>
+      <button class="btn btn-success" (click)="bulkUpload(); modal.close()">Yes</button>
+    </div>
+  </ng-template>

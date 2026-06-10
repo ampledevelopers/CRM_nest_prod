@@ -1,0 +1,37 @@
+select {
+  border: 1px solid #b7b7b7 !important;
+  width: 70% !important;
+}
+
+.card {
+  width: 70% !important;
+  margin: auto;
+}
+
+.card-body {
+  margin: auto;
+  width: 80%;
+}
+
+.information, ng-select {
+  border-bottom: 1px solid #b7b7b7 !important;
+  width: 70% !important;
+}
+
+@media only screen and (min-width: 1000px) {
+  .modal-dialog {
+      margin: auto;
+      margin-top: 0px;
+      width: 100%;
+  }
+  .modal-lg {
+      min-width: 600px !important;
+  }
+}
+
+.acceptbtns {
+  width: 80px;
+  button {
+    width: 100%;
+  }
+}

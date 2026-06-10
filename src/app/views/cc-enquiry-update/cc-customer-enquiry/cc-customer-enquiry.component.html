@@ -1,0 +1,192 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)" style="margin-top: 5%;">
+    <div class="info_row">
+      <div class="col-sm-12">
+        <table class="table table-striped table-sm" style="border: 1px double #B5DAFF;">
+            <thead style="background-color: #E6F0FA;">
+              <tr style="text-align: center">
+                <td colspan="4">
+                  Customer Information
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <label>First Name</label>
+                </td>
+                <td>
+                  <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+                <td>
+                  <label>Last Name</label>
+                </td>
+                <td>
+                    <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>Customer Phone</label>
+                </td>
+                <td>
+                  <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+                <td>
+                  <label>Customer Email</label>
+                </td>
+                <td>
+                    <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>Contact Address1</label>
+                </td>
+                <td>
+                  <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+                <td>
+                  <label></label>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>Contact Address2</label>
+                </td>
+                <td>
+                  <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+                <td>
+                  <label></label>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>City</label>
+                </td>
+                <td>
+                  <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+                <td>
+                  <label>Pin Code</label>
+                </td>
+                <td>
+                    <input [disabled]="isEdit" type="text" class="form-control" id="to" placeholder="-">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="display: flex; padding-bottom: 1rem;">
+              <div class="header_left">
+                  <div class="acceptbtns" style="float: left;  margin-right: 0.5rem" *ngIf="isEdit">
+                      <button *ngIf="buttonSpin === false" style="color: #20a8d8; background-color: transparent; border: 0;" (click)="editCustomerInfo()">Edit</button>
+                  </div>
+                  <div class="acceptbtns" style="float: left;  margin-right: 0.5rem" *ngIf="!isEdit">
+                      <button *ngIf="buttonSpin === false" style="color: #20a8d8; background-color: transparent; border: 0;" (click)="saveCustomerInfo()">Save</button>
+                  </div>
+                  <div class="acceptbtns" style="float: left; margin-left: 0.5rem" *ngIf="enquiryBtn === 'true'">
+                      <button *ngIf="(buttonSpin === false)" style="color: #20a8d8; background-color: transparent; border: 0;" (click)="createEnquiry()">Create Enquiry</button>
+                  </div>
+                  <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="info_row" *ngIf="isEnquiry">
+      <div class="col-sm-12">
+        <table class="table table-striped table-sm" style="border: 1px double #B5DAFF;">
+          <thead style="background-color: #E6F0FA;">
+            <tr style="text-align: center">
+              <td colspan="4">
+                Enquiry Update
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <label>Query</label>
+              </td>
+              <td>
+                <textarea [(ngModel)]="customerQuery" class="information" rows="3" name="Customer Query" placeholder="Customer Query"></textarea>
+              </td>
+              <td>
+                <textarea [(ngModel)]="proposed" class="information" rows="3" name="Proposed Solution" placeholder="Proposed Solution"></textarea>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>Location Called</label>
+              </td>
+              <td>
+                <select [(ngModel)]="locationCall">
+                  <option *ngFor="let lCall of locationCalled" [value]="lCall.name">
+                    {{lCall.name}}
+                  </option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>CallType</label>
+              </td>
+              <td>
+                <select [(ngModel)]="callType">
+                  <option *ngFor="let ctype of callTypes" [value]="ctype.name">
+                    {{ctype.name}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select [(ngModel)]="cType">
+                  <option *ngFor="let type of cTypes" [value]="type.name">
+                    {{type.name}}
+                  </option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>Product</label>
+              </td>
+              <td>
+                <select [(ngModel)]="product">
+                  <option *ngFor="let prod of products" [value]="prod.name">
+                    {{prod.name}}
+                  </option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display: flex; padding-bottom: 1rem;">
+            <div class="header_left">
+                <div class="acceptbtns" style="float: left;  margin-right: 0.5rem">
+                  <button *ngIf="buttonSpin === false" style="color: #20a8d8; background-color: transparent; border: 0;" (click)="saveEnquiry()">Save</button>
+                </div>
+                <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>

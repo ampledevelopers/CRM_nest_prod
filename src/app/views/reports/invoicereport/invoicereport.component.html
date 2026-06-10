@@ -1,0 +1,209 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - Invoice Report
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select class="bootstrap" placeholder="any" bindLabel="label" bindValue="value"
+              [items]="branches" [multiple]="true" [(ngModel)]="branchId"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" type="date" placeholder="date">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" type="date" placeholder="date">
+        </div>
+      </div>
+
+      <div style="display: flex; margin-top: 1rem;">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem; float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport === true" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Invoice Report
+      </div>
+      <div class="card-body">
+        <div style="overflow-x: auto; padding-top: 0px;">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align: middle; text-align: center;">Ticket ID</th>
+                <th rowspan="2" style="vertical-align: middle; text-align: center;">Serial No</th>
+                <th colspan="11" style="text-align: center; background-color: #e8f4fd;">GSX Invoice</th>
+                <th colspan="4" style="text-align: center; background-color: #eaf7ea;">Payment</th>
+                <th colspan="5" style="text-align: center; background-color: #fdf3e8;">Refund Info</th>
+              </tr>
+              <tr>
+                <th style="background-color: #e8f4fd;">G Number</th>
+                <th style="background-color: #e8f4fd;">PO Number</th>
+                <th style="background-color: #e8f4fd;">Invoice ID</th>
+                <th style="background-color: #e8f4fd;">Invoice Type</th>
+                <th style="background-color: #e8f4fd;">Invoice Desc</th>
+                <th style="background-color: #e8f4fd;">Invoice Date</th>
+                <th style="background-color: #e8f4fd;">Part Number</th>
+                <th style="background-color: #e8f4fd;">Product Name</th>
+                <th style="background-color: #e8f4fd;">Total Amount</th>
+                <th style="background-color: #e8f4fd;">Tax Amount</th>
+                <th style="background-color: #e8f4fd;">Subtotal Amount</th>
+                <th style="background-color: #eaf7ea;">Type</th>
+                <th style="background-color: #eaf7ea;">Quotation ID</th>
+                <th style="background-color: #eaf7ea;">Part Number</th>
+                <th style="background-color: #eaf7ea;">Amount</th>
+                <th style="background-color: #fdf3e8;">Refund Status</th>
+                <th style="background-color: #fdf3e8;">Refund Date</th>
+                <th style="background-color: #fdf3e8;">Refund UTR</th>
+                <th style="background-color: #fdf3e8;">Refund Value</th>
+                <th style="background-color: #fdf3e8;">Updated By</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of data | paginate: { itemsPerPage: 50, currentPage: p }">
+                <td>{{ row.ticket_id }}</td>
+                <td>{{ row.serial_no }}</td>
+
+                <ng-container *ngIf="row.gsx_invoice && row.gsx_invoice.length > 0; else emptyInvoice">
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.g_number }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.po_number }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.invoice_id }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.invoice_type }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.invoice_desc }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.invoice_date ? inv.invoice_date.substring(0, 10) : '' }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.part_number }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.product_name }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.total_amount }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.tax_amount }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let inv of row.gsx_invoice; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ inv.subtotal_amount }}</div>
+                  </td>
+                </ng-container>
+                <ng-template #emptyInvoice>
+                  <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+                  <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+                </ng-template>
+
+                <ng-container *ngIf="row.payment && row.payment.length > 0; else emptyPayment">
+                  <td>
+                    <div *ngFor="let pay of row.payment; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ pay.type }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let pay of row.payment; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ pay.data?.quotation_id || '-' }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let pay of row.payment; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ pay.data?.part1 || '-' }}</div>
+                  </td>
+                  <td>
+                    <div *ngFor="let pay of row.payment; let last = last"
+                      [style.border-bottom]="!last ? '1px dashed #ccc' : 'none'"
+                      style="padding: 2px 0;">{{ pay.data?.amount || pay.data?.paid_amount || pay.data?.quote_amount || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-template #emptyPayment>
+                  <td>-</td><td>-</td><td>-</td><td>-</td>
+                </ng-template>
+
+                <td>{{ row.more_info?.[0]?.refund_payment_status || '-' }}</td>
+                <td>{{ row.more_info?.[0]?.refund_date || '-' }}</td>
+                <td>{{ row.more_info?.[0]?.refund_utr || '-' }}</td>
+                <td>{{ row.more_info?.[0]?.refund_value || '-' }}</td>
+                <td>{{ row.more_info?.[0]?.updated_by || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <pagination-controls style="display:block ruby; margin-top: 1rem;" (pageChange)="p = $event"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="isRecords === 1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Invoice Report
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

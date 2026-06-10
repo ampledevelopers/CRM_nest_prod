@@ -1,0 +1,246 @@
+<ng-container>
+  <c-container [fluid]="true">
+    <!-- Widget Buttons on Left -->
+    <c-header-nav class="d-none d-lg-flex me-auto">
+      <c-nav-item *ngFor="let navItem of navItems">
+        <button title="{{navItem.widget_name}}" type="button" tooltip="{{navItem.widget_name}}" placement="bottom"
+                (click)="selectedWidget(navItem.widget_name)">
+          <span class="material-icons">{{ navItem.widget_icon_v2 }}</span>
+        </button>
+      </c-nav-item>
+    </c-header-nav>
+
+    <!-- Search Icon (middle) -->
+    <!-- <c-header-nav class="d-none d-lg-flex">
+      <ng-container *ngTemplateOutlet="searchDashboard"></ng-container>
+    </c-header-nav> -->
+
+    <!-- Right-aligned Notification, Messages, and User -->
+    <c-header-nav class="d-none d-lg-flex ms-auto align-items-center gap-2">
+      <ng-container *ngTemplateOutlet="searchDashboard"></ng-container>
+      <ng-container *ngTemplateOutlet="notifyDropdown"></ng-container>
+      <!-- <ng-container *ngTemplateOutlet="messagesDropdown"></ng-container> -->
+      <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
+    </c-header-nav>
+
+    <!-- Aside toggle -->
+    <button title="aside" toggle="visible" cHeaderToggler cSidebarToggle="aside1"
+            class="px-md-0 me-md-3 d-none d-sm-block">
+      <svg cIcon name="cilApplications" size="lg"></svg>
+    </button>
+  </c-container>
+</ng-container>
+
+<!-- User Dropdown -->
+<ng-template #userDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <a href [caret]="false" cDropdownToggle class="py-0">
+      <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="assets/img/avatars/6.jpg" status="success"
+        alt="admin@bootstrapmaster.com">
+      </c-avatar>
+    </a>
+    <ul cDropdownMenu class="pt-0 pr-5 w-auto" style="--cui-dropdown-padding-y: 0rem;">
+      <li>
+        <h6 cDropdownHeader class="bg-light dark:bg-white dark:bg-opacity-10 fw-semibold py-2">Account</h6>
+      </li>
+      <li style="margin-top: 2rem; cursor: pointer; --cui-dropdown-link-active-bg: #20a8d8 !important;" cDropdownItem
+        [routerLink]="['/authentication/profile']">
+        <a style="text-decoration: none !important; color: #4F5D73;">
+          <svg cIcon class="me-2" name="cilUser"></svg>
+          {{userName}}'s Profile
+          <span class="userStyle"
+            style="color: darkgray; margin-left: 1.5rem; display: block; margin-top: 0.3rem; font-weight: lighter;">{{userGroup}}</span>
+        </a>
+      </li>
+      <li cDropdownItem (click)="switchType(confirm_alert_temp)"
+        style="line-height: 2rem; cursor: pointer; --cui-dropdown-link-active-bg: #20a8d8 !important;">
+        <a *ngIf="isMultipleAccess === 'Y'"
+          style="display: flex; margin-bottom: .2rem; margin-top: .2rem; text-decoration: none !important; color: #4F5D73;">
+          <svg cIcon class="me-2" style="margin-top: .5rem;" name='cilTransfer'></svg>
+          Switch Service Type
+        </a>
+      </li>
+      <li cDropdownItem style="line-height: 2rem; cursor: pointer; --cui-dropdown-link-active-bg: #20a8d8 !important;"
+        [routerLink]="['/authentication/certificateregister']">
+        <a style="display: flex; margin-bottom: .2rem; margin-top: .2rem; text-decoration: none !important; color: #4F5D73;">
+          <svg cIcon class="me-2" name="cilEducation" style="margin-top: .4rem;"></svg>
+          Certificate Register
+        </a>
+      </li>
+      <li>
+        <h6 cDropdownHeader class="bg-light dark:bg-white dark:bg-opacity-10 fw-semibold py-2">Settings</h6>
+      </li>
+      <li cDropdownItem style="cursor: pointer; line-height: 2rem; --cui-dropdown-link-active-bg: #20a8d8 !important;"
+        [routerLink]="['/authentication/resetpassword']">
+        <a style="height: 2rem !important; text-decoration: none !important; color: #4F5D73;">
+          <svg cIcon class="me-2" name='cilKeyboard' style="vertical-align: -0.2rem !important"></svg>
+          Reset Password
+        </a>
+      </li>
+      <li style="--cui-dropdown-divider-margin-y: 0rem;">
+        <hr cDropdownDivider />
+      </li>
+      <li cDropdownItem style="line-height: 2rem; cursor: pointer; --cui-dropdown-link-active-bg: #20a8d8 !important;"
+        (click)="signOut()">
+        <a style="margin-top: 1rem; text-decoration: none !important; color: #4F5D73;">
+          <svg cIcon class="me-2" name="cilLockLocked"></svg>
+          Logout
+        </a>
+      </li>
+      <li></li>
+    </ul>
+  </c-dropdown>
+</ng-template>
+
+<!-- CRM SMS -->
+<ng-template #messagesDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <a [caret]="false" cDropdownToggle href>
+      <svg cIcon class="my-1 mx-2" name="cilEnvelopeOpen" size="lg"></svg>
+      <c-badge *ngIf="unreadMessages?.length" class="position-absolute top-0 end-0" color="info-gradient"
+        shape="rounded-pill">
+        {{ unreadMessages?.length ?? 0 }}
+      </c-badge>
+    </a>
+    <div cDropdownMenu class="pt-0">
+      <h6 cDropdownHeader class="bg-light dark:bg-white dark:bg-opacity-10">
+        <strong>You have {{ unreadMessages?.length ?? 0 }} messages</strong>
+      </h6>
+      <a [routerLink]="[]" cDropdownItem>
+        <div class="message" *ngFor="let uMessage of unreadMessages | slice:0:10; let i=index">
+          <div class="pt-3 me-3 float-start" (click)="openSMSMessage(uMessage.id, 'U')">
+            <label
+              style="display: block; font-size: .8rem; margin-bottom: 0px; line-height: 1rem; margin-left: 1.7rem !important"><b>{{uMessage.from_user_name}}</b></label>
+            <label style="display: block; font-size: .6rem; margin-left: 12%; line-height: 1rem">{{uMessage.text | slice:0:65}}</label>
+          </div>
+        </div>
+      </a>
+      <a cDropdownItem class="text-center border-top" (click)="sendSMS()" [routerLink]="[]">
+        <strong>Send Message</strong>
+      </a>
+    </div>
+  </c-dropdown>
+</ng-template>
+
+<ng-template #searchDashboard>
+  <a *ngIf="!enableTekneSearch" (click)="navigateToSearchDashboard()" style="cursor: pointer; display: inline-flex; align-items: center;">
+    <i class="material-icons" style="color: #20a8d8; font-weight: 900;">search</i>
+  </a>
+  <a *ngIf="enableTekneSearch" (click)="navigateToTekneDashboard()" style="cursor: pointer; display: inline-flex; align-items: center;">
+    <i class="material-icons" style="color: #20a8d8; font-weight: 900;">search</i>
+    <span style="margin-right: 10px; background-color: white; color: #20a8d8; font-size: 13px; font-weight: bolder; border-radius: 3px; font-family: Arial, sans-serif; padding: 2px 4px;">T</span>
+  </a>
+</ng-template>
+
+<ng-template #notifyDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <a [caret]="false" cDropdownToggle href>
+      <svg cIcon class="my-1 mx-2" name="cilBell" size="lg"></svg>
+      <c-badge *ngIf="notifiCount!=0" class="position-absolute top-0 end-0" color="danger-gradient"
+        shape="rounded-pill">
+        {{notifiCount}}
+      </c-badge>
+    </a>
+    <div cDropdownMenu class="pt-0">
+      <h6 cDropdownHeader class="bg-light dark:bg-white dark:bg-opacity-10">
+        <strong>You have {{notifiCount}} notifications</strong>
+      </h6>
+      <div class="col-md-12" *ngFor="let notification of notifications | slice:0:10; let i=index">
+        <div>
+          <div style="padding-right: .5rem; float: left; margin-top: 1%;" *ngIf="notification.type !== 'tat6'">
+            <i class="material-icons" style="color: gray !important;">style</i>
+          </div>
+          <div style="padding-right: .5rem; float: left; margin-top: 1%;" *ngIf="notification.type === 'tat6'">
+            <i class="material-icons" style="color: gray !important;">check_box</i>
+          </div>
+          <div style="cursor: pointer;">
+            <a style="display: block; font-size: .8rem; margin-bottom: 0px; line-height: 1rem" *ngIf="notification.type !== 'tat6'" (click)="openTicket(notification)">{{notification.ticket_id}}</a>
+            <a style="display: block; font-size: .8rem; margin-bottom: 0px; line-height: 1rem; color: black;" *ngIf="notification.type === 'tat6'">{{notification.ticket_id}}</a>
+            <label style="display: block; font-size: .6rem; margin-left: 12% !important; line-height: 1rem">{{notification.description}}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </c-dropdown>
+</ng-template>
+
+<!--C3Support-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': displaysms}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2 !important; font-size: large !important;">Send Message</h4>
+      </div>
+      <div class="modal-body">
+        <div class="messageTicket" style="display:inline-flex; margin-right: 1rem; width:50%;">
+          <input class="form-control" [(ngModel)]="ticketId" type="text" placeholder="Ticket Id"
+            style="height: 33px; margin-bottom: 0.5rem; font-size: 0.875rem !important;">
+        </div>
+        <div class="messageType" style="display:inline-flex; height: 33px;">
+          <ng-select class="bootstrap" placeholder="Select Message Type" [items]="messageTypes"
+            [(ngModel)]="messageTypesTemp" bindLabel="label" bindValue="value" [multiple]="false"
+            (change)="selectMessageType($event)" [clearable]="false" style="width:13.5rem !important;"></ng-select>
+        </div>
+        <div *ngIf="isGroup" style="display:inline-flex; width:100% !important; margin-bottom: 1rem;">
+          <ng-select class="bootstrap" placeholder="Select User Group" [items]="userGroupList"
+            [(ngModel)]="userGroupTemp" [multiple]="false" (change)="selectUserGroup($event)" [clearable]="false"
+            style="width:29rem !important"></ng-select>
+        </div>
+        <div *ngIf="isUsers" style="margin-top: 0.5rem; display:inline-flex; margin-bottom: 1rem;">
+          <ng-select class="bootstrap" placeholder="Select User Name" [items]="userList" [(ngModel)]="toMultipleTemp"
+            bindLabel="label" bindValue="value" [multiple]="true" (change)="selectUser($event)" [clearable]="false"
+            style="width:29rem !important"></ng-select>
+        </div>
+        <div class="textArea">
+          <textarea style="width:100%" [(ngModel)]="messageText" rows="6" placeholder="Enter message here"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <div *ngIf="isError !== ''" style="color: red; margin-bottom: 0.5rem; margin-left: 0px; margin-right: auto;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp;{{isError}}
+        </div>
+        <div>
+          <button type="button" style="background-color: #c8ced3;" class="btn btn-secondary"
+            (click)="closeBoard()">Cancel</button>
+        </div>
+        <div>
+          <button type="button" style="background-color: #c8ced3;" class="btn btn-secondary"
+            (click)="send()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #confirm_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Switch Service Type</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-sm-12" style="display: flex; text-align: center;">
+          <div class="col-sm-6" *ngIf="siteType !== '1'">
+            <input type="radio" name="siteType" (click)="selectedType('1')">
+            <label style="margin-left: 0.5rem !important;">Service</label>
+          </div>
+          <div class="col-sm-6" *ngIf="siteType !== '2'">
+            <input type="radio" name="siteType" (click)="selectedType('2')">
+            <label style="margin-left: 0.5rem !important;">Onsite</label>
+          </div>
+          <div class="col-sm-6" *ngIf="siteType !== '3'">
+            <input type="radio" name="siteType" (click)="selectedType('3')">
+            <label style="margin-left: 0.5rem !important;">Windows</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="confirm(confirmAlert.id)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #c3Support>
+</ng-template>

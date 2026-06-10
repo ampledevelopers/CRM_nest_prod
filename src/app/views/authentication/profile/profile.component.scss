@@ -1,0 +1,49 @@
+.btn-danger.disabled, .btn-danger:disabled {
+  color: #fff;
+  background-color: #f86c6b;
+  border-color: #f86c6b;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #20a8d8;
+  border-color: #20a8d8;
+}
+
+a{
+  color: #20a8d8;
+}
+
+.was-validated .form-control:valid, .form-control.is-valid {
+  border-color: #20a8d8;
+  --bs-highlight-bg: #20a8d8;
+  --cui-highlight-border-color: #20a8d8;
+}
+
+.form-control {
+  font-size: 00.875rem;
+}
+
+@media screen and (max-width: 1080px) {
+  .col-md-6 {
+    width: 90% !important;
+    margin: auto !important;
+  }
+
+  .form-group {
+    text-align: left;
+  }
+}
+
+.forConceirge{
+  @media screen and (min-width: 1584px) {
+    .col-md-6 {
+      width: 90% !important;
+      margin: auto !important;
+    }
+
+    .form-group {
+      text-align: left;
+    }
+  }
+}

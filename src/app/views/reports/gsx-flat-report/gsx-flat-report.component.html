@@ -1,0 +1,39 @@
+<div class="card">
+    <div class="card-header">Filters - GSX Flat Report</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Site Type<sup style="color: red">*</sup></label>
+                <select id="siteType" [(ngModel)]="siteType" name="siteType" class="form-control">
+                    <option value="">Select Site Type</option>
+                    <option value="1">Service Center</option>
+                    <option value="2">Onsite</option>
+                </select>
+            </div>
+          <div class="col-md-4">
+            <label>From Date<sup style="color: red">*</sup></label>
+            <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+              placeholder="dd-mm-yyyy">
+          </div>
+          <div class="col-md-4">
+            <label>To Date<sup style="color: red">*</sup></label>
+            <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+              placeholder="dd-mm-yyyy">
+          </div>
+          </div>
+        <div style="display: flex;margin-top: 1rem ">
+            <div class="header_left" style="display:  block !important;">
+                <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                    <button (click)="gsxFlatData()">Export</button>
+                </div>
+                <div style="margin-left: 1rem;" class="acceptbtns">
+                    <button (click)="clear()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 2rem; width: 100%; text-align: center;">
+    <c-spinner size="sm" style="margin-left: 0 !important;"></c-spinner>
+</div>

@@ -1,0 +1,62 @@
+.actionbtns select {
+  margin-right: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+thead {
+  text-align: center;
+  background-color: #E6F0FA;
+}
+
+td {
+  text-align: center;
+}
+
+.search_input {
+  display: block;
+  border: 0px;
+  border-radius: 5px;
+  text-align: center;
+  margin: auto;
+  margin-top: 0.2rem
+}
+
+
+@media only screen and (min-width: 1000px) {
+  .modal-dialog {
+      margin: auto;
+      width: 100%;
+  }
+  .modal-lg {
+      min-width: 600px !important;
+  }
+}
+
+.ngx-pagination {
+  padding-left: 0px !important;
+  display: flex !important;
+}
+
+.ngx-pagination .current,
+.btn-info {
+  background: #17a2b8 !important;
+  border: transparent !important;
+  border-radius: 20px !important;
+}
+
+.ngx-pagination .current:hover {
+  background: #17a2b8 !important;
+  border-radius: 20px !important;
+  border: transparent !important;
+}
+
+.kbbVideo {
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+  a {
+    color: #20a8d8;
+    cursor: pointer;
+  }
+}
+

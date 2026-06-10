@@ -1,0 +1,25 @@
+<div class="div1">
+  <label >Select Report Type</label>
+        <fieldset>
+            <ng-select ng-multiple="false"
+            class="bootstrap"
+            placeholder="any"
+            bindLabel="label"
+            bindValue="value"
+            [items]="reports"
+            [multiple]="false"
+            [(ngModel)]="reportType"></ng-select>
+          </fieldset>
+</div>
+<div *ngIf="reportType == 'repair'">
+  <app-repairsreport></app-repairsreport>
+</div>
+<div *ngIf="reportType == 'status'">
+  <app-statusreport></app-statusreport>
+</div>
+<div *ngIf="reportType == 'svr'">
+  <app-svrreport></app-svrreport>
+</div>
+<div *ngIf="reportType == 'accessory'">
+  <app-accessoryenquiryreport></app-accessoryenquiryreport>
+</div>

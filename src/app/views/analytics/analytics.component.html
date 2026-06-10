@@ -1,0 +1,181 @@
+<div class="animated fadeIn">
+    <div class="card">
+        <div class="card-header">
+          Filters
+        </div>
+        <div class="card-body">
+
+<div class="row" >
+    <div class="col-md-6">
+        <label>Organization<sup style="color: red">*</sup></label>
+        <select [(ngModel)]="organization" (change)="companySelect($event.target.value)" style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+            <option>Select Organization Name</option>
+            <option *ngFor="let comp of companies; let i = index" [value]="comp.id">
+              {{comp.company_name}}
+            </option>
+        </select>
+      </div>
+        <div class="col-md-3">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input" placeholder="date">
+        </div>
+        <div class="col-md-3">
+            <label>To Date<sup style="color: red">*</sup></label>
+            <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" placeholder="date">
+         </div>
+</div><!--/.row-->
+<!-- <div class="row"> -->
+    <div style="display: flex; margin-top: 1rem">
+        <div class="header_left" style="display: block !important">
+            <div class="acceptbtns" style="float: left">
+                <button (click)="load()">Load</button>
+            </div>
+            <div style="margin-left: 1rem;" class="acceptbtns">
+              <button (click)="clear()">Clear</button>
+            </div>
+        </div>
+      </div>
+<!-- </div> -->
+</div><!--/.row-->
+</div><!--/.row-->
+<div class="card" *ngIf="isChart===true" >
+    <div class="card-header">
+      {{compName}}
+    </div>
+  <div class="card-columns cols-2" style="column-count:2;margin-top: 1rem;margin-left:0.5rem;margin-right: 0.5rem ">
+      <div class="card">
+          <div class="card-header">
+              Warranty Cases
+            <div class="card-header-actions">
+              <!-- <a href="http://www.chartjs.org">
+                <small class="text-muted">docs</small>
+              </a> -->
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrapper">
+              <canvas baseChart class="chart"
+              [datasets]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [legend]="barChartLegend"
+              [chartType]="barChartType"
+              (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+               Out Of Warranty Cases
+              <div class="card-header-actions">
+                <!-- <a href="http://www.chartjs.org">
+                  <small class="text-muted">docs</small>
+                </a> -->
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper">
+                <canvas baseChart class="chart"
+                [datasets]="barChartData1"
+                [labels]="barChartLabels1"
+                [options]="barChartOptions"
+                [legend]="barChartLegend"
+                [chartType]="barChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+              <div class="card-header">
+                Warranty TAT - Closed
+                <div class="card-header-actions">
+                  <!-- <a href="http://www.chartjs.org">
+                    <small class="text-muted">docs</small>
+                  </a> -->
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-wrapper">
+                  <canvas baseChart class="chart"
+                  [datasets]="barChartData1"
+                  [labels]="barChartLabels1"
+                  [options]="barChartOptions"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                   Out Of Warranty TAT - Closed
+                  <div class="card-header-actions">
+                    <!-- <a href="http://www.chartjs.org">
+                      <small class="text-muted">docs</small>
+                    </a> -->
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-wrapper">
+                    <canvas baseChart class="chart"
+                    [datasets]="barChartData1"
+                    [labels]="barChartLabels1"
+                    [options]="barChartOptions"
+                    [legend]="barChartLegend"
+                    [chartType]="barChartType"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="card" *ngIf="isCallType===true">
+                  <div class="card-header">
+                     Call Type Split
+                    <div class="card-header-actions">
+                      <!-- <a href="http://www.chartjs.org">
+                        <small class="text-muted">docs</small>
+                      </a> -->
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart-wrapper">
+                      <canvas baseChart class="chart"
+                      [datasets]="barChartData4"
+                      [labels]="barChartLabels4"
+                      [options]="barChartOptions"
+                      [legend]="barChartLegend"
+                      [chartType]="barChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                       Open Cases
+                      <div class="card-header-actions">
+                        <!-- <a href="http://www.chartjs.org">
+                          <small class="text-muted">docs</small>
+                        </a> -->
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-wrapper">
+                        <canvas baseChart class="chart"
+                        [datasets]="barChartData1"
+                        [labels]="barChartLabels1"
+                        [options]="barChartOptions"
+                        [legend]="barChartLegend"
+                        [chartType]="barChartType"
+                        (chartHover)="chartHovered($event)"
+                        (chartClick)="chartClicked($event)"></canvas>
+                      </div>
+                    </div>
+                  </div>
+  <!-- </div> -->
+  </div>
+  </div>
+</div>

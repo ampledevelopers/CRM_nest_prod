@@ -1,0 +1,87 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 10%; text-align: center;">
+    <c-spinner size="sm" style="width: 1.5rem; height: 1.5rem"></c-spinner>
+  </div>
+
+  <div class="animated fadeIn" *ngIf="(loading === false)">
+      <div class="card" *ngIf="isReport===true" style="margin-top:1rem !important; margin-bottom:1rem !important;" >
+          <div class="col-lg-16">
+        <div class="card-header" style="display:flex !important;">
+          <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Ageing tickets for SMS
+        </div>
+        <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+          <!-- <table class="table table-bordered table-striped table-sm" datatable>
+            <thead>
+              <tr>
+                <th>Ticket Id</th>
+                <th>Branch Code</th>
+                <th>Status Name</th>
+                <th>Product Family</th>
+                <th>RAF Created Date</th>
+                <th>Ageing Since</th>
+                <th>Ageing Days</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of this.ageingData; let idx = index">
+                <td>{{item.ticket_id}}</td>
+                <td>{{item.branch_code}}</td>
+                <td>{{item.status_name}}</td>
+                <td>{{item.family}}</td>
+                <td>{{item.RAF_created_date | date: 'dd-MM-yyyy' }}</td>
+                <td>{{item.ageing_since | date: 'dd-MM-yyyy' }}</td>
+                <td>{{item.ageing_days}}</td>
+              </tr>
+              </tbody>
+              <tfoot>
+                  <tr>
+                    <td colspan="8" style="padding-top: 2rem; padding-bottom: 2rem; text-align: center;">
+                        <button type="button" class="btn btn-block btn-outline-primary" (click)="export()" style="margin: auto; width: 20%;">Export</button>
+                    </td>
+                  </tr>
+                </tfoot>
+            </table> -->
+            <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="ageingData" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+  <td>
+    <ng-container [ngSwitch]="columnName">
+      <ng-container *ngSwitchCase="'RAF_created_date'">
+        {{ item['RAF_created_date'] | date: 'dd-MM-yyyy' }}
+      </ng-container>
+      <ng-container *ngSwitchCase="'ageing_since'">
+        {{ item['ageing_since'] | date: 'dd-MM-yyyy' }}
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        {{ tdContent }}
+      </ng-container>
+    </ng-container>
+  </td>
+</ng-template>
+
+          </c-smart-table>
+          <div style="padding-top: 2rem; padding-bottom: 2rem; text-align: center;">
+            <button type="button" class="btn btn-block btn-outline-primary" (click)="export()" style="margin: auto; width: 20%;">Export</button>
+          </div>
+  </div>
+  </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1"  style="margin-top:1rem !important; margin-bottom:1rem !important;" >
+      <div class="col-lg-16">
+    <div class="card-header" style="display:flex !important;">
+      <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Atlas Certification Details
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-striped table-sm" >
+        <thead>
+          <tr>
+            <!-- <th>Sl No</th> -->
+            <th>{{ alert }}</th>
+          </tr>
+        </thead>
+      </table>
+  </div>
+  </div>
+  </div>
+  </div>

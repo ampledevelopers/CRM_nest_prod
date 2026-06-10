@@ -1,0 +1,140 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - Feedback Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="branches" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="branchId" (change)="branchSelect(branchId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd-mm-yyyy">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd-mm-yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem;">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important; margin-bottom: .5rem;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{ reportName }}
+      </div>
+      <!-- <div class="header_right" style="width: 100%;padding: 1rem;">
+              <div class="actionbtns">
+                 <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch" [(ngModel)]="ticketSearch">
+    </div>
+  </div> -->
+  <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+    <!-- <table class="table table-bordered table-striped table-sm" datatable style="padding-top: 1rem;">
+      <thead>
+        <tr>
+          <th>Ticket Id</th>
+          <th>Branch Code</th>
+          <th>Repair Number</th>
+          <th>Sr Date</th>
+          <th>Smiley Feedback</th>
+          <th>CC Feedback</th>
+          <th>Apple CSAT</th>
+          <th>Customer Name</th>
+          <th>Customer Phone</th>
+          <th>Email Id</th>
+          <th>Description</th>
+          <th>Product Warranty Status</th>
+          <th>Repair Warranty Status</th>
+          <th>Product Family</th>
+          <th>Repair Type</th>
+          <th>Technician Name</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let idx = index">
+          <td>{{item.ticket_id}}</td>
+          <td>{{item.branch_code}}</td>
+          <td>{{item.g_number}}</td>
+          <td>{{item.sr_date}}</td>
+          <td>{{item.smileyfeedback}}</td>
+          <td>{{item.cc_feedback}}</td>
+          <td>{{item.apple_csat_rating}}</td>
+          <td>{{item.customer_name}}</td>
+          <td>{{item.customer_phone_no}}</td>
+          <td>{{item.customer_email_id}}</td>
+          <td>{{item.product_description}}</td>
+          <td>{{item.warranty_status}}</td>
+          <td>{{item.coverage_status_description}}</td>
+          <td>{{item.family}}</td>
+          <td>{{item.repair_type}}</td>
+          <td>{{item.user_name}}</td>
+          <td>{{item.comment}}</td>
+        </tr>
+      </tbody>
+    </table> -->
+    <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+                <td>
+                  {{ tdContent }}
+                </td>
+              </ng-template>
+>
+          </c-smart-table>
+  </div>
+</div>
+</div>
+<div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+  <div class="col-lg-16">
+    <div class="card-header" style="display:flex !important;">
+      <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Enquiry Details
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-striped table-sm">
+        <thead>
+          <tr>
+            <!-- <th>Sl No</th> -->
+            <th>{{ alert }}</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+</div>

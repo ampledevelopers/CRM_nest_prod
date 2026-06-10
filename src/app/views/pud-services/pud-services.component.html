@@ -1,0 +1,1306 @@
+<div *ngIf="userRole === '18'" class="btn btn-block btn-outline-primary" (click)="fetchDcallModel(fetch_dcall_temp)"
+  style="float: right;">Fetch D-Call</div>
+<c-smart-table #smartTable="cSmartTable" activePage="1" clickableRows [columnFilter]="false" [columnSorter]="false"
+  [columns]="columns" header [itemsPerPageSelect]="true" [itemsPerPage]="20" [items]="usersData" pagination
+  [sorterValue]="{ column: 'name', state: 'asc' }" [tableBodyProps]="{align: 'middle'}" [tableFilter]="true"
+  [tableHeadProps]="{color: 'secondary'}" [tableProps]="{ hover: true, striped: true, responsive: true }">
+  <ng-template cTemplateId="tableDetails" let-item="item">
+    <div [visible]="details_visible[item.___id]===true" cCollapse>
+      <c-card class="rounded-0">
+        <c-card-body>
+          <div class="card"
+            style="width:49%; float:left;height:310px;margin-right: 0.5rem;font-size: 600;margin-top: -0.1rem;margin-bottom: -0rem;box-shadow: 0;">
+            <div>
+              <h4 style="text-align: center;font-size: 1.3rem;padding: 0.8rem;">Pickup</h4>
+              <div class="expandLeftDiv">
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Pick Up time</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.inward_pickup_at}} </p>
+                  </div>
+                </div>
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Delivered time</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.inward_drop_at}} </p>
+                  </div>
+                </div>
+
+                <div *ngIf="selectedData.pud_type == 'DL'" class="info_row"
+                  style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Branch</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.pickup_branch_code}}</p>
+                  </div>
+                </div>
+                <div *ngIf="selectedData.pud_type !== 'DL'" class="info_row"
+                  style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Customer Address</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <textarea rows="2"
+                      style="border: 1px solid lightgray !important;width: 100% !important;height:4rem; color: black; border: 0;"
+                      [(ngModel)]="custAddress "></textarea>
+                  </div>
+                </div>
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Pickup by</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.pickup_user_name}} - {{selectedData.pickup_user_mobile}} </p>
+                  </div>
+                </div>
+                <div class="info_row"
+                  *ngIf="selectedData.pud_type == 'Apple-PUD' || selectedData.pud_type == 'Ample-PUD'"
+                  style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Tracking</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <a style="color: #20a8d8 !important;cursor:pointer;"
+                      (click)="showMapModel('Pickup',google_map_temp)">CustomerPlace ->
+                      {{selectedData.drop_branch_code}}</a>
+                  </div>
+                </div>
+              </div>
+              <div class="expandRightDiv">
+                <div style="display: none;" [ngClass]="{'qrCodeShow': showQrcode === true}">
+                  <qrcode #parent [qrdata]="qrdata" [allowEmptyString]="false" [cssClass]="'center'"
+                    [elementType]="'canvas'" [errorCorrectionLevel]="'M'" [margin]="0" [scale]="1"
+                    [title]="'Generated QRcode'" [width]="200" [margin]="2">
+                  </qrcode>
+                </div>
+
+                <img *ngIf="(s3PickupQrDoc !== '' && imageRaf === true)"
+                  src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{s3PickupQrDoc}}" style="height:7rem;width:7rem;"
+                  (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + s3PickupQrDoc)">
+                <img *ngIf="(s3PickupQrDoc !== '' && image === true)"
+                  src="https://pudimageupload.s3.ap-south-1.amazonaws.com/{{s3PickupQrDoc}}"
+                  style="height:7rem;width:7rem;"
+                  (click)="openImage('https://pudimageupload.s3.ap-south-1.amazonaws.com/' + s3PickupQrDoc)">
+
+                <a *ngIf="(gDrivePickupQrDoc != '' && ticketId != '')" href="{{gDrivePickupQrDoc}}" target="_blank"><img
+                    class="images" src="{{gDrivePickupQrDoc}}" style="height:7rem;width:7rem;" /></a>
+
+                <div class="noQrcode"
+                  *ngIf="(s3PickupQrDoc === '' && gDrivePickupQrDoc === '' && selectedData.status == 'Assigned - Outward' && qrCodeLoading === false || (s3PickupQrDoc === '' && gDrivePickupQrDoc === '' && selectedData.status !== 'Open' && selectedData.pud_type == 'Ample-PUD'  && qrCodeLoading === false))
+                  || (s3PickupQrDoc === '' && gDrivePickupQrDoc === ''  && (selectedData.status == 'Transit - Outward') && qrCodeLoading === false) || (s3PickupQrDoc === '' && gDrivePickupQrDoc === ''  && selectedData.status == 'Open' && selectedData.pud_type == 'DL' && qrCodeLoading === false)
+                  || (s3PickupQrDoc === '' && gDrivePickupQrDoc === '' && selectedData.pud_type == 'D-Call'  && qrCodeLoading === false)">
+                  <a (click)="saveAsImage(parent)">Generate<br>QRcode</a>
+                </div>
+                <div class="forMoreInfo">
+                  <a (click)="pudConfirmModel(pud_confirmation_temp, selectedData.id,'null', 'pickUp')">For More
+                    Details..</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="font-size: 600;height:310px;width: 50%;margin-top: -0.1rem;box-shadow: 0;">
+            <div>
+              <h4 style="text-align: center;font-size: 1.3rem;padding: 0.8rem;">Drop</h4>
+              <div class="expandLeftDiv">
+
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Pick Up time</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.outward_pickup_at}} </p>
+                  </div>
+                </div>
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Delivered time</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.outward_drop_at}} </p>
+                  </div>
+                </div>
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Branch</p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.drop_branch_code}}</p>
+                  </div>
+                </div>
+                <div class="info_row" style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Drop by </p>
+                  </div>
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <p style="color:black;">{{selectedData.drop_user_name}} - {{selectedData.drop_user_mobile}}</p>
+                  </div>
+                </div>
+                <div class="info_row"
+                  *ngIf="selectedData.pud_type == 'Apple-PUD' || selectedData.pud_type == 'Ample-PUD'"
+                  style=" display: flex;margin-left: 1rem;padding:0%;">
+                  <div class="col-md-6">
+                    <p class="text-muted">Tracking</p>
+                  </div>
+
+                  <div class="col-md-6" style="float:right;margin-left: -1.8rem;">
+                    <a style="color: #20a8d8 !important;cursor:pointer;"
+                      (click)="showMapModel('Drop',google_map_temp)">{{selectedData.drop_branch_code}} ->
+                      CustomerPlace</a>
+                  </div>
+                </div>
+              </div>
+              <div class="expandRightDiv">
+                <div style="display: none;" [ngClass]="{'qrCodeShow': showQrcode === true}">
+                  <qrcode #parent [qrdata]="qrdata" [allowEmptyString]="false" [cssClass]="'center'"
+                    [elementType]="'canvas'" [errorCorrectionLevel]="'M'" [margin]="0" [scale]="1"
+                    [title]="'Generated QRcode'" [width]="200" [margin]="2">
+                  </qrcode>
+                </div>
+                <img *ngIf="s3DropQrDoc !== '' && imageRaf === true"
+                  src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{s3DropQrDoc}}" alt="Image load failed"
+                  style="height:7rem;width:7rem;"
+                  (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + s3DropQrDoc)">
+                <img *ngIf="s3DropQrDoc !== '' && image === true"
+                  src="https://pudimageupload.s3.ap-south-1.amazonaws.com/{{s3DropQrDoc}}" alt="Image load failed"
+                  style="height:7rem;width:7rem;"
+                  (click)="openImage('https://pudimageupload.s3.ap-south-1.amazonaws.com/' + s3DropQrDoc)">
+
+                <a *ngIf="gDriveDropQrDoc !== ''" href="{{gDriveDropQrDoc}}" target="_blank"><img class="images"
+                    [src]="gDriveDropQrDoc" style="height:7rem; width:7rem;" /></a>
+
+                <div class="noQrcode"
+                  *ngIf="(s3DropQrDoc === '' && gDriveDropQrDoc === ''  && selectedData.status == 'At HO' && qrCodeLoading === false) || (s3DropQrDoc === '' && gDriveDropQrDoc === '' && selectedData.status === 'Assigned - Return' && qrCodeLoading === false) || (s3DropQrDoc === '' && gDriveDropQrDoc === '' &&  selectedData.status == 'Transit - Return' && qrCodeLoading === false)">
+                  <a (click)="saveAsImage(parent)">Generate<br>QRcode</a>
+                </div>
+                <div class="forMoreInfo">
+                  <a style="color: #20a8d8 !important; cursor:pointer;"
+                    (click)="pudConfirmModel(pud_confirmation_temp, selectedData.id,'null', 'drop')">For More
+                    Details..</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </c-card-body>
+        <c-card-footer style="border: 0px solid lightgray !important;">
+          <!-- Ample-PUD -->
+          <button *ngIf="(selectedData.status == 'Open') && (selectedData.pud_type == 'Ample-PUD')"
+            class="btn btn-block btn-outline-primary"
+            (click)="pudConfirmModel(pud_confirmation_temp, selectedData.id, 'null', 'null')">
+            Request Pickup
+          </button>
+          <button *ngIf="(selectedData.status == 'Transit - Outward') && (selectedData.pud_type == 'Ample-PUD')"
+            class="btn btn-block btn-outline-primary"
+            (click)="acknowlegeModel(acknowledge_temp, selectedData.id, 'P_HLR')">
+            Acknowledge at Service Center
+          </button>
+          <button
+            *ngIf="(selectedData.pud_type == 'Ample-PUD') && (showRequestDrop) && (selectedData.status == 'At HO')"
+            class="btn btn-block btn-outline-primary" style="float:right;"
+            (click)="requestDropModel(request_drop_temp)">
+            Request Drop
+          </button>
+          <button
+            *ngIf="(showRequestDrop) && (selectedData.status == 'Assigned - Return') && (selectedData.pud_type == 'Ample-PUD')"
+            class="btn btn-block btn-outline-primary" style="float:right;"
+            (click)="requestOTPModel(request_drop_OTP_temp, 'P_HLD')">
+            Confirm Drop Request with OTP
+          </button>
+
+          <!-- D-Call -->
+          <button *ngIf="(selectedData.status == 'Open') && (selectedData.pud_type == 'D-Call')"
+            class="btn btn-block btn-outline-primary"
+            (click)="pudConfirmModel(pud_confirmation_temp, selectedData.id,'null', 'null',parent)">
+            Request Pickup
+          </button>
+          <button *ngIf="(selectedData.status == 'Transit - Outward') && (selectedData.pud_type == 'D-Call')"
+            class="btn btn-block btn-outline-primary"
+            (click)="acknowlegeModel(acknowledge_temp, selectedData.id, 'HLR')">
+            Acknowledge at Service Center
+          </button>
+          <button *ngIf="(selectedData.pud_type == 'D-Call') && (showRequestDrop) && (selectedData.status == 'At HO')"
+            class="btn btn-block btn-outline-primary" style="float:right;"
+            (click)="requestDropModel(request_drop_temp)">
+            Request Drop
+          </button>
+          <button
+            *ngIf="(showRequestDrop) && (selectedData.status == 'Assigned - Return') && (selectedData.pud_type == 'D-Call')"
+            class="btn btn-block btn-outline-primary" style="float:right;"
+            (click)="requestOTPModel(request_drop_OTP_temp, 'HLD')">
+            Confirm Drop Request with OTP
+          </button>
+
+          <!-- DL-PUD -->
+          <button
+            *ngIf="(dropLocationFlag == 0) && (selectedData.status == 'Transit - Outward') && (selectedData.pud_type == 'DL')"
+            class="btn btn-block btn-outline-primary"
+            (click)="acknowlegeModel(acknowledge_temp, selectedData.id, 'HLR')">
+            Acknowledge at Service Center
+          </button>
+          <button
+            *ngIf="(dropLocationFlag == 1) && (showRequestDrop)  && (selectedData.status == 'Transit - Return') && (selectedData.pud_type == 'DL')"
+            class="btn btn-block btn-outline-primary" style="float:right;"
+            (click)="acknowlegeModel(acknowledge_temp, selectedData.id, 'DLD')">
+            Acknowledge at Drop Location
+          </button>
+        </c-card-footer>
+      </c-card>
+    </div>
+  </ng-template>
+  <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+  <td>
+      <ng-container [ngSwitch]="columnName">
+        <ng-container *ngSwitchCase="'pickupStatus'">
+          <span style="color:orange;">
+            {{(item[columnName])}}
+          </span>
+        </ng-container>
+        <ng-container *ngSwitchCase="'dropstatus'">
+          <span style="color:purple;">
+            {{(item[columnName])}}
+          </span>
+        </ng-container>
+        <ng-container *ngSwitchCase="'ticketId'">
+          <c-badge routerLink="/dashboard/ticket" routerLinkActive="active" (click)="ticketselect(item[columnName])"
+            style="color:#20a8d8 !important;">
+            {{(item[columnName])}}
+          </c-badge>
+        </ng-container>
+        <ng-container *ngSwitchCase="'show'" class="py-2">
+          <button (click)="toggleDetails(item.___id, item )" cButton color="info" size="sm" variant="outline">
+            Show
+          </button>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          {{tdContent}}
+        </ng-container>
+      </ng-container>
+    </td>
+  </ng-template>
+</c-smart-table>
+
+<!-- Confirm Drop Request Pickup OTP -->
+<ng-template class="modal fade" #request_drop_OTP_temp>
+  <div class="modal-content">
+    <div class="modal-header" style="height: 55px;">
+      <h4 class="modal-title" style="line-height: 1.2">Confirm Drop Request with OTP</h4>
+      <i class="material-icons" (click)="cancel()"
+        style="color: gray; cursor: pointer; margin-top: 0.4rem !important;margin-left: auto;">close</i>
+    </div>
+    <div class="modal-body">
+      <div class="info_row"
+        style="margin-top: 0.5rem;margin-bottom: 0.5rem;text-align: center;align-items: center;width:40%;margin-left: 9rem;">
+        <input type="input" id="dropOTP" name="dropOTP" placeholder="Enter Drop OTP" [(ngModel)]="dropOTP"
+          style="text-align: center; border: 1px solid lightgray !important;width: 100% !important;height:2rem !important; color: grey; border: 0;height: 1.8rem;">
+        <div *ngIf="showerror" style="color: red;text-align: center;display: flex;margin-left: 4rem;">
+          <i class="material-icons" style=" margin-top: 0.5rem;">info</i>&nbsp;
+          <div style=" margin-top: 0.7rem;">{{errorMessage}}</div>
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 40px">
+        <button *ngIf="buttonLoading === false" type="button" class="btn btn-secondary"
+          (click)="getDropOTP()">Confirm</button>
+        <button class="btn btn-secondary" type="button" disabled="" *ngIf="buttonLoading === true"
+          style="background-color: #20a8d8 !important;"><span class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"
+            style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; "></span>
+          Loading... </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- request drop -->
+<ng-template class="modal fade" #request_drop_temp>
+  <div class="modal-content">
+    <div class="modal-header" style="height: 55px;">
+      <h4 class="modal-title" style="line-height: 1.2">Request Drop Confirmation</h4>
+      <i class="material-icons" (click)="cancel()"
+        style="color: gray; cursor: pointer; margin-top: 0.4rem !important;margin-left: auto;">close</i>
+    </div>
+    <div class="modal-body">
+      <div class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Ticket Id</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <input type="input" id="id" name="id"
+            style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+            [(ngModel)]="selectedData.ticket_id " readonly>
+        </div>
+      </div>
+      <div class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Serial Number</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <input type="input" id="serial_no" name="serial_no"
+            style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+            [(ngModel)]="selectedData.serial_no " readonly>
+        </div>
+      </div>
+      <div class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Pickup Branch Code</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <input type="input" id="pickup_branch_code" name="pickup_branch_code"
+            style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+            [(ngModel)]="selectedData.drop_branch_code " readonly>
+        </div>
+      </div>
+      <div class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Drop Branch Code</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <input type="input" id="drop_branch_code" name="drop_branch_code"
+            style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+            [(ngModel)]="selectedData.pickup_branch_code" readonly>
+        </div>
+      </div>
+      <div class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Product Name</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <input type="input" id="product_category" name="product_category"
+            style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+            [(ngModel)]="dataTemp.product_description " readonly>
+        </div>
+      </div>
+      <div *ngIf="selectedData.pud_type == 'Apple-PUD'" class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Drop Address</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <textarea id="drop_address" name="drop_address" rows="2"
+            style="border: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+            [(ngModel)]="dataTemp.drop_address "></textarea>
+        </div>
+      </div>
+      <div class="info_row" style="display:flex;">
+        <div class="col-md-4" style="width:30%;margin-left: 1.2rem;">
+          <label>Drop Assigned to</label>
+        </div>
+        <div class="col-md-6" style="width:60%;">
+          <select style="width:100%;height:1.7rem;" #val [(ngModel)]="drop_assigned">
+            <option selected>Select drop person</option>
+            <option *ngFor="let asignedPerson of drop_assigned_to" [value]="asignedPerson.id">
+              {{asignedPerson.user_name}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div style="display: none;" [ngClass]="{'qrCodeShow': showQrcode === true}">
+        <qrcode #dropParent [qrdata]="qrdata" [allowEmptyString]="false" [cssClass]="'center'" [elementType]="'canvas'"
+          [errorCorrectionLevel]="'M'" [margin]="0" [scale]="1" [title]="'Generated QRcode'" [width]="200" [margin]="2">
+        </qrcode>
+      </div>
+      <div class="modal-footer" style="height: 40px">
+        <button type="button" class="btn btn-secondary" (click)="requestDrop(dropParent)">Confirm</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- acknowledge -->
+<ng-template class="modal fade" #acknowledge_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <div *ngIf="selectedData.status == 'Transit - Return'">
+          <h4 class="modal-title" style="line-height: 1.2">Acknowledge At Drop Center</h4>
+        </div>
+        <div *ngIf="selectedData.status == 'Transit - Outward'">
+          <h4 class="modal-title" style="line-height: 1.2">Acknowledge At Service Center</h4>
+        </div>
+        <i class="material-icons" (click)="cancel()"
+          style="color: grey; cursor: pointer; margin-top: 0.4rem !important;margin-left: auto;">close</i>
+      </div>
+      <div class="modal-body">
+        <div class="ackBox" *ngIf="showImagess === false">
+          <div *ngIf="selectedData.pud_type === 'Apple-PUD' && selectedData.status === 'Transit - Outward'">
+            <div class="info_row" style="display:flex;">
+              <div class="col-md-4">
+                <label>Serial Number</label>
+              </div>
+              <div class="col-md-6" style="width:65%;">
+                <input style="width: 80%;" type="input" id="serial_no" name="serial_no"
+                  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                  [(ngModel)]="serialNo">
+              </div>
+            </div>
+            <div *ngIf="showProduct === true">
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4" style="margin-top:1rem;">
+                  <label>Product Name</label>
+                </div>
+                <div class="col-md-6" style="width:65%;">
+                  <input type="input" id="product_category" name="product_category"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.product_description " readonly>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4">
+                  <label>Product Config</label>
+                </div>
+                <div class="col-md-6" style="width:65%;">
+                  <textarea id="device_config" name="device_config" rows="2"
+                    style="border: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.product_config " readonly></textarea>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4">
+                  <label>Product Family</label>
+                </div>
+                <div class="col-md-6" style="width:65%;">
+                  <input type="input" id="product_family" name="product_family"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.product_family " readonly>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4">
+                  <label>Warranty Status</label>
+                </div>
+                <div class="col-md-6" style="width:65%;">
+                  <input type="input" id="warranty_status" name="warranty_status"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.warranty_status " readonly>
+                </div>
+              </div>
+              <div class="info_row" style="margin-top:0.5rem;">
+                <input type="checkbox" id="checkbox1" name="pack_received_with_damage"
+                  [value]="pack_received_with_damage" (change)="onChange()" [(ngModel)]="pack_received_with_damage"
+                  style="margin-right: 0.5rem;">
+                <label for="remarks">Product received with damages</label><br>
+              </div>
+              <div class="col-md-6" style="width:100%;" *ngIf="checked">
+                <textarea id="remarks" name="remarks" rows="2"
+                  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                  [(ngModel)]="remarks"></textarea>
+              </div>
+            </div>
+            <div style="float: right; margin-top: 3%; margin-right: 1rem; color: lightgray">
+              <a style="float:left;" (click)="showImagesDOC()">Images</a>
+              <i class="material-icons" style="cursor: pointer;color:#20a8d8;"
+                (click)="showImagesDOC()">keyboard_arrow_right</i>
+            </div>
+          </div>
+
+          <div *ngIf="selectedData.pud_type !== 'Apple-PUD'">
+            <div class="card-body">
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4" style="width:30%;">
+                  <label>Serial Number</label>
+                </div>
+                <div class="col-md-6" style="width:68%;">
+                  <input type="input" id="serial_no" name="serial_no"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.serial_no " readonly>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4" style="width:30%;">
+                  <label>Product Name</label>
+                </div>
+                <div class="col-md-6" style="width:68%;">
+                  <input type="input" id="product_category" name="product_category"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.product_description " readonly>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4" style="width:30%;">
+                  <label>Product Config</label>
+                </div>
+                <div class="col-md-6" style="width:68%;">
+                  <textarea id="device_config" name="device_config" rows="2"
+                    style="border: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.product_config " readonly></textarea>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4" style="width:30%;">
+                  <label>Product Family</label>
+                </div>
+                <div class="col-md-6" style="width:68%;">
+                  <input type="input" id="product_family" name="product_family"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.product_family " readonly>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;">
+                <div class="col-md-4" style="width:30%;">
+                  <label>Warranty Status</label>
+                </div>
+                <div class="col-md-6" style="width:68%;">
+                  <input type="input" id="warranty_status" name="warranty_status"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="dataTemp.warranty_status " readonly>
+                </div>
+              </div>
+              <div class="info_row" *ngIf="(selectedData.pud_type == 'Ample-PUD')">
+                <div class="col-md-12" style="margin-bottom:0.3rem;margin-top: 1rem;">
+                  <label for="visible_damage">Does the product have any visible damage?<span
+                      style="color:red">*</span></label>
+                </div>
+                <div class="col-md-4">
+                  <input type="radio" id="yes" name="visible_damage" value="1" style="margin-right: 0.2rem;"
+                    [(ngModel)]="visibleDamage" [disabled]="editOptions">
+                  <label for="yes" style="margin-right: 0.7rem;">Yes </label>
+                  <input type="radio" id="yes" name="visible_damage" value="0" style="margin-right: 0.2rem;"
+                    [(ngModel)]="visibleDamage" [disabled]="editOptions">
+                  <label for="css">No </label>
+                </div>
+              </div>
+              <div class="info_row" *ngIf="(selectedData.pud_type == 'Ample-PUD')">
+                <div class="col-md-12" style="margin-bottom:0.3rem;">
+                  <label style="float: left; " for="diagnosis_charges_accepted">Quote will be accepted
+                    with diagonsis charges?<span style="color:red">*</span></label>
+                </div>
+                <div class="col-md-4">
+                  <input type="radio" id="yes" name="true" value="1" style="margin-right: 0.2rem;"
+                    [(ngModel)]="diagnosisCharges" [disabled]="editOptions">
+                  <label for="yes" style="margin-right: 0.7rem;"> Yes </label>
+                  <input type="radio" id="yes" name="false" value="0" style="margin-right: 0.2rem;"
+                    [(ngModel)]="diagnosisCharges" [disabled]="editOptions">
+                  <label for="css"> No </label>
+                </div>
+              </div>
+              <div class="info_row" style="display:flex;margin-top: 0.5rem;"
+                *ngIf="selectedData.pud_type == 'DL' && dlType == 'Imagine'">
+                <div *ngIf="selectedData.currier_method === 'Carrier'" class="col-md-4" style="width:30%;">
+                  <label>AWB Number</label>
+                </div>
+                <div *ngIf="selectedData.currier_method === 'Carrier'" class="col-md-6" style="width:68%;">
+                  <input type="input" id="serial_no" name="serial_no" placeholder="Enter AWB Number"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="awbNo">
+                </div>
+                <div *ngIf="selectedData.currier_method === 'Runner'" class="col-md-4" style="width:30%;">
+                  <label>NRDC Number</label>
+                </div>
+                <div *ngIf="selectedData.currier_method === 'Runner'" class="col-md-6" style="width:68%;">
+                  <input type="input" id="serial_no" name="serial_no" placeholder="Enter NRDC Number"
+                    style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                    [(ngModel)]="nrdcNo">
+                </div>
+              </div>
+              <div class="info_row" *ngIf="(selectedData.pud_type == 'DL' && dlType == 'Imagine') && ((branchCode != 'STC') && (branchCode != 'DTC'))">
+                <div class="col-md-4">
+                  <label style="margin-top: 0.3rem;">Video Upload</label>
+                </div>
+                <div class="col-md-4">
+                  <div class="header_left" style="display: flex;">
+                    <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput style="width:100%" type="file"
+                      name="file" class="form-control-file" id="exampleFormControlFile1"
+                      (change)="onFileUploadfun($event)">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="header_left" style="display: flex;">
+                    <button class="btn btn-secondary" type="button" type="submit" (click)="onVideoUpload(awbNo)"
+                      *ngIf="buttonSpin === false && selectedData.currier_method === 'Carrier'">Upload</button>
+                    <button class="btn btn-secondary" type="button" type="submit" (click)="onVideoUpload(nrdcNo)"
+                      *ngIf="buttonSpin === false && selectedData.currier_method === 'Runner'">Upload</button>
+                    <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="info_row" style="margin-top:0.5rem;">
+                <input type="checkbox" id="checkbox1" name="pack_received_with_damage"
+                  [value]="pack_received_with_damage" (change)="onChange()" [(ngModel)]="pack_received_with_damage"
+                  style="margin-right: 0.5rem;">
+                <label for="remarks">Product received with damages</label><br>
+              </div>
+              <div class="col-md-6" style="width:100%;" *ngIf="checked">
+                <textarea id="remarks" name="remarks" rows="2"
+                  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                  [(ngModel)]="remarks"></textarea>
+              </div>
+              <div style="float: right; margin-top: 3%; margin-right: 1rem; color: lightgray">
+                <a style="float:left;" (click)="showImagesDOC()">Images</a>
+                <i class="material-icons" style="cursor: pointer;color:#20a8d8;"
+                  (click)="showImagesDOC()">keyboard_arrow_right</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          *ngIf="showImagess === true && selectedData.pud_type !== 'Ample-PUD' && gdriveImageExist === true && pudImageExist === false">
+          <div class="card" style="width:50%;height:500px;
+           float:left;margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem;margin-bottom: 0.2rem;">
+            <div class="expandLeft">
+              <div *ngIf=" DLImages1.length != 0 && selectedData.status == 'Transit - Outward'">
+                <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages1[0].type + ')'}}</label>
+                <div *ngFor="let imageDL of DLImages1" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageDL.url}}" (click)="openImage(imageDL.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+              <div *ngIf=" DLImages2.length != 0 && selectedData.status == 'Transit - Return'">
+                <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages2[0].type + ')'}}</label>
+
+                <div *ngFor="let imageDL of DLImages2" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageDL.url}}" (click)="openImage(imageDL.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="width:50%;height:500px;
+          overflow-x: auto;float:right;margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem;">
+            <div class="expandRight">
+              <div *ngIf="RCImages1.length != 0 && selectedData.status == 'Transit - Outward'">
+                <label style="margin-bottom:0.3rem;"> Home Location RAF {{'(' +RCImages1[0].type + ')'}}</label>
+                <div *ngFor="let imageRC of RCImages1" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageRC.url}}" (click)="openImage(imageRC.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+              <div *ngIf="RCImages2.length != 0 && selectedData.status == 'Transit - Return'">
+                <label style="margin-bottom:0.3rem;"> Home Location RAF {{'(' + RCImages2[0].type + ')'}}</label>
+                <div *ngFor="let imageRC of RCImages2" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageRC.url}}" (click)="openImage(imageRC.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showImagess === true && gdriveImageExist === false && pudImageExist === true">
+          <div style="width:100%;height:500px;text-align: center;
+         margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem;margin-bottom: 0.2rem;">
+            <div *ngIf=" DLImages1.length != 0 && selectedData.status == 'Transit - Outward'">
+              <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages1[0].type + ')'}}</label>
+              <div *ngFor="let imageDL of DLImages1" style="padding: 0.5rem;overflow-y: auto;">
+                <img src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{imageDL.fileName}}" alt="Image load failed"
+                  style="width:500px"
+                  (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + imageDL.fileName)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="modal-footer" style="height: 60px;">
+        <div *ngIf="showImagess === true">
+          <button type="button" class="btn btn-secondary" (click)="back()">Back</button>
+        </div>
+        <div *ngIf="showImagess === false">
+          <div>
+            <button *ngIf="selectedData.status == 'Transit - Outward' &&  buttonLoading === false" type="button"
+              class="btn btn-secondary" (click)="acknowledgeAtRC()">Acknowledge</button>
+            <button class="btn btn-secondary" type="button" disabled="" *ngIf=" buttonLoading === true"
+              style="background-color: #20a8d8 !important;"><span class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"
+                style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right: 0.2rem !important;"></span>
+              Acknowledging... </button>
+
+            <button *ngIf="selectedData.status =='Transit - Return'" type="button" class="btn btn-secondary"
+              (click)="acknowledgeAtDrop()">Acknowledge</button>
+            <button class="btn btn-secondary" type="button" disabled="" *ngIf=" buttonLoading === true"><span
+                class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right: 0.2rem !important;"></span>
+              Acknowledging... </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</ng-template>
+
+<!-- pud confirmation -->
+
+<ng-template class="fade" #pud_confirmation_temp>
+  <div class="modal-xlg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h3 class="modal-title" style="line-height: 1.2; float: center;margin-top: 1.4rem;margin-bottom: 1.2rem;">
+          <strong> Details</strong>
+        </h3>
+        <i class="material-icons" (click)="cancel()"
+          style="color: grey; cursor: pointer; margin-top: 0.4rem !important;margin-left:auto">close</i>
+      </div>
+      <div class="modal-body">
+        <div class="animated fadeIn" *ngIf="showImagesClicked === false">
+          <div class="col-md-6"
+            style="width: 50%; float: left; padding: 0.1rem; margin-top: 0rem !important;margin-bottom: 0rem;">
+            <div class="card" style="height:575px;">
+              <div class="card-header" style="margin-bottom: -0.4rem;">
+                Customer Details
+              </div>
+              <div class="card-body">
+                <div *ngIf="selectedData.pud_type === 'Ample-PUD' || selectedData.pud_type === 'D-Call'">
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;" for="name">Name</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" [(ngModel)]="customer_name" class="form-control"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                        id="customer_name" placeholder="Enter your  Name" disabled>
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">Phone Number</label>
+                    </div>
+                    <div class="col-md-8" style="display: flex;">
+                      <input [(ngModel)]="selectedData.customer_primary_phone" pattern="[6789][0-9]{9}"
+                        id="customer_primary_phone" maxlength="10"
+                        style="border-bottom: 1px solid lightgray !important;width: 90% !important; color: gray; border: 0;margin-right: 0.5rem;"
+                        type="text" class="form-control" placeholder="Enter your phone no" disabled>
+                      <span class="makeCall"><i class="material-icons" (click)="makeCall(call_alert_temp)"
+                          style="font-size:large;">call</i></span>
+                      <div class="sk-three-bounce" style="width: 25%; float: right; margin-right: 13%;"
+                        *ngIf="buttonLoading === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;" for="Altphone">Alternate Number</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" [(ngModel)]="selectedData.customer_secondry_phone" pattern="[6789][0-9]{9}"
+                        maxlength="10" class="form-control"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: grey; border: 0;"
+                        id="customer_secondary_phone" placeholder="Enter your alternate phone no" disabled>
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">E-mail</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input [(ngModel)]="selectedData.customer_email" id="customer_email"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: grey; border: 0;"
+                        type="text" class="form-control" placeholder="eMail" disabled>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="selectedData.pud_type === 'DL'">
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;" for="name">Name</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" [(ngModel)]="customer_name" class="form-control"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                        id="customer_name" placeholder="Enter your  Name" [disabled]="editOptions">
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">Phone Number</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input [(ngModel)]="selectedData.customer_primary_phone" pattern="[6789][0-9]{9}"
+                        id="customer_primary_phone" maxlength="10"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                        type="text" class="form-control" placeholder="Enter your phone no" [disabled]="editOptions">
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;" for="Altphone">Alternate Number</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" [(ngModel)]="selectedData.customer_secondry_phone" pattern="[6789][0-9]{9}"
+                        maxlength="10" class="form-control"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: grey; border: 0;"
+                        id="customer_secondary_phone" placeholder="Enter your alternate phone no"
+                        [disabled]="editOptions">
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0.5%;">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">E-mail</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input [(ngModel)]="selectedData.customer_email" id="customer_email"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: grey; border: 0;"
+                        type="text" class="form-control" placeholder="eMail" [disabled]="editOptions">
+                    </div>
+                  </div>
+                </div>
+                <div class="info_row" style="padding:0.5%">
+                  <div class="col-md-4">
+                    <label *ngIf="(selectedData.pud_type !== 'Ample-PUD')" style="margin-top:0.5rem;">Address</label>
+                    <label *ngIf="(selectedData.pud_type === 'Ample-PUD')" style="margin-top:0.5rem;">Pickup
+                      Address</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input [(ngModel)]="selectedData.address_line1" id="address_line1"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      type="text" class="form-control" placeholder="Organization Address" [disabled]="editOptions">
+                    <input [(ngModel)]="selectedData.address_line2" id="address_line2"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      type="text" class="form-control" placeholder="Organization Address" [disabled]="editOptions">
+                    <input [(ngModel)]="selectedData.city" id="city"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      type="text" class="form-control" placeholder="City" [disabled]="editOptions">
+                    <input [(ngModel)]="selectedData.state" id="state"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      type="text" class="form-control" placeholder="state" [disabled]="editOptions">
+                    <input [(ngModel)]="selectedData.pin" id="pin"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      type="text" class="form-control" placeholder="Pin" [disabled]="editOptions">
+                  </div>
+                </div>
+                <div class="info_row" style="margin-bottom:-0.2rem;">
+                  <div class="col-md-4">
+                    <label style="margin-top:0.5rem;" for="Landmark">Landmark</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" [(ngModel)]="selectedData.landmark" class="form-control"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      id="landmark" placeholder="Enter Landmark" [disabled]="editOptions">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6"
+            style="width: 50%; float: right; padding: 0.5rem; padding-top: 0px; margin-top: 0.1rem;">
+            <div class="card" style="height:575px;">
+              <div class="card-header" style="margin-bottom: -0.3rem;">
+                Additional Details
+              </div>
+              <div class="card-body">
+                <div *ngIf="(selectedData.pud_type !== 'DL' && editOptions === false)" class="info_row"
+                  style="display:flex;">
+                  <div class="col-md-6" style="width:40%;">
+                    <label>Serial Number<span style="color:red;">*</span></label>
+                  </div>
+                  <div class="col-md-15" style="width:60%;">
+                    <div style="display: flex;">
+                      <input *ngIf="(selectedData.pud_type === 'Ample-PUD' && editOptions === false)" type="input"
+                        id="serial_no" name="serial_no" placeholder="Enter Serial Number"
+                        style="border-bottom: 1px solid lightgray !important;width: 95% !important; color: gray; border: 0;margin-right: 0.5rem;"
+                        [(ngModel)]="serialNo">
+                      <input *ngIf="(selectedData.pud_type === 'D-Call' && editOptions === false)" type="input"
+                        id="serial_no" name="serial_no"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                        [(ngModel)]="selectedData.serial_no " [disabled]="editOptions">
+                      <span style="color: #20a8d8;cursor: pointer;"
+                        (click)="checkSerialNo(selectedData.ticket_id)">Validate</span>
+                    </div>
+                  </div>
+                  <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+                  <div *ngIf="showerror" style="color: red; display:flex;margin: auto;">
+                    <i class="material-icons" style=" margin-top: 0.8rem;">info</i>&nbsp;
+                    <div style=" margin-top: 0.8rem;">{{errorMessage}}</div>
+                  </div>
+                </div>
+                <div *ngIf="showProduct === true">
+                  <div class="info_row" style="display:flex;">
+                    <div class="col-md-6" style="width:40%;">
+                      <label>Warranty Status</label>
+                    </div>
+                    <div class="col-md-15" style="width:60%;">
+                      <input type="input" id="serial_no" name="serial_no"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                        [(ngModel)]="productDetails.warrantyStatus" disabled>
+                    </div>
+                  </div>
+                  <div class="info_row" style="display:flex;">
+                    <div class="col-md-6" style="width:40%;">
+                      <label>Product Description</label>
+                    </div>
+                    <div class="col-md-15" style="width:60%;">
+                      <input type="input" id="serial_no" name="serial_no"
+                        style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                        [(ngModel)]="productDetails.productDescription" disabled>
+                    </div>
+                  </div>
+                </div>
+                <div class="info_row"
+                  *ngIf="(selectedData.pud_type == 'Ample-PUD') || (selectedData.pud_type == 'D-Call')"
+                  style="display:flex;">
+                  <div class="col-md-6" style="width:140%;margin-bottom: 0.2rem;">
+                    <label for="customer_query">Drop Address</label>
+                  </div>
+                  <div class="col-md-15" style="width: 100%">
+                    <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="selectedData.drop_address"
+                      placeholder="Enter text here" class="form-control" rows="4"
+                      style="border: 1px solid lightgray; margin-bottom: 0rem" disabled></textarea>
+                  </div>
+                </div>
+                <div *ngIf="(selectedData.pud_type === 'Ample-PUD' && editOptions === true) || selectedData.pud_type === 'DL'
+                  || selectedData.pud_type === 'D-Call' && editOptions === true" class="info_row"
+                  style="display:flex;">
+                  <div class="col-md-6" style="width:40%;">
+                    <label>Serial Number</label>
+                  </div>
+                  <div class="col-md-15" style="width:60%;">
+                    <input type="input" id="serial_no" name="serial_no"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      [(ngModel)]="selectedData.serial_no " [disabled]="editOptions">
+                  </div>
+                </div>
+                <div class="info_row" style="display:flex;">
+                  <div *ngIf="editOptions === false" class="col-md-6" style="width:140%;margin-bottom: 0.2rem;">
+                    <label for="customer_query">Issue Reported<span style="color:red;">*</span></label>
+                  </div>
+                  <div *ngIf="editOptions === true" class="col-md-6" style="width:140%;margin-bottom: 0.2rem;">
+                    <label for="customer_query">Issue Reported</label>
+                  </div>
+                  <div class="col-md-15" style="width: 100%">
+                    <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="selectedData.customer_query" id="customer_query"
+                      placeholder="Enter text here" class="form-control" rows="4"
+                      style="border: 1px solid lightgray; margin-bottom: 0rem" [disabled]="editOptions"></textarea>
+                  </div>
+                </div>
+                <div *ngIf="(selectedData.pud_type === 'Ample-PUD')" class="info_row" style="display:flex;">
+                  <div class="col-md-6" style="width:40%;">
+                    <span>Payment Status<sup style="color: red">*</sup></span>
+                  </div>
+                  <div class="col-md-15" style="width:60%;">
+                    <div class="col-md-15" style="width:60%;">
+                      <label id="serial_no" name="serial_no"
+                        [ngStyle]="{'color': paymentStatus === true ? 'green' : 'red' }">{{paynowResult}}</label>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(selectedData.pud_type === 'Ample-PUD' && paymentStatus === false) &&(userRole === '2' || userRole === '3')" class="info_row"
+                  style="display:flex;">
+                  <div class="col-md-6" style="width:40%;">
+                    <span>Exception Case</span>
+                  </div>
+                  <div class="col-md-15" style="width:60%;">
+                    <select style="width:100%;height:1.7rem;margin-bottom: 0rem;" #val [(ngModel)]="exceptionCase">
+                      <option selected>Select Exception Case</option>
+                      <option *ngFor="let case of exceptionCases" [value]="case">
+                        {{case}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div *ngIf="(selectedData.pud_type == 'D-Call' && forMoreTemp === false)" class="info_row"
+                  style="margin-top:0.5rem;">
+                  <div class="col-md-6" style="width:50%">
+                    <input type="checkbox" id="checkbox1" name="pendingStatus" [value]="pendingStatus"
+                      (change)="pendingCheck()" [(ngModel)]="pendingStatus" style="margin-right: 0.5rem;">
+                    <label for="remarks">If Pending From Customer</label><br>
+                  </div>
+                </div>
+                <div class="info_row" *ngIf="pendingStatus && forMoreTemp === false">
+                  <div class="col-md-6" style="width: 50%">
+                    <select style="width:100%;height:1.7rem;margin-bottom: 0rem;" #val [(ngModel)]="pendingReason">
+                      <option>Select Status</option>
+                      <option *ngFor="let reason of pendingList" [value]="reason.id">
+                        {{reason.value}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="info_row" style="display:flex;" *ngIf="pickupInfo === true">
+                  <div
+                    *ngIf="(selectedData.pud_type == 'DL') || (selectedData.pud_type == 'D-Call' && editOptions === true)||(selectedData.pud_type == 'Ample-PUD' && editOptions === true)"
+                    class="col-md-6" style="width:40%">
+                    <label>Date and Time</label>
+                  </div>
+                  <div
+                    *ngIf="(selectedData.pud_type === 'D-Call' && editOptions === false && !pendingStatus)|| selectedData.pud_type == 'Ample-PUD'  && editOptions === false"
+                    class="col-md-6" style="width:40%">
+                    <label>Date and Time<span style="color:red;">*</span></label>
+                  </div>
+                  <div
+                    *ngIf="(selectedData.pud_type == 'DL') || (selectedData.pud_type == 'D-Call' && editOptions === true)||(selectedData.pud_type == 'Ample-PUD' && editOptions === true)"
+                    class="col-md-15" style="width:60%;">
+                    <input type="text" id="datetime" name="datetime" [(ngModel)]="selectedData.pickup_scheduled_time"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      [disabled]="editOptions">
+                  </div>
+                  <div
+                    *ngIf="(selectedData.pud_type === 'D-Call' && editOptions === false && !pendingStatus)|| selectedData.pud_type == 'Ample-PUD'  && editOptions === false"
+                    class="col-md-15" style="width:60%;">
+                    <input type="datetime-local" id="datetime" name="datetime" [(ngModel)]="datetime"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      [disabled]="editOptions">
+                  </div>
+                </div>
+                <div class="info_row" style="display:flex;" *ngIf="dropInfo === true">
+                  <div class="col-md-6" style="width:40%">
+                    <label>Date and Time</label>
+                  </div>
+                  <div class="col-md-15" style="width:60%;">
+                    <input type="text" id="datetime" name="datetime" [(ngModel)]="selectedData.drop_scheduled_time"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      [disabled]="editOptions">
+                  </div>
+                </div>
+                <div class="info_row"
+                  *ngIf="(selectedData.pud_type == 'DL') && pickupInfo === true || selectedData.pud_type === 'D-Call' && pickupInfo === true && !pendingStatus|| selectedData.pud_type === 'Ample-PUD' && pickupInfo === true"
+                  style="display:flex;">
+                  <div *ngIf="(selectedData.pud_type === 'DL') || (selectedData.pud_type === 'D-Call' && dropInfo === false && forMoreTemp === true)
+                  || (selectedData.pud_type === 'Ample-PUD' && dropInfo === false && forMoreTemp === true)"
+                    class="col-md-6" style="width:40%">
+                    <label for="name">Pickup Assigned</label>
+                  </div>
+                  <div
+                    *ngIf="(selectedData.pud_type === 'D-Call' && forMoreTemp === false && pickupInfo === true) || (selectedData.pud_type === 'Ample-PUD' && forMoreTemp === false && pickupInfo === true)"
+                    class="col-md-6" style="width:40%">
+                    <label for="name">Pickup Assigned<span style="color:red;">*</span></label>
+                  </div>
+                  <div class="col-md-15" style="width: 60% !important;" *ngIf="(selectedData.pud_type === 'DL') || (selectedData.pud_type === 'D-Call' && dropInfo === false && forMoreTemp === true)
+                    || (selectedData.pud_type === 'Ample-PUD' && dropInfo === false && forMoreTemp === true)">
+                    <input type="text" [(ngModel)]="selectedData.pickup_user_name" class="form-control"
+                      style="border-bottom: 1px solid lightgray !important;color: gray; border: 0;width: 100% !important; "
+                      id="pickup_assigned_to" [disabled]="editOptions">
+                  </div>
+                  <div
+                    *ngIf="(selectedData.pud_type === 'D-Call' && forMoreTemp === false && pickupInfo === true) || (selectedData.pud_type === 'Ample-PUD' && forMoreTemp === false && pickupInfo === true)"
+                    class="col-md-15" style="width: 60% !important;">
+                    <select style="width:100%;height:1.7rem;margin-bottom: 0rem;" #val [(ngModel)]="pickupAssigned">
+                      <option selected>Select pickup person</option>
+                      <option *ngFor="let employee of drop_assigned_to" [value]="employee.id">
+                        {{employee.user_name}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="info_row" *ngIf="(dropInfo === true) " style="display:flex;">
+                  <div class="col-md-4" style="width:40%">
+                    <label for="name">Drop Assigned</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" [(ngModel)]="selectedData.drop_user_name" class="form-control"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"
+                      id="drop_assigned_to" [disabled]="editOptions">
+                  </div>
+                </div>
+                <div class="info_row"
+                  *ngIf="dropLocationFlag == 1  && selectedData.pud_type == 'DL' && editOptions === false"
+                  style="margin-top: 1rem;">
+                  <div class="col-md-4" style="width:40%;margin-bottom: 0.2rem;display:flex;">
+                    <label for="pickupOTP">OTP Validation</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="input" id="pickupOTP" name="pickupOTP" placeholder="Enter OTP" [(ngModel)]="pickupOTP"
+                      style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: grey; border: 0;">
+                    <div *ngIf="showerror" style="color: red; display:flex;">
+                      <i class="material-icons" style=" margin-top: 0.5rem;">info</i>&nbsp;
+                      <div style=" margin-top: 0.4rem;">{{errorMessage}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="showImagesClicked === true && selectedData.pud_type !== 'Ample-PUD' && gdriveImageExist === true && pudImageExist === false">
+          <div class="card"
+            style="width:50%;height:500px;
+            float:left;margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem;margin-bottom: 0.2rem; box-shadow: none !important;">
+            <div class="expandLeft">
+              <div *ngIf="DLImages1.length != 0 && pickupInfo === true">
+                <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages1[0].type + ')'}}</label>
+                <div *ngFor="let imageDL of DLImages1" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageDL.url}}" (click)="openImage(imageDL.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+              <div *ngIf="DLImages2.length != 0 && dropInfo === true">
+                <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages2[0].type + ')'}}</label>
+
+                <div *ngFor="let imageDL of DLImages2" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageDL.url}}" (click)="openImage(imageDL.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card"
+            style="width:50%;height:500px;
+            float:right;margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem; box-shadow: none !important;">
+            <div class="expandRight">
+              <div *ngIf="RCImages1.length != 0 && pickupInfo === true">
+                <label style="margin-bottom: 0.3rem;"> Home Location RAF {{'(' +RCImages1[0].type + ')'}}</label>
+                <div *ngFor="let imageRC of RCImages1" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageRC.url}}" (click)="openImage(imageRC.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+              <div *ngIf=" RCImages2.length != 0 && dropInfo === true">
+                <label style="margin-bottom:0.3rem;"> Home Location RAF {{'(' + RCImages2[0].type + ')'}}</label>
+                <div *ngFor="let imageRC of RCImages2" style="padding: 0.5rem;overflow-y: auto;">
+                  <img class="images" src="{{imageRC.url}}" (click)="openImage(imageRC.url)" style="width: 100%"
+                    alt="Please Login with Google and retry" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showImagesClicked === true && gdriveImageExist === false && pudImageExist === true">
+          <div class="card"
+            style="width:50%;height:500px;
+            float:left;margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem;margin-bottom: 0.2rem; box-shadow: none !important;">
+            <div class="expandLeft">
+              <div *ngIf="DLImages1.length != 0 && pickupInfo === true">
+                <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages1[0].type + ')'}}</label>
+                <div *ngFor="let imageDL of DLImages1" style="padding: 0.5rem;">
+                  <img src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{imageDL.fileName}}" alt="Image load failed"
+                    style="width: 300px"
+                    (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + imageDL.fileName)">
+                </div>
+              </div>
+              <div *ngIf=" RCImages2.length != 0 && dropInfo === true">
+                <label style="margin-bottom:0.3rem;"> Home Location RAF {{'(' + RCImages2[0].type + ')'}}</label>
+                <div *ngFor="let imageRC of RCImages2" style="padding: 0.5rem;">
+                  <img src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{imageRC.fileName}}" alt="Image load failed"
+                    style="width: 300px"
+                    (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + imageRC.fileName)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card"
+            style="width:50%;height:500px;
+            float:right;margin-top:0.2rem;border: 0px solid lightgray !important;padding: 0.5rem; box-shadow: none !important;">
+            <div class="expandRight">
+              <div *ngIf="RCImages1.length != 0 && pickupInfo === true">
+                <label style="margin-bottom: 0.3rem;"> Home Location RAF {{'(' +RCImages1[0].type + ')'}}</label>
+                <div *ngFor="let imageRC of RCImages1" style="padding: 0.5rem;">
+                  <img src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{imageRC.fileName}}" alt="Image load failed"
+                    style="width: 300px"
+                    (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + imageRC.fileName)">
+                </div>
+              </div>
+              <div *ngIf="DLImages2.length != 0 && dropInfo === true">
+                <label style="margin-bottom:0.3rem;"> Drop Location RAF {{'(' +DLImages2[0].type + ')'}}</label>
+
+                <div *ngFor="let imageDL of DLImages2" style="padding: 0.5rem;">
+                  <img src="https://icare-raf.s3.ap-south-1.amazonaws.com/{{imageDL.fileName}}" alt="Image load failed"
+                    style="width: 300px"
+                    (click)="openImage('https://icare-raf.s3.ap-south-1.amazonaws.com/' + imageDL.fileName)">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div style="display: none;" [ngClass]="{'qrCodeShow': showQrcode === true}">
+          <qrcode #pickupParent [qrdata]="qrdata" [allowEmptyString]="false" [cssClass]="'center'"
+            [elementType]="'canvas'" [errorCorrectionLevel]="'M'" [margin]="0" [scale]="1" [title]="'Generated QRcode'"
+            [width]="200" [margin]="2">
+          </qrcode>
+        </div>
+      </div>
+      <footer>
+        <div *ngIf="showImagesClicked === true">
+          <button type="button" class="btn btn-secondary"
+            style="width:18%;height:2.5rem;margin-top: 1rem;margin-left:29rem;" (click)="moveBack()">Back</button>
+        </div>
+        <div *ngIf="showImagesClicked === false">
+          <div *ngIf="forMoreTemp === true"
+            style="height:2.5rem; margin-right: 1rem; color: lightgray;margin-top: 1rem;margin-left:29rem">
+            <a style="float:left;" (click)="showImages()">Images</a>
+            <i class="material-icons" style="cursor: pointer;color:#20a8d8;"
+              (click)="showImages()">keyboard_arrow_right</i>
+          </div>
+          <div *ngIf="dropLocationFlag == 1  && (selectedData.pud_type == 'DL') && (editOptions === false)">
+            <button type="button" *ngIf="buttonLoading === false" class="btn btn-secondary"
+              style="width:18%;height:2.5rem;margin-top: 0rem;margin-left:49rem;" (click)="getOtp()">Confirm</button>
+            <button class="btn btn-secondary" type="button" disabled="" *ngIf=" buttonLoading === true"
+              style="background-color: #20a8d8 !important;margin-left: 49rem;"><span
+                class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; "></span>
+              loading.... </button>
+          </div>
+          <div
+            *ngIf="(selectedData.pud_type == 'D-Call' && buttonLoading === false  && (editOptions === false) && !pendingStatus)">
+            <button type="button" class="btn btn-secondary"
+              style="color:#20a8d8 ;border:#20a8d8;width:18%;height:2.5rem;margin-top: 1rem;margin-left:49rem;"
+              (click)="registerPickup()">Confirm</button>
+            <button class="btn btn-secondary" type="button" disabled="" *ngIf=" buttonLoading === true"
+              style="background-color: #20a8d8 !important;margin-left: 25rem;"><span
+                class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; "></span>
+              loading.... </button>
+          </div>
+          <div
+            *ngIf="(selectedData.pud_type == 'D-Call' && buttonLoading === false  && (editOptions === false) && pendingStatus)">
+            <button type="button" class="btn btn-secondary"
+              style="color:#20a8d8 ;border:#20a8d8;width:18%;height:2.5rem;margin-top: 1rem;margin-left:49rem;"
+              (click)="updateGSXStatus()">Update Status</button>
+            <button class="btn btn-secondary" type="button" disabled="" *ngIf=" buttonLoading === true"
+              style="background-color: #20a8d8 !important;margin-left: 25rem;"><span
+                class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; "></span>
+              loading.... </button>
+          </div>
+          <div *ngIf="(buttonLoading === false && selectedData.pud_type === 'Ample-PUD' && editOptions === false)">
+            <button type="button" class="btn btn-secondary"
+              style="color:#20a8d8 ;border:#20a8d8;width:18%;height:2.5rem;margin-top: 1rem;margin-left:49rem;"
+              (click)="registerAmplePickup(pickupParent)">Confirm</button>
+            <button class="btn btn-secondary" type="button" disabled="" *ngIf=" buttonLoading === true"
+              style="background-color: #20a8d8 !important;margin-left: 25rem;"><span
+                class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; "></span>
+              loading.... </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="fade" #google_map_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2;font-size: 1.2rem !important;">{{gmapTitle}}</h4>
+        <i class="material-icons" (click)="cancel()"
+          style="color: grey; cursor: pointer; margin-top: 0.4rem !important;margin-left: auto;">close</i>
+      </div>
+      <div class="modal-body" style="overflow: auto; height: 520px;">
+        <google-map height="480px" width="750px" [options]="mapOptions">
+          <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition"
+            [options]="markerOptions"></map-marker>
+          <map-polyline [path]="vertices"></map-polyline>
+        </google-map>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #call_alert_temp>
+  <div class="modal-content">
+    <div class="modal-header" style="height: 55px;">
+      <h4 class="modal-title" style="line-height: 1.2">Call to Customer</h4>
+    </div>
+    <div class="modal-body">
+      <p>Calling to {{data.customer_phone_no}}...</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cancel()">Ok</button>
+    </div>
+  </div>
+</ng-template>

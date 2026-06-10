@@ -1,0 +1,199 @@
+<div class="card" style="padding: 1%;border: 0px solid lightgray;display:block;">
+    <div class="card" style="border: 1px solid lightgray;width: 50%;float:left;">
+        <div class="card-header">Filters - CSAT Period Report</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Year<sup style="color: red">*</sup></label>
+                    <select id="year" [(ngModel)]="financialYear" name="year" class="form-control">
+                        <option value="">Select Year</option>
+                        <option value="FY2022">FY2022</option>
+                        <option value="FY2023">FY2023</option>
+                        <option value="FY2024">FY2024</option>
+                        <option value="FY2025">FY2025</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Month<sup style="color: red">*</sup></label>
+                    <select id="quarter" [(ngModel)]="month" name="quarter" class="form-control">
+                        <option *ngFor="let docType of months" [value]="docType.value">
+                            {{docType.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Week<sup style="color: red">*</sup></label>
+                    <select [(ngModel)]="week" class="form-control">
+                        <option value="">Select Week</option>
+                        <option value="W1">W1</option>
+                        <option value="W2">W2</option>
+                        <option value="W3">W3</option>
+                        <option value="W4">W4</option>
+                        <option value="W5">W5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="border: 1px solid lightgray;width:48%;display: flex;float:right;">
+        <div class="card-header">Compare with..</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Year<sup style="color: red">*</sup></label>
+                    <select id="year" [(ngModel)]="pervFinancialYear" name="year" class="form-control">
+                        <option value="">Select Year</option>
+                        <option value="FY2022">FY2022</option>
+                        <option value="FY2023">FY2023</option>
+                        <option value="FY2024">FY2024</option>
+                        <option value="FY2025">FY2025</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Month<sup style="color: red">*</sup></label>
+                    <select id="quarter" [(ngModel)]="prevMonth" name="quarter" class="form-control">
+                        <option *ngFor="let docType of prevMonths" [value]="docType.value">
+                            {{docType.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Week<sup style="color: red">*</sup></label>
+                    <select [(ngModel)]="prevWeek" class="form-control">
+                        <option value="">Select week</option>
+                        <option value="W1">W1</option>
+                        <option value="W2">W2</option>
+                        <option value="W3">W3</option>
+                        <option value="W4">W4</option>
+                        <option value="W5">W5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin: auto;width: 8rem;text-align: center;">
+        <button style="margin-top: 1.5rem;" class="btn btn-block btn-outline-primary" (click)="load()">Load</button>
+    </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === true" style="margin: auto; margin-top: 10% !important;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+<div class="card" *ngIf="csatDataLoad === true && loading === false" style="margin-bottom: 2rem;margin-top: 1.5rem;">
+    <div class="card-body">
+        <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+            <thead>
+                <tr style="text-align: center; font-weight: bold;background-color: lightgrey; color: black;">
+                    <th>
+                        Category
+                    </th>
+                    <th colspan="2">
+                        Month Overall
+                    </th>
+                    <th colspan="2">
+                        Weeks Overall
+                    </th>
+                    <th colspan="2">
+                        Carry-In
+                    </th>
+                    <th colspan="2">
+                        Mail-In
+                    </th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center;">
+                <tr>
+                    <td class="td1">Metrics</td>
+                    <td>{{pervFinancialYear + prevMonth}}</td>
+                    <td>{{financialYear + month}}</td>
+                    <td>{{prevMonth + prevWeek}}</td>
+                    <td>{{month + week}}</td>
+                    <td>{{prevMonth + prevWeek}}</td>
+                    <td>{{month + week}}</td>
+                    <td>{{prevMonth + prevWeek}}</td>
+                    <td>{{month + week}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Satisfied %</td>
+                    <td>{{prevMonthData.satisfiedPercentage}}</td>
+                    <td>{{monthData.satisfiedPercentage}}</td>
+                    <td>{{prevWeekData.satisfiedPercentage}}</td>
+                    <td>{{weekAllData.satisfiedPercentage}}</td>
+                    <td>{{prevCarryInData.satisfiedPercentage}}</td>
+                    <td>{{carryInData.satisfiedPercentage}}</td>
+                    <td>{{prevMailInData.satisfiedPercentage}}</td>
+                    <td>{{mailInData.satisfiedPercentage}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Dissatisfied %</td>
+                    <td>{{prevMonthData.dissSatPercentage}}</td>
+                    <td>{{monthData.dissSatPercentage}}</td>
+                    <td>{{prevWeekData.dissSatPercentage}}</td>
+                    <td>{{weekAllData.dissSatPercentage}}</td>
+                    <td>{{prevCarryInData.dissSatPercentage}}</td>
+                    <td>{{carryInData.dissSatPercentage}}</td>
+                    <td>{{prevMailInData.dissSatPercentage}}</td>
+                    <td>{{mailInData.dissSatPercentage}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Neutal%</td>
+                    <td>{{prevMonthData.neutralPercentage}}</td>
+                    <td>{{monthData.neutralPercentage}}</td>
+                    <td>{{prevWeekData.neutralPercentage}}</td>
+                    <td>{{weekAllData.neutralPercentage}}</td>
+                    <td>{{prevCarryInData.neutralPercentage}}</td>
+                    <td>{{carryInData.neutralPercentage}}</td>
+                    <td>{{prevMailInData.neutralPercentage}}</td>
+                    <td>{{mailInData.neutralPercentage}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Satisfied Samples</td>
+                    <td>{{prevMonthData.satisfiedCount}}</td>
+                    <td>{{monthData.satisfiedCount}}</td>
+                    <td>{{prevWeekData.satisfiedCount}}</td>
+                    <td>{{weekAllData.satisfiedCount}}</td>
+                    <td>{{prevCarryInData.satisfiedCount}}</td>
+                    <td>{{carryInData.satisfiedCount}}</td>
+                    <td>{{prevMailInData.satisfiedCount}}</td>
+                    <td>{{mailInData.satisfiedCount}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Dissatisfied Samples</td>
+                    <td>{{prevMonthData.disSatCount}}</td>
+                    <td>{{monthData.disSatCount}}</td>
+                    <td>{{prevWeekData.disSatCount}}</td>
+                    <td>{{weekAllData.disSatCount}}</td>
+                    <td>{{prevCarryInData.disSatCount}}</td>
+                    <td>{{carryInData.disSatCount}}</td>
+                    <td>{{prevMailInData.disSatCount}}</td>
+                    <td>{{mailInData.disSatCount}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Neutral Samples</td>
+                    <td>{{prevMonthData.neutralCount}}</td>
+                    <td>{{monthData.neutralCount}}</td>
+                    <td>{{prevWeekData.neutralCount}}</td>
+                    <td>{{weekAllData.neutralCount}}</td>
+                    <td>{{prevCarryInData.neutralCount}}</td>
+                    <td>{{carryInData.neutralCount}}</td>
+                    <td>{{prevMailInData.neutralCount}}</td>
+                    <td>{{mailInData.neutralCount}}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Total Samples</td>
+                    <td>{{prevMonthData.totalCount || ''}}</td>
+                    <td>{{monthData.totalCount || ''}}</td>
+                    <td>{{prevWeekData.totalCount || ''}}</td>
+                    <td>{{weekAllData.totalCount || ''}}</td>
+                    <td>{{prevCarryInData.totalCount || ''}}</td>
+                    <td>{{carryInData.totalCount || ''}}</td>
+                    <td>{{prevMailInData.totalCount || ''}}</td>
+                    <td>{{mailInData.totalCount || ''}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

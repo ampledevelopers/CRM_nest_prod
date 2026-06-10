@@ -1,0 +1,109 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - Adhesive Consumption Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch<sup style="color: red">*</sup></label>
+          <select class="form-control" [(ngModel)]="branchId">
+            <option value="Select Branch">Select Branch</option>
+            <option value="" *ngIf="userRole === '3' || userRole === '2'">Any</option>
+            <option *ngFor="let branch of branches" [value]="branch.branch_code">{{branch.label}}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Stock Type<sup style="color: red">*</sup></label>
+          <select class="form-control" [(ngModel)]="stockType">
+            <option value="">Select Stock Type</option>
+            <option value="Ample">Ample</option>
+            <option value="Apple">Apple</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Status<sup style="color: red">*</sup></label>
+          <select class="form-control" [(ngModel)]="status">
+            <!-- <option value="">any</option> -->
+            <option value="">Select Status</option>
+            <option value="B">Blocked</option>
+            <option value="I">Issued</option>
+            <option value="A">Active</option>
+          </select>
+        </div>
+        <div class="col-md-4" style="margin-top: 1rem;" *ngIf="status !== 'A'">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-4" style="margin-top: 1rem;" *ngIf="status !== 'A'">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:  block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true && reportLoading === false" style="margin-top: 2rem; margin-bottom: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header" style="margin-bottom: 1rem; display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Adhesive Consumption Details
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+                <td>
+                  {{ tdContent }}
+                </td>
+              </ng-template>
+
+
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1 && reportLoading === false" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Adhesive Consumption Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

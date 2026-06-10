@@ -1,0 +1,679 @@
+
+/* *****************************from CRM**************************** */
+
+
+body {
+  background-color: white !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #23282c;
+  text-align: left;
+}
+
+.table-striped[_ngcontent-c1] tbody[_ngcontent-c1] tr[_ngcontent-c1]:nth-of-type(odd){
+  background-color: rgba(0, 0, 0, 0.05)
+}
+
+.table[_ngcontent-c1] th[_ngcontent-c1], .table[_ngcontent-c1] td[_ngcontent-c1]{
+  border-top: 1px solid #c8ced350;
+}
+.namebox {
+  background-color:burlywood;
+  width: 70px;
+  height: 50px;
+  margin-top: 1rem;
+  display: table;
+  border-radius: 5px;
+}
+
+.namebox i{
+  color: white;
+  text-align: center;
+  display: block;
+  font-size: xx-large;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.title {
+  margin-top: 10px;
+  display: table;
+  /* width:65%;  */
+  float:left;
+}
+
+.grid-container{
+  max-width:100%;
+  margin-left: 0.1rem;
+  height: 5em;
+  background-color:white;
+  margin-bottom: 0.5rem;
+}
+
+.acceptbtns {
+  margin: auto;
+  float: right;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 3px;
+  padding: 4px;
+  padding-left: 8px;
+}
+
+.acceptbtns_onsite {
+margin: auto;
+border: 0px;
+background-color: white;
+border-radius: 3px;
+padding: 4px;
+padding-left: 8px;
+}
+
+.acceptbtns button {
+  color: #20a8d8;
+  border: 0px;
+  background-color: transparent;
+}
+
+
+.acceptbtns_onsite button {
+color: #20a8d8;
+border: 0px;
+background-color: transparent;
+}
+
+select:focus, button:focus,
+button:focus, ng-select:focus,
+textarea, .btn-link, input, .form-control[_ngcontent-c1]:focus, .header_left select:focus {
+  outline:0;
+}
+
+select:active, button:active, .form-control[_ngcontent-c1]:active,
+button:active, select:active, ng-select:active, .header_left select:active{
+  outline: none;
+  border: none;
+}
+
+.header_left{
+  margin: auto;
+  display: grid;
+  float: left;
+}
+
+.header_right{
+  display: table;
+}
+
+.actionbtns{
+  margin: auto;
+  float: right;
+}
+
+.actionbtns button{
+  color: darkgrey;
+  border: 0px;
+  background-color: transparent;
+  width: 36px;
+}
+
+.mt-4, .my-4{
+  margin-top: 0.7rem !important
+}
+
+.sub_header{
+  margin-left: 50px;
+  display: flex;
+}
+
+.sub_header .statusbox{
+  float:left;
+  margin-left: 5px;
+  margin-top: 10px;
+  display: table;
+  border-radius: 3px;
+}
+
+.sub_header select, .grid-container select, .header_left  select{
+  background-color: transparent;
+  width: 80%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+.ticket_status{
+  padding-left: 1%;
+  display: table;
+}
+
+.card-header {
+  padding: 0.5rem 1.25rem;
+}
+
+/********** Status Update Modal ************/
+.linecolor{
+  width: 100%;
+  border: 0px;
+  border-bottom: 1px solid red;
+}
+
+/* Ticket Summary */
+
+.information{
+  width: 100%;
+  border: 0px;
+  border-bottom: 1px solid #eee;
+}
+
+.info_row {
+  display: flex;
+  flex-wrap: wrap;
+  /* margin-left: -15px;
+  margin-right: -15px; */
+  padding-bottom: 1em;
+}
+
+.sk-three-bounce {
+  width: 62px;
+  margin: 0;
+}
+
+.sk-three-bounce .sk-child{
+  width: 8px;
+  height: 8px;
+  background-color: #20a8d8;
+}
+
+/* Ticket Details */
+
+.details-card {
+  background-color: transparent;
+  border-bottom: 1px solid #c8ced3;
+  margin-bottom: .2rem
+}
+
+.details-card .card-header {
+  padding: 0.5rem 1.25rem;
+  padding-left: 0;
+  border: 0px;
+  background-color: transparent;
+}
+
+.btn-link {
+  font-size: 1rem;
+  color: black;
+  text-decoration: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.btn-link:hover {
+  text-decoration: none;
+  color: black;
+}
+
+/* Ticket Recent Update time line */
+
+.row_line{
+  flex-wrap: wrap;
+  width: 80%;
+  margin-left: 10%;
+}
+.main-timeline{
+  overflow: hidden;
+  position: relative;
+  padding: 60px 0;
+}
+.main-timeline:before{
+  content: "";
+  width: 1px;
+  height: 100%;
+  background: #cfcdcd;
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
+.main-timeline .timeline{
+  width: 50%;
+  clear: both;
+  position: relative;
+}
+.main-timeline .timeline:before,
+.main-timeline .timeline:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.main-timeline .timeline:first-child:before,
+.main-timeline .timeline:last-child:before{
+  content: "";
+  width: 11px;
+  height: 11px;
+  background: #cfcdcd;
+  box-sizing: content-box;
+  border: 5px solid #fff;
+  box-shadow: 0 0 0 2px #cfcdcd;
+  position: absolute;
+  top: -54px;
+  right: -11px;
+  transform: rotate(45deg);
+}
+.main-timeline .timeline:last-child:before{
+  top: auto;
+  bottom: -54px;
+}
+.main-timeline .timeline:last-child:nth-child(even):before{
+  right: auto;
+  left: -11px;
+}
+.main-timeline .timeline-icon{
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border: 1px solid #cfcdcd;
+  position: absolute;
+  top: 17px;
+  right: -13px;
+  z-index: 1;
+  transform: rotate(45deg);
+}
+.main-timeline .timeline-icon:before{
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s ease 0s;
+}
+.main-timeline .timeline:hover .timeline-icon:before{ background: #39b3ff; }
+.main-timeline .timeline-content{
+  width: 85%;
+  padding: 0px 15px;
+  /* background: #fff; */
+  text-align: right;
+  float: left;
+  border: 1px solid transparent;
+  position: relative;
+  transition: all 0.3s ease 0s;
+  margin-bottom: 1.5rem;
+  border-radius: 5px;
+}
+
+.main-timeline .timeline-content:before{
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border: 1px solid #cfcdcd;
+  position: absolute;
+  top: 21px;
+  right: -7.3px;
+  transform: rotate(45deg);
+  transition: all 0.2s ease 0s;
+}
+.main-timeline .timeline:hover .timeline-content:before{
+  background: #39b3ff;
+  border-color: #39b3ff;
+}
+.main-timeline .timeline-content:after{
+  content: "";
+  width: 11%;
+  height: 1px;
+  background: #cfcdcd;
+  position: absolute;
+  top: 28px;
+  right: -14%;
+}
+.main-timeline .date{
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #39b3ff;
+  margin: 0 0 4px;
+  transition: all 0.3s ease 0s;
+}
+.main-timeline .timeline:hover .date{ color: #444; }
+.main-timeline .title_line{
+  font-size: 0.875rem;
+  color: #444;
+  margin-top: 0;
+  transition: all 0.3s ease 0s;
+  margin-bottom: 4px;
+}
+.main-timeline .timeline:hover .title_line{ color: #39b3ff; }
+.main-timeline .description{
+  font-size: 0.875rem;
+  color: #777;
+}
+.main-timeline .timeline:nth-child(2n),
+.main-timeline .timeline:nth-child(2n) .timeline-content{
+  float: right;
+  text-align: left;
+}
+.main-timeline .timeline:nth-child(2n) .timeline-icon{
+  right: 0;
+  left: -12px;
+}
+.main-timeline .timeline:nth-child(2n) .timeline-content:before{ left: -7.3px; }
+.main-timeline .timeline:nth-child(2n) .timeline-content:after{ left: -14%; }
+@media only screen and (max-width: 767px){
+  .main-timeline{ padding-left: 20px; }
+  .main-timeline:before{ left: 20px; }
+  .main-timeline .timeline{ width: 100%; }
+  .main-timeline .timeline,
+  .main-timeline .timeline-content{
+      float: right;
+      text-align: left;
+  }
+  .main-timeline .timeline:first-child:before,
+  .main-timeline .timeline:last-child:nth-child(odd):before{
+      right: auto;
+      left: -11px;
+  }
+  .main-timeline .timeline-icon{
+      right: 0;
+      left: -12px;
+  }
+  .main-timeline .timeline-content:before{ left: -7.3px; }
+  .main-timeline .timeline-content:after{ left: -14%; }
+}
+
+/****** Ticket Documents **********/
+
+.header_left select, .header_left ng-select {
+  width: 100%;
+  min-height: 30px;
+  height: 30px;
+  margin-bottom: .5rem;
+}
+
+.bcolor {
+  border: 1px solid red;
+}
+
+.ncolor {
+  border: 1px solid lightgray;
+}
+
+.dcolor {
+ color: red;
+ text-align: center;
+}
+
+.nocolor {
+  color: #23282c;
+  text-align: center;
+}
+
+.qbcolor {
+  border: 1px solid red;
+}
+
+.qncolor {
+  border: 1px solid lightgray;
+}
+
+.qcolor {
+  color: red;
+  text-align: center;
+}
+
+.qnocolor {
+   color: #23282c;
+   text-align: center;
+}
+
+.docBtn {
+  float: left;
+  margin: 0 .5rem 0 .5rem;
+}
+
+.docBtn a {
+  cursor: pointer;
+}
+
+.docBtn i {
+  margin-top: 0 !important;
+  color: #444;
+}
+
+/* Ticket notification */
+.modal-content {
+  display: block;
+  border: 0;
+  border-radius: 3px;
+}
+
+.modal-content h4 {
+  margin: 0px !important;
+  font-size: 1.3rem !important;
+  font-weight: 500;
+  line-height: 1 !important;
+}
+
+@media only screen and (min-width: 1000px) {
+  .modal-lg {
+      min-width: 800px;
+      margin-left: -20%;
+      margin-right: -20%;
+  }
+  .modal-xlg {
+    min-width: 1000px;
+    margin-left: -45%;
+    margin-right: -20%;
+}
+}
+
+/******** Service Report ******/
+.diagnosis {
+  width: 50%;
+  float: left;
+  position: relative;
+}
+
+.smbtn {
+  color: #20a8d8;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.card {
+  /* border: 1px solid #B5DAFF; */
+  border: 1px solid #c8ced3;
+}
+
+.card-header {
+  background-color: #E6F0FA;
+  border-bottom: 1px solid #B5DAFF;
+}
+
+.statusCount {
+border: 1px solid lightgray;
+border-radius: 5px;
+display: inline-block;
+width: auto;
+padding: 0.1rem 0.5rem 0.1rem 0.5rem;
+margin: 0.2rem;
+}
+
+.statusCount span {
+color: #6f6f6f;
+}
+
+.spinner-border-sm {
+  --cui-spinner-width: 1.5rem !important;
+  --cui-spinner-height: 1.5rem !important;
+  --cui-spinner-border-width: 0.25em !important;
+}
+
+.d-print-none .sidebar .sidebar-fixed{
+  background-color: #444;
+}
+/* .sidebar{
+  --cui-sidebar-bg: lightgray !important;
+  --cui-sidebar-width: 16rem;
+  --cui-sidebar-nav-link-color: black !important;
+  --cui-sidebar-brand-bg: #fff;
+  --cui-sidebar-nav-link-active-color: white;
+  --cui-sidebar-nav-link-padding-left: 0.5rem !important;
+  --cui-sidebar-nav-link-active-bg: #3a4248;
+  --cui-sidebar-nav-link-hover-bg: #20a8d8;
+  --cui-sidebar-nav-link-hover-color: black;
+}
+
+.sidebar-nav .nav-link {
+  padding: 0.55rem 1rem !important;
+  padding-left: 0.5rem !important;
+  white-space: normal !important;
+}
+
+.nav-link.nav-group-toggle{
+  color: black !important;
+} */
+
+.spinner-grow-sm {
+  --cui-spinner-width: 0.3rem !important;
+  --cui-spinner-height: 0.3rem !important;
+  margin-right: 0.1rem !important;
+}
+
+.btn {
+  font-weight: 400;
+  /* background-color: transparent; */
+  /* border: 1px solid transparent; */
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+}
+
+.btn-outline-primary {
+    --cui-btn-color: #20a8d8 !important;
+    --cui-btn-border-color: #20a8d8 !important;
+    /* --cui-btn-hover-color: rgba(255, 255, 255, 0.87); */
+    --cui-btn-hover-bg: #20a8d8 !important;
+    --cui-btn-hover-border-color: #20a8d8 !important;
+    --cui-btn-focus-shadow-rgb: #20a8d8 !important;
+    --cui-btn-active-color: rgba(255, 255, 255, 0.87);
+    --cui-btn-active-bg: #20a8d8 !important;
+    --cui-btn-active-border-color: #20a8d8 !important;
+    --cui-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 21, 0.125);
+    --cui-btn-disabled-color: #20a8d8 !important;
+    --cui-btn-disabled-bg: transparent;
+    --cui-gradient: none;
+    --bs-btn-active-bg: #20a8d8 !important;
+    --cui-btn-hover-color: #20a8d8 !important;
+}
+
+.btn:hover{
+  color: white !important;
+}
+
+.btn:focus{
+  color: #20a8d8 !important;
+  background-color: transparent;
+}
+
+/* .sidebar-nav .nav-group.show .nav-group-toggle{
+  color: black !important;
+} */
+
+c-nav-item button{
+  background: transparent !important;
+  border:0px !important;
+  margin-left: 1rem !important;
+}
+
+/* c-sidebar-nav-link-content{
+  padding-left: 0px !important;
+
+} */
+
+c-spinner{
+  margin-left: 30rem !important;
+}
+
+input.form-control.ng-dirty.ng-valid.ng-touched{
+  background-color: white !important;
+  --bs-highlight-bg: white !important;
+}
+
+input.form-control.ng-dirty.ng-valid.ng-touched :hover :active{
+  background-color: white !important;
+}
+.input-group-text{
+  border-radius: 0rem !important;
+  --cui-highlight-bg: white !important;
+}
+
+.sidebar-nav .nav-link{
+  white-space: normal !important;
+}
+
+
+.form-control::placeholder {
+  color: #73818f;
+  opacity: 1;
+  font-size: 0.875rem !important;
+  font-weight: lighter !important;
+}
+
+/* .form-control.ng-touched.ng-dirty.has-error.ng-invalid{
+  background-color: white !important;
+  background-image: inherit !important;
+}
+
+.form-control.ng-dirty.ng-valid.ng-touched{
+  background-image: inherit !important;
+}
+
+.form-control.ng-pristine.ng-invalid.has-error.ng-touched{
+  background-image: inherit !important;
+}
+ */
+.form-control{
+  background-image: inherit !important;
+}
+
+.form-control:focus{
+  box-shadow: none !important;
+  border-color: #20a8d8 !important;
+}
+
+.center-inputbox {
+  background: transparent;
+  width: 30%;
+  text-align: center;
+  margin: auto;
+    margin-bottom: auto;
+  margin-bottom: 1rem;
+  border: 1px solid lightgray;
+}
+
+.custom-white:nth-child(odd) {
+  background-color: #f8f9fa !important; /* light grey */
+  color: black !important;
+}
+
+.custom-white:nth-child(even) {
+  background-color: white !important;
+  color: black !important;
+}
+
+.sidebar-scrollable {
+  overflow-y: auto;
+  height: 200px; 
+}

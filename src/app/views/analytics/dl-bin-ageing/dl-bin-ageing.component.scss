@@ -1,0 +1,47 @@
+.table-card {
+  margin: 1rem !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.table-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  background-color: #e6f0fa !important;
+  // border: 2px solid #e0e0e0 !important;
+}
+
+.header-cell {
+  // background-color: #3e95e1  !important;
+  // color: white !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  padding: 12px !important;
+  border: 2px solid #e0e0e0 !important;
+}
+
+.body-cell {
+  padding: 12px !important;
+  text-align: left !important;
+  border: 1px solid #e0e0e0 !important;
+}
+
+.body-row:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.mat-table {
+  width: 100%;
+  border-collapse: collapse !important;
+}
+
+table {
+  border-spacing: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .header-cell, .body-cell {
+    padding: 8px !important;
+    font-size: 14px !important;
+  }
+}

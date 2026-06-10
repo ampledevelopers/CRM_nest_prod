@@ -1,0 +1,22 @@
+<div class="div1">
+  <label >Select Report Type</label>
+        <fieldset>
+            <ng-select ng-multiple="false"
+            class="bootstrap"
+            placeholder="any"
+            bindLabel="label"
+            bindValue="value"
+            [items]="reports"
+            [multiple]="false"
+            [(ngModel)]="reportType"></ng-select>
+          </fieldset>
+</div>
+<div *ngIf="reportType == 'enquiry'">
+  <app-enquiryreport></app-enquiryreport>
+</div>
+<div *ngIf="reportType == 'token'">
+  <app-tokenreport></app-tokenreport>
+</div>
+<div *ngIf="reportType == 'feedback'">
+  <app-feedbackreport></app-feedbackreport>
+</div>

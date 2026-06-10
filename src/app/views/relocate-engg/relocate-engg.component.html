@@ -1,0 +1,133 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+   <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div style="display: flex;">
+      <div class="header_left" style="width: 60%; margin-top: 0px">
+          <input [(ngModel)]="empId" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="Enter Engineer's ID" (keydown)="chechEngg($event)">
+          <div class="info_row" style="margin-top: 1rem;">
+              <div class="col-md-4">
+                  <select [(ngModel)]="serviceType"  (change)="selectServiceType($event.target.value)" [disabled]="enableOptions">
+                      <option>Select Service Type</option>
+                      <option *ngFor="let sType of serviceTypeList; let i = index" [value]="sType.id">
+                        {{sType.label}}
+                      </option>
+                  </select>
+              </div>
+              <div class="col-md-4">
+                  <select [(ngModel)]="branch" (change)="selectLocation($event.target.value)" [disabled]="enableOptions">
+                      <option>Select Branch</option>
+                      <option *ngFor="let branch of branchList; let i = index" [value]="branch.id">
+                        {{branch.label}}
+                      </option>
+                  </select>
+              </div>
+              <div class="col-md-4">
+                  <select [(ngModel)]="userRole" (change)="selectUserRole($event.target.value)" [disabled]="enableOptions">
+                      <option>Select User Role</option>
+                      <option *ngFor="let uRole of userRoleList; let i = index" [value]="uRole.id">
+                        {{uRole.label}}
+                      </option>
+                  </select>
+              </div>
+          </div>
+          <button *ngIf="buttonSpin === false" style="margin-top: .5rem; width: 32%; margin: auto;" class="btn btn-block btn-outline-primary" (click)="relocate(confirm_alert_temp)">Re-Locate</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+      </div>
+  </div>
+  <div style="display: flex;">
+      <div *ngIf="rlError !== ''" style="text-align: center; color: red; margin: auto; margin-top: 1rem;">
+        <p style="display:flex; margin-bottom: 0px;"><i class="material-icons" style="font-size: 1rem;margin-top: 0.2rem;">info</i>&nbsp; <span>{{rlError}}</span></p>
+      </div>
+      <div class="header_left" *ngIf="rlError === ''" style="width: 40%; margin-top: 1rem">
+          <div class="card" *ngIf="isProfile && rlError === ''">
+            <div class="card-header" style="text-align: center">
+              Engineer's Profile
+            </div>
+            <div class="card-body">
+              <div class="info_row">
+                <div class="col-md-4">
+                    <label>Name</label>
+                </div>
+                <div class="col-md-8">
+                    <input class="information" [(ngModel)]="profile.user_name" type="text" name="Name" placeholder="N/A" readonly>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                    <label>User Role</label>
+                </div>
+                <div class="col-md-8">
+                    <input class="information" [(ngModel)]="profile.group_name" type="text" name="User Role" placeholder="N/A" readonly>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                    <label>Site Type</label>
+                </div>
+                <div class="col-md-8">
+                    <input [(ngModel)]="profile.site_type" class="information" type="text" name="Site Type" placeholder="N/A" readonly>
+                </div>
+                </div>
+                <div class="info_row">
+                  <div class="col-md-4">
+                      <label>Branch</label>
+                  </div>
+                  <div class="col-md-8">
+                      <input [(ngModel)]="profile.branch_code" class="information" type="text" name="Branch" placeholder="N/A" readonly>
+                  </div>
+                </div>
+                <div class="info_row">
+                  <div class="col-md-4">
+                      <label>Mobile</label>
+                  </div>
+                  <div class="col-md-8">
+                      <input [(ngModel)]="profile.mobile" class="information" type="text" name="mobile" placeholder="N/A" readonly>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+  <!-- ******************* Popup Modals ************************* -->
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 80px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template class="modal fade" #confirm_alert_temp>
+    <div class="modal-dialog" role="document" style="margin: 0px">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{confirmAlert.msg}}</p>
+        </div>
+        <div class="modal-footer" style="height: 80px">
+          <button type="button" class="btn btn-secondary" (click)="confirmreLocation(confirmAlert.id, simple_alert_temp)">Yes</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+        </div>
+
+      </div>
+    </div>
+  </ng-template>

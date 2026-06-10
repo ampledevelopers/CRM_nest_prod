@@ -1,0 +1,221 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - Agent Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <label>Report Type<sup style="color: red">*</sup></label>
+          <!-- <div class="col-md-9"> -->
+          <select id="reportType" [(ngModel)]="reportType" name="reportType" class="form-control">
+            <option value="">Select Report Type</option>
+            <option value="MAR">Monthly Agent Report</option>
+            <option value="MPR">Monthly Productivity Report</option>
+            <!-- <option value="CPF">CSAT Performance Feedback</option>
+            <option value="CPS">CSAT Performance Service</option> -->
+          </select>
+          <!-- </div> -->
+        </div>
+        <div class="col-md-3">
+          <label>Year<sup style="color: red">*</sup></label>
+          <select id="year" [(ngModel)]="year" (change)="yearSelect($event.target.value)" name="year"
+            class="form-control">
+            <option value="">Select Year</option>
+            <!-- <option value="2020">2020</option>
+      <option value="2019">2019</option> -->
+            <option *ngFor="let year of years; let i = index" [value]="year.value">
+              {{year.value}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Month<sup style="color: red">*</sup></label>
+          <!-- <input class="form-control" [(ngModel)]="month" id="date-input" type="date" name="date-input" placeholder="dd-mm-yyyy"> -->
+          <select id="month" [(ngModel)]="month" name="month" class="form-control">
+            <option value="">Select Month</option>
+            <option *ngFor="let month of months" [ngValue]="month.val">{{month.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display: block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="animated fadeIn" *ngIf="(loading === false && reportName === 'MAR')">
+    <div class="card" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+      <div class="card-header">
+        {{reportHeader}}
+      </div>
+      <div class="card-body">
+
+        <div class="row" style="margin-top: 1rem;">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <b>Enquires</b>
+              </div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <th>Technician</th>
+                    <th>Location</th>
+                    <th>Count</th>
+                    <th>Time(in Minutes)</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let enquiry of enquires">
+                      <td class="statuses">
+                        {{enquiry.user_name}}
+                      </td>
+                      <td class="statuses">
+                        {{enquiry.branch_name}}
+                      </td>
+                      <td class="count">
+                        {{enquiry.devices}}
+                      </td>
+                      <td class="count">
+                        {{enquiry.time}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            <!-- <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="ageingData" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td [cTableActive]="smartTable.tableDataCellProps(item, columnName)?.['active']"
+                [cTableColor]="smartTable.tableDataCellProps(item, columnName)?.color"
+                [cAlign]="smartTable.tableDataCellProps(item, columnName)?.align"
+                [ngClass]="smartTable.tableDataCellClasses(item, columnName)">
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchDefault>
+                    {{tdContent}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+          </c-smart-table> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <b>Repairs</b>
+              </div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <th>Technician</th>
+                    <th>Location</th>
+                    <th>Count</th>
+                    <th>Time(in Minutes)</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let repair of repairs">
+                      <td class="statuses">
+                        {{repair.user_name}}
+                      </td>
+                      <td class="statuses">
+                        {{repair.branch_name}}
+                      </td>
+                      <td class="count">
+                        {{repair.devices}}
+                      </td>
+                      <td class="count">
+                        {{repair.time}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="animated fadeIn" *ngIf="(loading === false && reportName === 'MPR')">
+    <div class="card" style="margin-top:1rem !important;">
+      <div class="card-header">
+        {{reportHeader}}
+      </div>
+      <div class="card-body">
+
+        <div class="row" style="margin-top: 1rem;" *ngIf="productivity.length != 0">
+          <div class="col-sm-12">
+            <div class="card">
+              <!-- <div class="card-header">
+        <b>Enquires</b>
+        </div> -->
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-sm" datatable>
+                  <thead>
+                    <th>Technician</th>
+                    <th>Total Enquires</th>
+                    <th>Total iPhone Repairs</th>
+                    <th>Total Mac Repairs</th>
+                    <th>Total Accy Repairs</th>
+                    <th>Total Other Repairs (iPad,iPod,Apple TV,Watch)</th>
+                    <th>Total Delivery</th>
+                    <th>Total Points</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let data of productivity">
+                      <td class="statuses">{{data.technician}}</td>
+                      <td class="count" *ngIf="data.totalEnquires === null">0(0)</td>
+                      <td class="count" *ngIf="data.totalEnquires !== null">
+                        {{data.totalEnquires}}({{data.enquiryPoints}})</td>
+                      <td class="count" *ngIf="data.totaliPhoneDevices === null">0(0)</td>
+                      <td class="count" *ngIf="data.totaliPhoneDevices !== null">
+                        {{data.totaliPhoneDevices}}({{data.iPhonePoints}})</td>
+                      <td class="count" *ngIf="data.totalMacDevices === null">0(0)</td>
+                      <td class="count" *ngIf="data.totalMacDevices !== null">
+                        {{data.totalMacDevices}}({{data.MacPoints}})</td>
+                      <td class="count" *ngIf="data.totalAccyDevices === null">0(0)</td>
+                      <td class="count" *ngIf="data.totalAccyDevices !== null">
+                        {{data.totalAccyDevices}}({{data.AccyPoints}})</td>
+                      <td class="count" *ngIf="data.totalOtherDevices === null">0(0)</td>
+                      <td class="count" *ngIf="data.totalOtherDevices !== null">
+                        {{data.totalOtherDevices}}({{data.OtherPoints}})</td>
+                      <td class="count" *ngIf="data.totalDeliveryDevices === null">0(0)</td>
+                      <td class="count" *ngIf="data.totalDeliveryDevices !== null">
+                        {{data.totalDeliveryDevices}}({{data.DeliveryPoints}})</td>
+                      <td class="count">{{+data.enquiryPoints + +data.iPhonePoints + +data.MacPoints + +data.AccyPoints
+                        + +data.OtherPoints + +data.DeliveryPoints}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

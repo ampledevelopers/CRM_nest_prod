@@ -1,0 +1,316 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      ACSE Form
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Producy Family</label>
+          <select (ngModel)="family" (change)="selectProductFamily($event.target.value)" class="form-control">
+            <option value="">Please select</option>
+            <option value="mac">Mac</option>
+            <option value="iphone">iPhone</option>
+          </select>
+        </div>
+        <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div class="header_left" style="width: 95%; margin-top: 1rem ">
+        <div class="card" *ngIf="family === 'mac'">
+          <div class="card-header" style="text-align: center">
+            ACSE Parameters for Mac
+          </div>
+          <div class="card-body">
+            <div class="info_row" *ngIf="userRole === '11'">
+              <!--*ngIf="userRole === '11'"-->
+              <div class="col-md-4">
+                <label>Branch</label>
+              </div>
+              <div class="col-md-8">
+                <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control"
+                  style="width: 70% !important;">
+                  <option>Select Branch</option>
+                  <option *ngFor="let branch of branches; let i = index" [value]="branch.id">
+                    {{branch.label}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Eligible REPTAT Repairs </label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="macReptatRepair" [(ngModel)]="macReptatRepair">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Duration of Eligible Repairs </label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="macEligibleRepair" [(ngModel)]="macEligibleRepair">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Duration of Eligible Repairs - PPR</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="macRepairPpr" [(ngModel)]="macRepairPpr">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total PPR Eligible Repairs - PPR</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="macPprEligibleRepair" [(ngModel)]="macPprEligibleRepair">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Repeated Serials</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="macRepeatedSerials" [(ngModel)]="macRepeatedSerials">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Looped Eligible Repairs</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="macLoopedRepairs" [(ngModel)]="macLoopedRepairs">
+              </div>
+            </div>
+            <div style="display: flex;margin-top: 1rem; ">
+              <div class="header_left" style="display: block !important;">
+                <div class="acceptbtns" style="float: left" *ngIf="buttonSpin === false">
+                  <button (click)="save(family,acseScore_temp)">{{buttonName}}</button>
+                </div>
+                <div style="margin-left: 1rem;float: left;" class="acceptbtns" *ngIf="buttonSpin === false">
+                  <button (click)="cancel()">Cancel</button>
+                </div>
+                <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="family === 'iphone'">
+          <div class="card-header" style="text-align: center">
+            ACSE Parameters for iPhone
+          </div>
+          <div class="card-body">
+            <div class="info_row" *ngIf="userRole === '11'">
+              <!--*ngIf="userRole === '11'"-->
+              <div class="col-md-4">
+                <label>Branch</label>
+              </div>
+              <div class="col-md-8">
+                <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control">
+                  <option>Select Branch</option>
+                  <option *ngFor="let branch of branches; let i = index" [value]="branch.id">
+                    {{branch.label}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Eligible REPTAT Repairs</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneReptatRepair" [(ngModel)]="iphoneReptatRepair">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Duration of Eligible Repairs</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneEligibleRepairs" [(ngModel)]="iphoneEligibleRepairs">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Eligible SDR Events</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneSdrEvents" [(ngModel)]="iphoneSdrEvents">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>SDR</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneSdr" [(ngModel)]="iphoneSdr">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Eligible NTF Units</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneNtf" [(ngModel)]="iphoneNtf">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>No Trouble Found</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneNoTrouble" [(ngModel)]="iphoneNoTrouble">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Total Eligible SUR Repairs</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneSurRepairs" [(ngModel)]="iphoneSurRepairs">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>SUR Opportunity Taken</label>
+              </div>
+              <div class="col-md-8">
+                <input class="information" type="text" name="iphoneSurOpp" [(ngModel)]="iphoneSurOpp">
+              </div>
+            </div>
+            <div style="display: flex;margin-top: 1rem; ">
+              <div class="header_left" style="display: table!important;">
+                <div class="acceptbtns" style="float: left" *ngIf="buttonSpin === false">
+                  <button (click)="save(family,acseScore_temp)">{{buttonName}}</button>
+                </div>
+                <div style="margin-left: 1rem;float: left;" class="acceptbtns" *ngIf="buttonSpin === false">
+                  <button (click)="cancel()">Cancel</button>
+                </div>
+                <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template class="modal fade" #acseScore_temp>
+    <div class="modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">Repair Stage Update</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure want to replace existing ACSE Scores?</p>
+          <table class="table table-bordered table-striped table-md" style="word-wrap: anywhere;">
+            <thead class="popthead" *ngIf="family === 'mac'">
+              <th>
+                Entered On
+              </th>
+              <th>
+                Week No
+              </th>
+              <th>
+                Total Eligible REPTAT Repairs
+              </th>
+              <th>
+                Total Duration of Eligible Repairs
+              </th>
+              <th>
+                Total Duration of Eligible Repairs - PPR
+              </th>
+              <th>
+                Total PPR Eligible Repairs - PPR
+              </th>
+              <th>
+                Repeated Serials
+              </th>
+              <th>
+                Looped Eligible Repairs
+              </th>
+            </thead>
+            <tbody class="popTableBody" *ngIf="family === 'mac'">
+              <tr *ngFor="let acseScore of acseData">
+                <td>{{acseScore.entry_time}}</td>
+                <td>{{acseScore.week_no}}</td>
+                <td>{{acseScore.mac_reptat_repair}}</td>
+                <td>{{acseScore.mac_eligible_repair}}</td>
+                <td>{{acseScore.mac_repair_PPR}}</td>
+                <td>{{acseScore.mac_PPR_eligible_repair}}</td>
+                <td>{{acseScore.mac_repeated_serials}}</td>
+                <td>{{acseScore.mac_looped_repairs}}</td>
+              </tr>
+            </tbody>
+            <thead class="popthead" *ngIf="family === 'iphone'">
+              <th>
+                Entered On
+              </th>
+              <th>
+                Week No
+              </th>
+              <th>
+                Total Eligible REPTAT Repairs
+              </th>
+              <th>
+                Total Duration of Eligible Repairs
+              </th>
+              <th>
+                Total Eligible SDR Events
+              </th>
+              <th>
+                SDR
+              </th>
+              <th>
+                Total Eligible NTF Units
+              </th>
+              <th>
+                No Trouble Found
+              </th>
+              <th>
+                Total Eligible SUR Repairs
+              </th>
+              <th>
+                SUR Opportunity Taken
+              </th>
+            </thead>
+            <tbody class="popTableBody" *ngIf="family === 'iphone'">
+              <tr *ngFor="let acseScore of acseData">
+                <td>{{acseScore.entry_time}}</td>
+                <td>{{acseScore.week_no}}</td>
+                <td>{{acseScore.iphone_reptat_repair}}</td>
+                <td>{{acseScore.iphone_eligible_repairs}}</td>
+                <td>{{acseScore.iphone_sdr_events}}</td>
+                <td>{{acseScore.iphone_SDR}}</td>
+                <td>{{acseScore.iphone_NTF}}</td>
+                <td>{{acseScore.iphone_no_trouble}}</td>
+                <td>{{acseScore.iphone_SUR_repairs}}</td>
+                <td>{{acseScore.iphone_SUR_Opp}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer" style="height: 80px">
+          <button type="button" class="btn btn-secondary" (click)="confirmAcseScore()">Yes</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>

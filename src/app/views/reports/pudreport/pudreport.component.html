@@ -1,0 +1,97 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner></c-spinner>
+</div>
+
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - DL/PUD Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-3">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-3">
+          <label>PUD Type</label>
+          <select class="form-control" [(ngModel)]="pudType" placeholder="any">
+            <option selected>any</option>
+            <option *ngFor="let item of pudTypes" value="{{item.value}}">{{item.name}}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Status</label>
+          <select class="form-control" [(ngModel)]="status" placeholder="any">
+            <option selected>any</option>
+            <option *ngFor="let item of statusArray" value="{{item.value}}">{{item.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:  block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem; text-align: center;">
+    <c-spinner size="sm" style="margin: auto !important;"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true" style="margin-top: 2rem; margin-bottom: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header" style="margin-bottom: 1rem; display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportName === 'any' ? 'PUD' : reportName}} Details
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+                  <td>
+                    {{ tdContent }}
+                  </td>
+                </ng-template>
+
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportName === 'any' ? 'PUD' : reportName}} Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

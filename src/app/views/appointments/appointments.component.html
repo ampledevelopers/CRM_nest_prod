@@ -1,0 +1,240 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 20%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div *ngIf="loading === false && (reservationsData === undefined)">
+  <p>No Data Available</p>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false && reservationsData !== undefined" style="margin-bottom: 1rem;">
+ <!--  <button class="btn btn-block btn-outline-primary" style="padding: 0.5rem 0.6rem 0.1rem 0.6rem; margin-right: 0.8rem; color: #20a8d8; border: 1px solid;" ngbTooltip="Fetch Records">
+    <i *ngIf="!reservationDataLoading" class="material-icons" style="font-size: large;" (click)="getReservationSummary()">refresh</i>
+    <span *ngIf="reservationDataLoading"  class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="--cui-spinner-width: 1.1rem !important; --cui-spinner-height: 1.1rem !important; --cui-spinner-border-width: 0.16em !important; margin-right: 0.2rem !important; color: #20a8d8;"></span>
+  </button> -->
+<div class="header_right" style="width: 100%; padding: 0.5rem 0px 0.5rem auto; margin-bottom: 2rem;">
+  <div class="actionbtns">
+    <div style="display: flex;">
+      <div style="margin-right: .5rem;">
+        <select class="form-control" style="border-radius: 0.375rem !important;" [(ngModel)]="appointType" (change)="loadAppointments()" [disabled]="reservationDataLoading">
+          <option value="all">All Reservations</option>
+          <option value="today">Reservations for the Day</option>
+        </select></div>
+        <a *ngIf="!reservationDataLoading" (click)="getReservationSummary()">Fetch Records</a>
+        <a *ngIf="reservationDataLoading">Fetching Records...</a>
+  </div>
+  </div>
+</div>
+  <table datatable class="table table-bordered table-striped table-sm" style="padding-top: 1rem;" [dtOptions]="dtOptions">
+    <thead style="text-align: center;">
+      <tr style="text-align: center !important; font-weight: bold;">
+        <td>Reservation Id</td>
+        <td>Customer Name</td>
+        <td>Status</td>
+        <td>Date</td>
+        <td>Location</td>
+        <td>Product</td>
+        <td>Serial Number</td>
+        <td>Issue</td>
+        <td></td>
+      </tr>
+    </thead>
+    <tbody *ngIf="reservationsData.length === 0 && reportLoading === false"><h1>No Data Available</h1></tbody>
+  <tbody style="padding-left: 1rem;" *ngIf="reservationsData.length > 0">
+  <tr *ngFor="let appoints of reservationsData; let i = index ">
+      <td *ngIf="appoints.current_status === 'RESERVED'">{{appoints.reservation_id}}</td>
+      <td *ngIf="appoints.current_status === 'RESCHEDULED'"> {{appoints.rescheduled_to}}</td>
+      <td>{{appoints.customer_firstname +' '+ appoints.customer_lastlame}}</td>
+      <td>{{appoints.current_status}}</td>
+      <td *ngIf="appoints.current_status === 'RESERVED'">{{appoints.reservation_date | date:'dd/MM/yyyy h:mm a'}}</td>
+      <td *ngIf="appoints.current_status === 'RESCHEDULED'">{{appoints.rescheduled_date | date:'dd/MM/yyyy h:mm a'}}</td>
+      <td>{{appoints.branch_code}}</td>
+      <td>{{appoints.product_code}}</td>
+      <td>{{appoints.product_serial_number || 'NA'}}</td>
+      <td>{{appoints.product_issue_reported}}</td>
+      <!--  -->
+      <td>
+        <span *ngIf="appoints.reservation_type === 'PUD' && (appoints.ticket_id === '0' || appoints.ticket_id === null)">
+        <button class="btn btn-block btn-outline-primary" (click)="showModel(PUD_Confirmation, appoints.id)" >Convert To PUD</button>
+        </span>
+        <span *ngIf="appoints.ticket_id != '0' && appoints.ticket_id != null ">
+          <button style="width: 100%" class="btn btn-block btn-outline-primary" (click)="openTicket(appoints.ticket_id)">{{appoints.ticket_id}}</button>
+        </span></td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<ng-template class="fade" #PUD_Confirmation >
+  <div class="modal-xlg" role="document">
+    <div class="modal-content" style="display:flex !important">
+      <div class="modal-header" style="height: 55px;">
+        <h3 class="modal-title" style="line-height: 1.2; float: center; margin: 0% !important;"><strong>Pickup Request Confirmation</strong></h3>
+        <!-- <i class="material-icons" (click)="cancel()" style="color: lightgray; cursor: pointer; margin-top: 0.4rem !important;">close</i> -->
+      </div>
+      <div class="modal-body">
+
+        <div style="display: none;" [ngClass]="{'qrCodeShow': showQrcode === true}">
+          <qrcode #parent
+        [qrdata]="qrdata"
+        [allowEmptyString]="false"
+        [cssClass]="'center'"
+        [elementType]="'canvas'"
+        [errorCorrectionLevel]="'M'"
+        [margin]="0"
+        [scale]="1"
+        [title]="'Generated QRcode'"
+        [width]="200"
+        [margin]="2"
+        ></qrcode>
+      </div>
+          <div *ngIf="showQrcode === false" class="col-md-6" style="width: 50%; float: left; padding: 0.5rem; padding-top: 0rem !important">
+            <div class="card" >
+              <div class="card-header" style="margin-bottom: -0.4rem;">
+                Customer Details
+              </div>
+              <div class="card-body" style="height:29rem">
+
+                  <div class="info_row" style="padding:0%">
+                    <div class="col-md-4" >
+                      <label style="margin-top:0.5rem;" for="name">Name&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                    <div class="col-md-8" >
+                      <input type="text" [(ngModel)]="customer_name" class="form-control" style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"  placeholder="Enter your  Name" >
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0%">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">Phone Number&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                    <div class="col-md-8">
+                      <input [(ngModel)]="customer_primary_phone" pattern="[6789][0-9]{9}" id="customer_primary_phone" maxlength="10" style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;"  type="text" class="form-control" placeholder="Enter your phone no">
+                    </div>
+                  </div><div class="info_row" style="padding:0%">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;" for="Altphone">Alternate Number</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" [(ngModel)]="customer_secondary_phone" pattern="[6789][0-9]{9}" maxlength="10" class="form-control" style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" id="customer_secondary_phone" placeholder="Enter your alternate phone no">
+                    </div>
+                  </div><div class="info_row" style="padding:0%">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">E-mail&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                    <div class="col-md-8">
+                      <input [(ngModel)]="customer_email" id="customer_email" style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" type="text" class="form-control" placeholder="eMail" >
+
+                    </div>
+                  </div>
+                  <div class="info_row" style="padding:0%">
+                    <div class="col-md-4">
+                      <label style="margin-top:0.5rem;">Address&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                    <div class="col-md-8">
+                          <input [(ngModel)]="address_line1" id="address_line1"  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" type="text" class="form-control" placeholder="Address line1">
+                          <input [(ngModel)]="Address2" id="Address2"  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" type="text" class="form-control" placeholder="Address line2" >
+                          <input [(ngModel)]="city" id="city"  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" type="text" class="form-control" placeholder="City">
+                          <input [(ngModel)]="state" id="state"  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" type="text" class="form-control" placeholder="State">
+                          <input [(ngModel)]="pin" id="pin"  style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" type="text" class="form-control" placeholder="Pin">
+                    </div>
+                  </div>
+                    <div class="info_row" style="padding:0%">
+                      <div class="col-md-4">
+                        <label style="margin-top:0.5rem;" for="Landmark">Landmark&nbsp;<span style="color:red">*</span> </label>
+                      </div>
+
+                      <div class="col-md-8">
+                        <input type="text" [(ngModel)]="landmark" class="form-control" style="border-bottom: 1px solid lightgray !important;width: 100% !important; color: gray; border: 0;" id="landmark" placeholder="Enter Landmark" >
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="showQrcode === false" class="col-md-6" style="width: 50%; float: right; padding: 0.5rem; padding-top: 0px !important;">
+              <div class="card">
+                <div class="card-header" style="margin-bottom: -0.1rem;">
+                  Additional Details
+                </div>
+
+                <div class="card-body" >
+                  <div class="info_row" style="display:flex;">
+                    <div class="col-md-6" style="width:50%">
+                      <label>Pickup Date and Time&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                    <div class="col-md-15">
+                        <input type="datetime-local" id="datetime" name="datetime" [(ngModel)]="datetime" style="width:109%">
+                    </div>
+                  </div>
+                  <div class="info_row" style="display: block ruby;">
+                    <div class="col-md-6" style="width:50%">
+                      <label for="serialNumber">Serial Number</label>
+                    </div>
+                    <div class="col-md-15" style="width:62%">
+                      <input [(ngModel)]="serialNumber" id="serialNumber" class="form-control" style="border: 1px solid lightgray; margin-bottom: .5rem; margin-right: 0%; width:80%" placeholder="Enter Serial number">
+                    </div>
+                  </div>
+                  <div class="info_row" style="margin-bottom: 0.1rem;">
+                    <div class="col-md-6" style="width:140%;margin-bottom: 0.3rem;">
+                      <label for="notes">Issue Reported&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                    <div class="header_left" style="width: 100%">
+                      <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="notes" id="notes" placeholder="Enter the Issue here" class="form-control" rows="4" style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+
+                  </div>
+                  </div>
+                  <div class="info_row" >
+                    <div class="col-md-12" style="margin-bottom:0.5rem;">
+                      <label for="Visible_Damages">Does the product have any visible damage?&nbsp;<span style="color:red">*</span></label>
+                    </div>
+                      <div class="col-md-4">
+
+                          <input  type="radio" id="yes"  name="Visible_Damages_yes" value="1" style="margin-right: 0.2rem;" [(ngModel)]="Visible_Damages">
+                          <label for="yes"  style="margin-right: 0.7rem;">Yes </label>
+                          <input type="radio" id="yes" name="Visible_Damages_no" value="0" style="margin-right: 0.2rem;" [(ngModel)]="Visible_Damages" >
+                          <label for="css">No </label>
+
+                      </div>
+                  </div>
+                  <div class="info_row">
+                      <div class="col-md-12"  style="margin-bottom:0.5rem;">
+                        <label style="float: left; "for="quoteQ">Quote will be accepted with diagonsis charges?&nbsp;<span style="color:red">*</span> </label>
+                      </div>
+                      <div class="col-md-4">
+
+                          <input  type="radio" id="yes" name="quoteQ" value="1" style="margin-right: 0.2rem;" [(ngModel)]="quoteQ" >
+                          <label for="yes" style="margin-right: 0.7rem;"> Yes </label>
+                          <input type="radio" id="yes" name="quoteQ" value="0" style="margin-right: 0.2rem;" [(ngModel)]="quoteQ" >
+                          <label for="css"> No </label>
+
+                      </div>
+                  </div>
+
+                  <div class="info_row" style="margin-bottom: 0.1rem;">
+                    <div class="col-md-6" style="width:140%; margin-bottom: 0.3rem;">
+                      <label for="pickupAssigned" style="margin-right: 1rem !important">Pickup assigned To&nbsp;<span style="color:red">*</span></label>
+                    <select style="width:45%;" #val [(ngModel)]="assignTo" >
+                      <option selected disabled>Select Technician</option>
+                      <option *ngFor="let employee of employees" [value]="employee.id">
+                      {{employee.user_name}}
+                    </option>
+                   </select>
+                   </div>
+                  </div>
+                </div>
+             </div>
+          </div>
+      </div>
+      <div *ngIf="ErrorMessage != ''" style="display:flex; margin-left: 2rem;">
+        <span style="color: red; font-size: large; margin-right: 0.2rem;" class="material-icons">info</span>
+        <span style="color: red;">***{{ErrorMessage}}</span>
+      </div>
+      <div class="modal-footer" style="height: 65px; margin-top: 1rem;">
+        <!-- <div style="display:inline-flex; margin-top:1rem"> -->
+        <button *ngIf="showQrcode === false && buttonLoading === false" class="btn btn-secondary" style="float: inline-end; margin-right: 1rem;" (click)="submitPUD()">Pickup Confirm</button>
+        <button class="btn btn-secondary" type="button" disabled="" *ngIf="showQrcode === false && buttonLoading === true" style="background-color: #20a8d8 !important;"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right: 0.2rem !important;"></span> Confirming Pickup... </button>
+        <button *ngIf="showQrcode === false && buttonLoading === false" class="btn btn-secondary" style="float: inline-end; margin-right: 1rem;" (click)="cancel()">Cancel</button>
+        <button *ngIf="showQrcode === true" class="btn btn-secondary" (click)="saveAsImage(parent)">Done</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

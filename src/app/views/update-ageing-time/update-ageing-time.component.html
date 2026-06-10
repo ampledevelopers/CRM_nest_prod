@@ -1,0 +1,161 @@
+<div class="animated fadeIn">
+    <div class="card">
+        <div class="card-header">
+          Add/Edit Status Ageing Time
+        </div>
+        <div class="card-body">
+
+  <div class="row" style="margin-bottom: 1rem;" >
+      <div class="col-md-6">
+          <label >Site Type</label>
+          <select [(ngModel)]="siteType" (change)="sitetypeSelect($event.target.value)" class="form-control">
+              <option>Select Site Type</option>
+              <option *ngFor="let site_type of site_types; let i = index" [value]="site_type.id">
+                {{site_type.site_type}}
+              </option>
+          </select>
+        </div>
+      <div class="col-md-6">
+          <label >Branch <sup style="color: red">*</sup></label>
+          <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control">
+              <option>Select Branch Name</option>
+              <option *ngFor="let branch of branches; let i = index" [value]="branch.id">
+                  {{branch.label}}
+              </option>
+          </select>
+        </div>
+  </div>
+  <div class="row"  style="margin-bottom: 1rem;">
+        <div class="col-md-6">
+          <label>Status<sup style="color: red">*</sup></label>
+          <select id="status" [(ngModel)]="status" name="status" class="form-control" (change)="onChange($event)" *ngIf="sitetypeId === '1'">
+            <option value="">Please select</option>
+            <option value="300">Bin1 - RAF Ageing</option>
+            <option value="400,500,600">Bin2 - Under Diagnosis / Pending Customer / L1 Approval</option>
+            <option value="700">Bin3 - Awaiting Customer Payment</option>
+            <option value="800,900,1650">Bin4 - Spares to be Ordered</option>
+            <option value="1100,1200,1300,1400,1500,1600,1700,1800,1900,2000">Bin5 - Awaiting Spares / L1 QC approval</option>
+            <option value="2100,2200,2300">Bin6 - Pending Apple RC Acceptance</option>
+            <option value="2400,2500,2900,2800,3000,3100,3200,3300,3400">Bin7 - Open Repair at Apple RC</option>
+            <option value="2600,2700">Bin8 - Pending Unit Replacement</option>
+            <option value="3500">Bin9 - Ready for Pickup</option>
+          </select>
+          <select id="status" [(ngModel)]="status" name="status" class="form-control" (change)="onChange($event)" *ngIf="sitetypeId === '2'">
+            <option value="">Please select</option>
+            <option value="8100,8150,8200">Bin01 - New Ticket/ Pending to be schduled</option>
+            <option value="8210">Bin02 - Under Diagnosis</option>
+            <option value="8225,8250">Bin03 - On Hold - Quote to be Shared / L1 Approval</option>
+            <option value="8300,8350">Bin04 - Awaiting PO/ Pending OPF Approval</option>
+            <option value="8400,8450">Bin05 - Spares to be Ordered / Pending L2 Approval</option>
+            <option value="8500,8550">Bin06 - Awaiting Spares</option>
+            <option value="8600">Bin07 - Repair Declined by Apple</option>
+            <option value="8610,8650">Bin08 - Spares Received / Pending Invoice and DC</option>
+            <option value="8660">Bin09 - Invoice / DC generated - Pending Technician to be Scheduled</option>
+            <option value="8700,8750">Bin10 - Spares delivered - Technician Scheduled / In Repair</option>
+            <option value="8800">Bin11 - Ready for Pickup</option>
+            <option value="8900,8950,9000">Bin12 - Pending KBB Collection and Shipment to Apple</option>
+          </select>
+          <!-- <select [(ngModel)]="status" (change)="statusSelect($event.target.value)" class="form-control">
+              <option>Select Status Name</option>
+              <option *ngFor="let status of statuses; let i = index" [value]="status.id">
+                  {{status.label}}
+              </option>
+          </select> -->
+        </div>
+        <div class="col-md-6">
+            <label>Product Family<sup style="color: red">*</sup></label>
+            <select id="family" [(ngModel)]="familyId" name="family" class="form-control">
+                <option value="">Please select</option>
+                <option value="1,3,4,5,6,7,8,12,13,14">iPhone,iPad,Watch,Accessories</option>
+                <option value="2">Mac</option>
+                </select>
+            <!-- <fieldset class="form-group">
+              <ng-select ng-multiple="true"
+              class="bootstrap"
+              placeholder="any"
+              this.branches = [
+              [options]="families"
+              [multiple]="true"
+              [(ngModel)]="familyId"></ng-select>
+            </fieldset> -->
+         </div>
+  </div>
+  <div class="row" style="margin-bottom: 1rem;">
+    <div class="col-md-6">
+      <label>Ageing Time (in Min)<sup style="color: red">*</sup></label>
+      <input [(ngModel)]="ageingTime" type="number" class="form-control" placeholder="Ageing Time">
+    </div>
+    <div class="col-md-6">
+        <label>Status<sup style="color: red">*</sup></label>
+        <select id="recordstatus" [(ngModel)]="recordstatus" name="strecordstatusatus" class="form-control">
+            <!-- <option value="">Please select</option> -->
+            <option value="A" selected >Active</option>
+            <option value="I">Inactive</option>
+        </select>
+        </div>
+  </div>
+  <div class="row"  style="margin-bottom: 1rem;">
+      <div class="col-md-6">
+          <label>Remarks<sup style="color: red">*</sup></label>
+        <textarea [(ngModel)]="remarks" placeholder="Enter the remarks" class="information" rows="3" style="border: 1px solid lightgrey; margin-bottom: .5rem;"></textarea>
+          </div>
+      <div *ngIf="buttonName === 'Update'" class="col-md-6">
+          <label>History<sup style="color: red">*</sup></label>
+        <textarea [(ngModel)]="history" placeholder="Enter the remarks" class="information" rows="3" style="border: 1px solid lightgrey; margin-bottom: .5rem;" [readonly]="true"></textarea>
+          </div>
+  </div>
+    <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block ;">
+            <div class="acceptbtns" style="float: left" *ngIf="buttonSpin === false">
+                <button  (click)="save()">{{buttonName}}</button>
+            </div>
+            <div style="margin-left: 1rem;float: left;" class="acceptbtns" *ngIf="buttonSpin === false" >
+              <button  (click)="cancel()">Cancel</button>
+            </div>
+            <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+
+              </div>
+        </div>
+      </div>
+  </div><!--/.row-->
+  </div><!--/.row-->
+        <div class="card" *ngIf="isReport===true" style="margin-top: 1rem; margin-bottom: 1rem !important;" >
+            <div class="col-lg-16">
+          <div class="card-header" style="margin-bottom: 1rem; display: flex !important;">
+            <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Ageing Time Master Details
+          </div>
+          <!-- <div class="header_right" style="width: 100%;padding: 1rem;">
+              <div class="actionbtns">
+                  <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch" [(ngModel)]="ticketSearch">
+              </div>
+          </div> -->
+          <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+            <table class="table table-bordered table-striped table-sm" datatable>
+              <thead>
+                <tr>
+                  <!-- <th>Sl No</th> -->
+                  <th>Branch Code</th>
+                  <th>Status Name</th>
+                  <th>Product Family</th>
+                  <th>Ageing Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ageingDetail of ageingData; let idx = index">
+                  <!-- <td>{{idx}}</td> -->
+                  <td>{{ageingDetail.branch_code}}</td>
+                  <td>{{ageingDetail.status_name}}</td>
+                  <td>{{ageingDetail.family_id}}</td>
+                  <td>{{ageingDetail.ageing_time}}</td>
+                  <td><button  (click)="edit(ageingDetail.id)">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+    </div>
+    </div>
+    </div>
+    </div>

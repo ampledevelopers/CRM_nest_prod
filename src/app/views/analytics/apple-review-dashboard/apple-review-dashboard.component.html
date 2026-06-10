@@ -1,0 +1,44 @@
+<div class="mainDiv">
+    <div class="dashboard">
+        <fieldset>
+            <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Dashboard Type" bindLabel="label"
+                bindValue="value" [items]="dashboard" [multiple]="false" [(ngModel)]="dashboardType"
+                (change)="onChange(dashboardType)"></ng-select>
+        </fieldset>
+    </div>
+    <div class="subDashboard" *ngIf="showSubDashboard === true">
+        <fieldset>
+            <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Sub Dashboard" bindLabel="label"
+                bindValue="value" [items]="dashboardFilter" [multiple]="false"
+                [(ngModel)]="subDashboardType"></ng-select>
+        </fieldset>
+    </div>
+</div>
+
+<div *ngIf="subDashboardType === 'CSAT Period Dashboard' && showSubDashboard === true">
+    <app-csat-period-report></app-csat-period-report>
+</div>
+
+<div *ngIf="subDashboardType === 'CSAT Weekly Trend Dashboard' && showSubDashboard === true">
+    <app-csat-weekly-trend-report></app-csat-weekly-trend-report>
+</div>
+
+<div *ngIf="subDashboardType === 'DSAT Findings Dashboard' && showSubDashboard === true">
+    <app-dsat-findings-dashboard></app-dsat-findings-dashboard>
+</div>
+
+<div *ngIf="dashboardType === 'Footfall Dashboard'">
+    <app-foot-fall-dashboard></app-foot-fall-dashboard>
+</div>
+
+<div *ngIf="subDashboardType === 'Repairs Coverage Dashboard' && showSubDashboard === true">
+    <app-repairs-coverage-dashboard></app-repairs-coverage-dashboard>
+</div>
+
+<div *ngIf="subDashboardType === 'Quality Program Dashboard' && showSubDashboard === true">
+    <app-quality-program-dashboard></app-quality-program-dashboard>
+</div>
+
+<div *ngIf="subDashboardType === 'Product Repairs Dashboard' && showSubDashboard === true">
+    <app-product-repairs-dashboard></app-product-repairs-dashboard>
+</div>

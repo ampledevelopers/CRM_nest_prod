@@ -1,0 +1,142 @@
+<div class="animated fadeIn">
+  <div style="display: flex;">
+      <div class="header_left" style="width: 100%; margin-top: 0px">
+          <div class="info_row" style="margin-top: 1rem;">
+              <div class="col-md-2">
+                <input [(ngModel)]="ticketId" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="Ticket ID" (keydown)="searchTicket($event, simple_alert_temp)">
+              </div>
+              <div class="col-md-2">
+                <input [(ngModel)]="gNumber" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="G Number" (keydown)="searchTicket($event, simple_alert_temp)">
+              </div>
+              <div class="col-md-2">
+                <input [(ngModel)]="serialNumber" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="Serial Number" (keydown)="searchTicket($event, simple_alert_temp)">
+              </div>
+              <div class="col-md-2">
+                <input [(ngModel)]="phoneNumber" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="Mobile Number" (keydown)="searchTicket($event, simple_alert_temp)">
+              </div>
+              <div class="col-md-2">
+                <input [(ngModel)]="email" type="text" class="form-control-file" id="exampleFormControlFile1" placeholder="Email Id" (keydown)="searchTicket($event, simple_alert_temp)">
+              </div>
+              <div class="col-md-2">
+                <input [(ngModel)]="customerName" type="text" minlength="3" class="form-control-file" id="exampleFormControlFile1" placeholder="Customer Name" (keydown)="searchTicket($event, simple_alert_temp)">
+              </div>
+          </div>
+          <button *ngIf="buttonSpin === false"  color="primary" variant="outline" style="margin-top: 0.5rem !important; width: 22%; margin: auto; --cui-btn-hover-bg-color: #20a8d8 !important; " class="btn btn-block btn-outline-primary" (click)="search(simple_alert_temp)">Search</button>
+           <div style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+
+      </div>
+  </div>
+  <div class="card" style="border: 0px; margin-top: 1rem;" *ngIf="isTickets">
+    <div class="col-lg-12">
+      <div class="card-body" style="padding: 0px 1rem !important;">
+        <div style="overflow-x: auto; padding-top: 1rem;">
+          <table class="table table-bordered table-striped table-sm" datatable #dt [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <tr class="card-header">
+                  <th>Ticket Id</th>
+                  <th>Branch</th>
+                  <th>Date</th>
+                  <th>Serial Number</th>
+                  <th>Customer Name</th>
+                  <th>Phone</th>
+                  <th>G Number</th>
+                  <th>Physical Location</th>
+                  <th>Assigned To</th>
+                  <th>Status</th>
+                  <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of data; let idx = index">
+                <td>{{item.id}}</td>
+                <td>{{item.branch_code}}</td>
+                <td>{{item.ticket_date}}</td>
+                <td>{{item.serial_no}}</td>
+                <td>{{item.customer_name}}</td>
+                <td>{{item.customer_phone_no}}</td>
+                <td>{{item.g_number}}</td>
+                <td>{{item.device_physical_location || 'N/A'}}</td>
+                <td>{{item.assigned_user_id}}</td>
+                <td>{{item.status}}</td>
+                <td style="vertical-align: middle; width: 10%;">
+                  <button *ngIf="((buttonSpin === false) && (openBtn))" (click)="selectTicket(item.id, item.branch_code, item.site_type_id, item.dl_branch_code)">Open</button>
+                  <button *ngIf="(buttonSpin === false) && (!openBtn)" (click)="selectRaf(item.id)" style="margin-top: 0.5rem;">RAF</button>
+                  <button *ngIf="(buttonSpin === false) && (!openBtn)" (click)="selectAnalysis(item.id, analysis_temp)" style="margin-top: 0.5rem;">Analysis</button>
+                  <button *ngIf="(buttonSpin === false) && (!openBtn)" (click)="selectSVC(item.id)" style="margin-top: 0.5rem;">SVC</button>
+                  <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+              <tfoot>
+                  <tr>
+                    <td colspan="11">
+                      <mfBootstrapPaginator></mfBootstrapPaginator>
+                    </td>
+                  </tr>
+                </tfoot>
+            </table>
+          </div>
+        </div>
+  </div>
+  </div>
+</div>
+
+  <!-- ******************* Popup Modals ************************* -->
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #analysis_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Analysis</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin-top: .5rem">
+        <p *ngIf="isAnalysis !== ''" style="margin-left: 1rem;">{{isAnalysis}}</p>
+        <div *ngIf="isAnalysis === ''">
+          <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;">
+              <thead>
+                <tr style="background-color: #E6F0FA;">
+                  <th>Technician</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let analysisData of analysisList;">
+                  <td style="width: 30%">
+                    <p style="margin-bottom: 0px">{{analysisData.user_name}}</p>
+                    <span style="font-size: .7rem">{{analysisData.entrytime}}</span>
+                  </td>
+                  <td style="width: 70%">{{analysisData.remarks}}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"  (click)="cancelModel()">Done</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</ng-template>

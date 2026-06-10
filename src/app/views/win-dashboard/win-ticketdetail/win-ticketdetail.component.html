@@ -1,0 +1,471 @@
+<div style="width:70%; float: left; margin-bottom: 2rem;">
+  <div style="margin-bottom: 2rem;">
+    <div style="display: flex;">
+      <div class="ticketDiv">
+        <div class="namebox">
+          <i class="material-icons" style="margin-top:0.3rem !important;">style</i>
+        </div>
+        <div class="ticketId">
+          <b>{{data.branch_code}}</b>
+          <b>{{ticketId}}</b>
+          <span style="display: block;">{{rafDate}}</span>
+        </div>
+      </div>
+      <div class="Window-Bin">
+        <select type="text" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="selectedBin"
+          (change)="openModal(confirmSatus_alert_temp)">
+          <option *ngFor="let bin of statusOptions" [value]="bin.id">{{bin.label}}</option>
+        </select><br>
+        <span style="font-size: 0.7rem; color: red; display: inline-flex !important;">Ageing: {{ageingTime}}
+          <!-- <i class="material-icons" (click)="sendAgeingSMSTemp(sms_email_temp)" style="color: #20a8d8; margin-left: 0.5rem; cursor: pointer; display:flex !important; font-size: large;">mail</i> -->
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="animated fadeIn" style="margin-right: 1.5rem;">
+    <ul class="nav nav-tabs">
+      <li class="nav-item" style="cursor: pointer;">
+        <a class="nav-link active" [active]="true" [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="0"
+          style="display: flex; color: #545353;" cNavLink>
+          <i class="material-icons" style="margin-top: 0px !important; margin-right: .3rem;">format_quote</i>
+          <b>Analysis</b>
+        </a>
+      </li>
+      <li class="nav-item" style="cursor: pointer;">
+        <a class="nav-link" [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="1" cNavLink
+          style="display: flex; color: #545353; ">
+          <i class="material-icons" style="margin-top: 0px !important; margin-right: .3rem;">image</i>
+          <b>Documents</b>
+        </a>
+      </li>
+      <li class="nav-item" style="cursor: pointer;">
+        <a class="nav-link" [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="2" cNavLink
+          style="display: flex; color: #545353;">
+          <i class="material-icons" style="margin-top: 0px !important; margin-right: .3rem; ">insights</i>
+          <b>Recent Updates</b>
+        </a>
+      </li>
+      <li class="nav-item" style="cursor: pointer;">
+        <a class="nav-link" [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="3" cNavLink
+          style="display: flex; color: #545353;">
+          <i class="material-icons" style="margin-top: 0px !important; margin-right: .3rem; ">developer_board</i>
+          <b>Part Details</b>
+        </a>
+      </li>
+    </ul>
+
+    <c-tab-content #tabContent="cTabContent" style="overflow: hidden;">
+      <c-tab-pane class="p-3">
+        <div class="row" style="display: contents; ">
+          <div class="col-md-12 mb-4" style="padding: 0px; margin-bottom: 0px !important">
+            <div style="display: flex;">
+              <div id="div1" style="display: grid; border: 0px;">
+                <div class="card-body">
+                  <div style="display: flex;">
+                    <div class="header_left" style="width: 90%; margin: 1rem;">
+                      <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="analysisText" placeholder="Enter text here"
+                        class="information" rows="6"
+                        style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                      <button *ngIf="buttonSpin === false" style="margin-top: .5rem"
+                        class="btn btn-block btn-outline-primary" (click)="updateAnalysis(analysisText)">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; margin-bottom: 1rem; overflow: scroll;" *ngIf="analysisList.length !== 0">
+          <div class="header_left" style="width: 90%">
+            <table class="table table-bordered table-striped table-sm"
+              style="margin: auto; margin-top: 1rem; word-wrap: anywhere !important;">
+              <thead>
+                <tr style="background-color: #E6F0FA;">
+                  <th>Technician</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let analysisData of analysisList;">
+                  <td style="width: 30%"
+                    *ngIf="(analysisData.group_id === '10') || (analysisData.group_id === '9') || (analysisData.group_id === '16') || (analysisData.group_id === '17') "
+                    style="color: #ff6c00;">
+                    <p style="margin-bottom: 0px">{{analysisData.user_name}}</p>
+                    <span style="font-size: .7rem; color: #ff6c00;">{{analysisData.entrytime}}</span>
+                  </td>
+                  <td style="width: 70%; color: #ff6c00;"
+                    *ngIf="analysisData.group_id === '10' || (analysisData.group_id === '9') || (analysisData.group_id === '16') || (analysisData.group_id === '17')">
+                    {{analysisData.remarks}}</td>
+                  <td style="width: 30%"
+                    *ngIf="(analysisData.group_id !== '10') && (analysisData.group_id !== '9') && (analysisData.group_id !== '16') && (analysisData.group_id !== '17')">
+                    <p style="margin-bottom: 0px">{{analysisData.user_name}}</p>
+                    <span style="font-size: .7rem">{{analysisData.entrytime}}</span>
+                  </td>
+                  <td style="width: 70%"
+                    *ngIf="(analysisData.group_id !== '10') && (analysisData.group_id !== '9') && (analysisData.group_id !== '16') && (analysisData.group_id !== '17')">
+                    {{analysisData.remarks}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </c-tab-pane>
+
+      <!-- document -->
+      <c-tab-pane class="p-3">
+        <div style="width: 100%;">
+          <div class="row" style="display: contents; ">
+            <div class="col-md-12 mb-4" style="padding: 0px; margin-bottom: 0px !important">
+              <div style="display: flex;">
+                <div id="div1" style="display: grid; border: 0px;">
+                  <div class="card-body">
+                    <div style="display: flex; margin-bottom: 1rem;">
+                      <div class="header_left">
+                        <select [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="documentType">
+                          <option *ngFor="let docType of documentTypes" [value]="docType.value">
+                            {{docType.name}}
+                          </option>
+                        </select>
+                        <textarea [(ngModel)]="description" placeholder="Description" class="information" rows="5"
+                          style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                        <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #myInput type="file"
+                          class="form-control-file" id="exampleFormControlFile1" (change)="onFileUpload($event)">
+                        <button *ngIf="buttonSpin === false" style="margin-top: .5rem"
+                          class="btn btn-block btn-outline-primary" (click)="upload(description)">Upload
+                          Document</button>
+                        <div class="col-md-12" *ngIf="dError !== ''" style="text-align: center; color: red">
+                          <i class="material-icons">info</i>&nbsp; {{dError}}
+                        </div>
+                      </div>
+                    </div>
+
+                    <table class="table table-bordered table-striped table-sm"
+                      style="margin-top: 1rem; width: 90%; margin: auto;" *ngIf="isExDocuments === true">
+                      <thead>
+                        <tr style="text-align: center; background-color: #E6F0FA">
+                          <th>Type / Date</th>
+                          <th>Description</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let doc of documents;" style="font-size: 0.8rem;">
+                          <td style="width: 20%"><span>{{doc.document_type}}</span>&nbsp;<span>{{doc.date}}</span></td>
+                          <td style="width: 20%">{{doc.description}}</td>
+                          <td style="width: 30%">
+                            <div class="docBtn">
+                              <a href="{{doc.file_name}}" target="_blank"><i class="material-icons" alt="View"
+                                  style="font-size: 1.6em !important">remove_red_eye</i></a>
+                            </div>
+                            <div class="docBtn" *ngIf="(doc.removeDocOpt === true)">
+                              <a (click)="removeDoc(doc, confirm_alert_temp)"><i class="material-icons" alt="Delete"
+                                  style="font-size: 1.6em !important">delete</i></a>
+                            </div>
+                             <!-- <div class="docBtn">
+                              <a (click)="downloadDoc(doc)"><i class="material-icons" alt="Download" style="font-size: 1.6em !important">download</i></a>
+                            </div> -->
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </c-tab-pane>
+
+      <c-tab-pane class="p-3">
+        <div id="div1" style="display: grid; border: 0px;">
+          <div style="height: 100%;">
+            <div *ngIf="recentData.length === 0">
+              <p style="text-align: center">No Recent Update</p>
+            </div>
+            <div class="row_line" *ngIf="recentData.length !== 0">
+              <div class="main-timeline">
+                <div class="timeline" *ngFor="let redata of recentData" style="margin-left: 0px;">
+                  <div class="timeline-icon"></div>
+                  <div class="timeline-content">
+                    <span class="date">{{redata.entrytime}}</span>
+                    <h5 class="title_line">{{redata.message}}</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </c-tab-pane>
+
+      <!-- Part Details -->
+      <c-tab-pane class="p-3">
+        <div style="width: 100%;">
+          <div class="row" style="display: contents; ">
+            <div class="col-md-12 mb-4" style="padding: 0px; margin-bottom: 0px !important">
+              <div style="display: flex;">
+                <div id="div1" style="display: grid; border: 0px;">
+                  <div class="card-body">
+                    <div style="display: flex; margin-bottom: 1rem;">
+                      <div class="header_left">
+                        <div class="row" style="margin-bottom: 0.5rem;">
+                          <div style="width:50%">
+                            <fieldset>
+                              <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Part Type"
+                                bindLabel="label" bindValue="value" [items]="partTypes" [multiple]="false"
+                                [(ngModel)]="partType"></ng-select>
+                            </fieldset>
+                          </div>
+                          <div style="width:50%;">
+                            <input type="input" id="partNo" name="partNo" placeholder="Enter Part Number"
+                              style="border: 1px solid lightgray !important;width: 100% !important; border: 0;height: 2.2rem;padding-left: 0.5rem;"
+                              [(ngModel)]="partNo">
+                          </div>
+                        </div>
+                        <textarea [(ngModel)]="partDescription" placeholder="Add Part Details" class="information"
+                          rows="5" style="border: 1px solid lightgray; margin-bottom: .5rem;padding-left: 0.5rem;"></textarea>
+                        <button *ngIf="buttonSpin === false" style="margin-top: .5rem"
+                          class="btn btn-block btn-outline-primary" (click)="addPart()">Save</button>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; margin-bottom: 1rem; overflow: scroll;" *ngIf="winPartDetails.length !== 0">
+                      <div class="header_left" style="width: 90%">
+                        <table class="table table-bordered table-striped table-sm"
+                          style="margin: auto; margin-top: 1rem; word-wrap: anywhere !important;">
+                          <thead>
+                            <tr style="background-color: #E6F0FA;">
+                              <th>Part no and Date</th>
+                              <th>Part Detail</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let data of winPartDetails;">
+                              <td style="width: 30%;">
+                                <span style="font-size: .9rem;font-weight: bold;">{{data.part_no}}</span><br>
+                                <span style="font-size: .9rem;">{{data.entrytime}}</span>
+                              </td>
+                              <td style="width: 70%;">
+                                <span style="font-size: .9rem;">{{data.part_type}}</span><br>
+                                <span style="font-size: .9rem;">{{data.description}}</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </c-tab-pane>
+    </c-tab-content>
+  </div>
+</div>
+
+<div style="border: 0px solid lightgray;background-color:white; width:30%; float: right ">
+  <div id="div" style="height: 250px;">
+    <div class="card-header"
+      style="background-color: #f7f7f7;position: relative; border-right: 1px solid lightgray; display: flex; ">
+      <i class="material-icons" style="margin-right: .3rem;">image</i><b>Device</b>
+    </div>
+    <div class="deviceInfo" style=" background-color: white;">
+      <div class="info_row">
+        <div class="col-md-6">
+          <label>Serial Number</label>
+        </div>
+        <div class="col-md-6">
+          <input [(ngModel)]="data.serial_no" style="background: transparent; border: 0;" class="information"
+            type="text" name="serial_no" placeholder="N/A" readonly>
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-6">
+          <label>IMEI Number</label>
+        </div>
+        <div class="col-md-6">
+          <input [(ngModel)]="data.imei_no" style="background: transparent; border: 0" class="information" type="text"
+            name="imei_no" placeholder="N/A" readonly>
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-6">
+          <label>Product Name</label>
+        </div>
+        <div class="col-md-6">
+          <input class="information" [(ngModel)]="data.product_description" style="background: transparent; border: 0"
+            type="text" name="Product Family" placeholder="N/A" readonly>
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-6">
+          <label>Model Number</label>
+        </div>
+        <div class="col-md-6">
+          <input class="information" [(ngModel)]="data.model_number" style="background: transparent; border: 0"
+            type="text" name="Model" placeholder="N/A" readonly>
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-6">
+          <label>Brand</label>
+        </div>
+        <div class="col-md-6">
+          <input class="information" [(ngModel)]="data.brand" style="background: transparent; border: 0" type="text"
+            name="purchased_in" placeholder="N/A" readonly>
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-6">
+          <label>Warranty Status</label>
+        </div>
+        <div class="col-md-6" style="overflow: auto;">
+          <input class="information" [(ngModel)]="warrantyStatus" style="background: transparent; border:0;" type="text"
+            name="warranty_status" placeholder="N/A" readonly>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="div" style="height: 595px; margin-top: 1rem;">
+    <div class="card-header"
+      style="background-color: #f7f7f7;position: relative; border-right: 1px solid lightgray; display: flex; ">
+      <i class="material-icons" style="margin-right: .3rem;">person</i> <b>Customer</b>
+    </div>
+    <div class="customerInfo" style="height:100%;">
+      <div class="customer_info_row">
+        <div class="col-md-12">
+          <label>Name</label>
+        </div>
+        <div class="col-md-12">
+          <input class="information" [(ngModel)]="customerInfo.name" type="text" name="Customer name"
+            placeholder="Customer Name" readonly>
+        </div>
+      </div>
+      <div class="customer_info_row">
+        <div class="col-md-12">
+          <label>Address</label>
+        </div>
+        <div class="col-md-12">
+          <textarea [(ngModel)]="customerInfo.address" class="information" rows="5" name="address"
+            placeholder="Address here..." style="margin-left: .5rem;" readonly></textarea>
+        </div>
+      </div>
+      <div class="customer_info_row">
+        <div class="col-md-12">
+          <label>Contact Number</label>
+        </div>
+        <div class="col-md-12">
+          <input [(ngModel)]="data.customer_phone_no" style="width: 50%" class="information" type="text" name="contact"
+            placeholder="Contact Number" readonly>
+        </div>
+      </div>
+      <div class="customer_info_row">
+        <div class="col-md-12">
+          <label>Email ID</label>
+        </div>
+        <div class="col-md-12">
+          <input [(ngModel)]="data.customer_email_id" class="information" type="text" name="email"
+            placeholder="Email ID" readonly>
+        </div>
+      </div>
+      <div class="customer_info_row" style="padding-bottom: 0rem;">
+        <div class="col-md-12">
+          <label>Org Name</label>
+        </div>
+        <div class="col-md-12">
+          <input [(ngModel)]="companyName" class="information" type="text" name="email" placeholder="Org Name" readonly>
+        </div>
+      </div>
+      <div class="customer_info_row">
+        <div class="col-md-12">
+          <label style="width: 50%">
+            <p style="margin-bottom: 0px; float: left;">RAF Information</p>
+          </label>
+        </div>
+        <div class="col-md-12">
+          <textarea [(ngModel)]="data.problem_reported" class="information" rows="2" name="Problem reported"
+            placeholder="Problem reported" readonly style="margin-left: .5rem;"></textarea>
+        </div>
+      </div>
+      <div class="customer_info_row" style="margin-top: 0.5rem;">
+        <div class="col-md-12">
+          <label>Customer's Query</label>
+        </div>
+        <div class="col-md-12">
+          <textarea [(ngModel)]="data.customer_query" class="information" rows="4" name="Customer's_Query"
+            placeholder="Customer's Query" readonly style="margin-left: .5rem;"></textarea>
+        </div>
+      </div>
+
+      <!--  <div class="info_row" style="padding-bottom: 0rem;" *ngIf="data.site_type_id === '2'">
+        <div class="col-md-2">
+          <label>KD Call</label>
+        </div>
+        <div class="col-md-8" style="display: flex;">
+          <input [(ngModel)]="kdCall" class="form-check-input" type="checkbox" value="option1" id="checkbox1">
+          <a style="color: #20a8d8; cursor: pointer; display: block;  margin-left: 0.5rem;"
+            (click)="selectKDCall()">Save</a>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #confirm_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary"
+          (click)="confirm(confirmAlert.id, simple_alert_temp, create_svc_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirmSatus_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Status Change</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="remarks" placeholder="Enter the remarks" class="information" rows="3"
+          style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="showerror === true" style="color: red;text-align: center;display: flex;">
+          <i class="material-icons" style=" margin-top: 0.5rem;">info</i>&nbsp;
+          <div style=" margin-top: 0.7rem;">Enter Remarks</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirmChangeStatus(simple_alert_temp)">Confirm</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 80px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

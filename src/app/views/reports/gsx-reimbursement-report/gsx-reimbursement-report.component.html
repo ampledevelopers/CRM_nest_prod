@@ -1,0 +1,165 @@
+<div class="card" >
+  <div class="card-header">
+    Filters - GSX-Reimbursement Report
+  </div>
+  <div class="card-body">
+    <div class="row" >
+      <div class="col-md-3">
+        <label>Report Type<sup style="color: red">*</sup></label>
+        <fieldset>
+          <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Report Type" bindLabel="label"
+            bindValue="value" [items]="reportTemp" [multiple]="false" [(ngModel)]="reportType"
+            (change)="onChangeReport(reportType)"></ng-select>
+        </fieldset>
+      </div>
+      <div *ngIf="showRepairReport === true" class="col-md-3">
+        <label>Payment Type<sup style="color: red">*</sup></label>
+        <fieldset>
+          <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Report Type" bindLabel="label"
+            bindValue="value" [items]="dataTemp" [multiple]="false" [(ngModel)]="periodType"
+            (change)="onChange(periodType)"></ng-select>
+        </fieldset>
+      </div>
+      <div class="col-md-3" *ngIf="periodType === 'paid'">
+        <label>Financial Year<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="year" name="year" class="form-control">
+          <option value="">Select Year</option>
+          <option value="FY22">FY22</option>
+          <option value="FY23">FY23</option>
+          <option value="FY24">FY24</option>
+          <option value="FY25">FY25</option>
+          <option value="FY26">FY26</option>
+        </select>
+      </div>
+      <div class="col-md-3" *ngIf="periodType === 'paid'">
+        <label>Month<sup style="color: red">*</sup></label>
+        <select id="quarter" [(ngModel)]="month" name="quarter" class="form-control">
+          <option *ngFor="let docType of months" [value]="docType.value">
+            {{docType.name}}
+          </option>
+        </select>
+      </div>
+       <div class="col-md-3" *ngIf="showPartLabourReport === true">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="branches" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="branchId" (change)="branchSelect(branchId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-3" *ngIf="periodType === 'pending' || showPartLabourReport === true">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-3" *ngIf="periodType === 'pending' || showPartLabourReport === true">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+          <div class="col-md-3" *ngIf="showLabourReport === true">
+            <label>Financial Year<sup style="color: red">*</sup></label>
+            <select id="year" [(ngModel)]="year" name="year" class="form-control">
+              <option value="">Select Year</option>
+              <option value="FY22">FY22</option>
+              <option value="FY23">FY23</option>
+              <option value="FY24">FY24</option>
+              <option value="FY25">FY25</option>
+              <option value="FY26">FY26</option>
+            </select>
+          </div>
+          <div class="col-md-3" *ngIf="showLabourReport === true">
+            <label>Month<sup style="color: red">*</sup></label>
+            <select id="quarter" [(ngModel)]="month" name="quarter" class="form-control">
+              <option *ngFor="let docType of months" [value]="docType.value">
+                {{docType.name}}
+              </option>
+            </select>
+          </div>
+      </div>
+    </div>
+  <div style="display: flex;margin-bottom: 1rem;">
+    <div class="header_left" style="display:  block !important;">
+      <div class="acceptbtns" style="float: left">
+        <button (click)="load()">Load</button>
+      </div>
+      <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+        <button (click)="exportAsXLSX()">Export</button>
+      </div>
+      <div style="margin-left: 1rem;" class="acceptbtns">
+        <button (click)="clear()">Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading === true" style="margin-top: 1rem;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="card" *ngIf="showPeriodData === true" style="margin-top: 1rem;">
+  <div class="card-body">
+  <c-smart-table #smartTable="cSmartTable" activePage="1" clickableRows [columnFilter]="false" [columnSorter]="false"
+    [columns]="periodColumns" header [itemsPerPageSelect]="true" [itemsPerPage]="20" [items]="periodDataTemp" pagination
+    [sorterValue]="{ column: 'name', state: 'asc' }" [tableBodyProps]="{align: 'middle'}" [tableFilter]="true"
+    [tableHeadProps]="{color: 'secondary'}" [tableProps]="{ hover: true, striped: true, responsive: true }">
+    <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+      <td [cTableActive]="smartTable.tableDataCellProps(item, columnName)?.['active']"
+        [cTableColor]="smartTable.tableDataCellProps(item, columnName)?.color"
+        [cAlign]="smartTable.tableDataCellProps(item, columnName)?.align"
+        [ngClass]="smartTable.tableDataCellClasses(item, columnName)">
+        <ng-container [ngSwitch]="columnName">
+          <ng-container *ngSwitchDefault>
+            {{tdContent}}
+          </ng-container>
+        </ng-container>
+      </td>
+    </ng-template>
+  </c-smart-table>
+</div>
+</div>
+
+<div class="card" *ngIf="showDateData === true" style="margin-top: 1rem;">
+  <div class="card-body">
+  <c-smart-table #smartTable="cSmartTable" activePage="1" clickableRows [columnFilter]="false" [columnSorter]="false"
+    [columns]="dateColumns" header [itemsPerPageSelect]="true" [itemsPerPage]="20" [items]="dateDataTemp" pagination
+    [sorterValue]="{ column: 'name', state: 'asc' }" [tableBodyProps]="{align: 'middle'}" [tableFilter]="true"
+    [tableHeadProps]="{color: 'secondary'}" [tableProps]="{ hover: true, striped: true, responsive: true }">
+    <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+      <td [cTableActive]="smartTable.tableDataCellProps(item, columnName)?.['active']"
+        [cTableColor]="smartTable.tableDataCellProps(item, columnName)?.color"
+        [cAlign]="smartTable.tableDataCellProps(item, columnName)?.align"
+        [ngClass]="smartTable.tableDataCellClasses(item, columnName)">
+        <ng-container [ngSwitch]="columnName">
+          <ng-container *ngSwitchDefault>
+            {{tdContent}}
+          </ng-container>
+        </ng-container>
+      </td>
+    </ng-template>
+  </c-smart-table>
+</div>
+</div>
+
+
+
+<div class="card" *ngIf="showPartLabourcolumn === true" style="margin-top: 1rem;">
+  <div class="card-body">
+  <c-smart-table #smartTable="cSmartTable" activePage="1" clickableRows [columnFilter]="false" [columnSorter]="false"
+    [columns]="labourColumns" header [itemsPerPageSelect]="true" [itemsPerPage]="20" [items]="labourDataTemp" pagination
+    [sorterValue]="{ column: 'name', state: 'asc' }" [tableBodyProps]="{align: 'middle'}" [tableFilter]="true"
+    [tableHeadProps]="{color: 'secondary'}" [tableProps]="{ hover: true, striped: true, responsive: true }">
+    <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+      <td [cTableActive]="smartTable.tableDataCellProps(item, columnName)?.['active']"
+        [cTableColor]="smartTable.tableDataCellProps(item, columnName)?.color"
+        [cAlign]="smartTable.tableDataCellProps(item, columnName)?.align"
+        [ngClass]="smartTable.tableDataCellClasses(item, columnName)">
+        <ng-container [ngSwitch]="columnName">
+          <ng-container *ngSwitchDefault>
+            {{tdContent}}
+          </ng-container>
+        </ng-container>
+      </td>
+    </ng-template>
+  </c-smart-table>
+</div>
+</div>

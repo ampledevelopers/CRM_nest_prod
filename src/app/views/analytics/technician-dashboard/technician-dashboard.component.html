@@ -1,0 +1,544 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+    <div *ngIf="userRole === '3' || userRole === '2'" class="card">
+        <div class="card-header">
+          Filters
+        </div>
+        <div class="card-body">
+
+  <div class="row" >
+      <div  *ngIf="userRole === '3'" class="col-md-3">
+          <label >Branches</label>
+          <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control">
+              <option>Select Branch Name</option>
+              <option *ngFor="let branch of branches; let i = index" [value]="branch.id">
+                  {{branch.label}}
+              </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+            <label >Location Users</label>
+            <select [(ngModel)]="location_emp" (change)="location_empSelect($event.target.value)" class="form-control">
+                <option>Select Team member in Location</option>
+                <option *ngFor="let user of location_users; let i = index" [value]="user.user_id">
+                    {{user.user_name}}
+                </option>
+            </select>
+          </div>
+        <div class="col-md-3">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input" placeholder="dd-mm-yyyy">
+        </div>
+        <div class="col-md-3">
+            <label>To Date<sup style="color: red">*</sup></label>
+            <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" placeholder="dd-mm-yyyy">
+         </div>
+  </div>
+    <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display: flex !important">
+            <div class="acceptbtns" style="float: left">
+                <button  (click)="load()">Load</button>
+            </div>
+            <div style="margin-left: 1rem;" class="acceptbtns">
+              <button  (click)="clear()">Clear</button>
+            </div>
+        </div>
+      </div>
+  </div><!--/.row-->
+  </div><!--/.row-->
+  <div class="card">
+    <div class="card-header">
+      <strong>Datepicker</strong>
+      <small>A lightweight &amp; configurable datepicker component</small>
+    </div>
+    <div class="card-body">
+      <!-- <div class="row">
+          <ng-template #popContent>Hello, <b>{{name}}</b>!</ng-template>
+          <ng-template #popTitle>Fancy <b>content!!</b></ng-template>
+          <button type="button" class="btn btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="popTitle">
+            I've got markup and bindings in my popover!
+          </button>
+      </div> -->
+      <!--<div class="row">
+            <ng-template #popTemplateHtml>
+                <tabset>
+                  <tab>
+                    <ng-template tabHeading><i class="icon-notebook"></i> Range </ng-template>
+                    <div class="row">
+                        <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [(ngModel)]="bsRangeValue">-->
+                      <!-- <div class="col-sm-12">
+                        <input type="text"
+                        class="form-control"
+                        #dp="bsDatepicker"
+                        bsDatepicker [(bsValue)]="bsValue">
+                      </div> -->
+                   <!-- </div>
+                  </tab>
+                  <tab>
+                      <ng-template tabHeading><i class="icon-notebook"></i> Days </ng-template>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <input type="text"
+                          class="form-control"
+                          #dp="bsDatepicker"
+                          [bsConfig]="bsConfig"
+                          bsDatepicker [(bsValue)]="bsValue">
+                        </div>
+                      </div>
+                    </tab>
+                  <tab>
+                    <ng-template tabHeading><i class="icon-notebook"></i> Month </ng-template>
+                    <div class="row">
+                      <input [(ngModel)]="modelDate" autocomplete="off" class="form-control" name="date" bsDatepicker [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)">
+                      Result: <p>{{modelDate}}</p>
+                    </div>
+                  </tab>
+                </tabset>
+            </ng-template>
+            <button type="button" class="btn btn-success" placement="bottom"
+                    [popover]="popTemplateHtml">--> <!--  popoverTitle="Dynamic html inside" -->
+           <!--   Show me popover with html
+            </button>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <input type="text"
+          class="form-control"
+          #dp="bsDatepicker"
+          bsDatepicker [(bsValue)]="bsValue">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <input [(ngModel)]="modelDate" autocomplete="off" class="form-control" name="date" bsDatepicker [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)">
+          Result: <p>{{modelDate}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-12 col-md-6 form-group">
+          <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [(ngModel)]="bsRangeValue">
+        </div>
+        <div class="col-xs-12 col-12 col-md-3 form-group">
+          <button class="btn btn-success" (click)="drp.toggle()">Date Range Picker</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div style="display: flex;">
+      <div class="row" style="display: block; width: 100%">
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <div>
+              <h5>Karan</h5>
+            </div>
+          </div>
+          <div class="col-md-6">
+              <div style="text-align: right;">
+                <h6>Location</h6>
+              </div>
+            </div>
+        </div>
+      </div>
+  </div> -->
+  <div *ngFor="let item of emp;let idx = index" style="display: flex;" >
+      <div class="header_left" style="margin-left: 0px;">
+          <h5> {{item.branch_name}} </h5>
+      </div> <!--  Header Close -->
+      <!-- <div class="header_left">
+          <div class="actionbtns">
+              <button>Keywords</button>
+          </div>
+      </div>  -->
+      <div class="header_right">
+        <ng-template #popTemplateHtml>
+            <div [innerHtml]="html"></div>
+          </ng-template>
+          <div class="col-6 col-sm-4 col-md mb-3 mb-xl-0 text-center" style="padding: 0px;">
+          <button type="button" class="btn btn-outline-primary" [popover]="popTemplateHtml"
+          popoverTitle="Legends" triggers="focus" placement="bottom" style="padding: 0.2rem 0.5rem 0.2rem 0.5rem; width:210px;"><i class="fa fa-info-circle"></i>&nbsp;Keywords - Legends
+         </button>
+         </div>
+          </div>
+  </div>
+  <div class="info_row">
+    <div class="col-md-6"  style="float: left;">
+      <div class="card">
+        <div class="card-body" style="padding: 0px;">
+        <table class="table table-bordered table-striped table-sm" style="margin: 0rem">
+            <thead>
+              <tr style="text-align: center; background-color: #D2D2D2;font-weight: bold;border-bottom: 1px solid grey">
+                <th>BIN</th>
+                <th>YD</th>
+                <th>UD</th>
+                <th>AC</th>
+                <th>SO</th>
+                <th>PA</th>
+                <th>PR</th>
+                <th>RC</th>
+                <th>SR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background-color: #EBEBEB;" *ngIf="bin?.length > 0">
+                <td>Total</td>
+                <td>{{bin[0].count}}</td>
+                <td>{{bin[1].count}}</td>
+                <td>{{bin[2].count}}</td>
+                <td>{{bin[3].count}}</td>
+                <td>{{bin[4].count}}</td>
+                <td>{{bin[5].count}}</td>
+                <td>{{bin[6].count}}</td>
+                <td></td>
+              </tr>
+              <tr style="background-color: #EBEBEB;">
+                <td>Breach</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          </div>
+    </div>
+    <div class="col-md-6" style="float: left;">
+        <div class="card">
+          <!-- <div class="card-header"> -->
+            <!-- <strong>Productivty</strong> -->
+          <!-- </div> -->
+          <div class="card-body" style="padding: 0px;">
+              <table class="table table-bordered table-striped table-sm" style="margin: 0rem">
+                <thead>
+                    <tr>
+                        <td colspan="5" style="text-align: left; background-color: #D2D2D2;font-weight: bold;"><strong>KBB Ageing</strong></td>
+                      </tr>
+                </thead>
+                <tbody>
+                  <tr style="background-color: #EBEBEB;font-weight: bold;">
+                      <td>0-2 days</td>
+                      <td>2-5 Days</td>
+                      <td>5-10 Days</td>
+                      <td>>10 days</td>
+                      <td>Total</td>
+                      <!-- <td>LT</td> -->
+                    </tr>
+                    <tr style="background-color: #EBEBEB;">
+                      <td>10</td>
+                      <td>30</td>
+                      <td>40</td>
+                      <td>20</td>
+                      <td>50</td>
+                      <!-- <td>65</td> -->
+                    </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+        </div>
+  </div>
+  <div *ngFor="let item of emp;let idx = index" style="display: flex;" >
+      <div class="header_left" style="margin-left: 0px;">
+          <h5>{{item.user_name}}</h5>
+      </div> <!--  Header Close -->
+      <!-- <div class="header_right">
+          <div class="actionbtns">
+            {{item.branch_name}}
+          </div>
+      </div> -->
+  </div>
+    <div class="info_row">
+      <div class="col-md-8">
+          <div class="info_row" style="padding-bottom:0px;">
+          <div class="col-md-6" style="float: left;">
+            <div class="card">
+              <div class="card-header">
+                <strong>Productivity</strong>
+              </div>
+              <div class="card-body" style="padding: 0px;">
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto">
+                    <tbody>
+                      <tr *ngIf="prod_mt?.length > 0">
+                           <td style = "background-color: #157ab5;color:#efefef;font-size: 1rem;font-weight:Bold">MT</td>
+                           <td style="background-color: #66ccff;font-size: 1rem;">{{prod_mt[0].stages}}</td>
+                           <td style="background-color: #66ccff;font-size: 1rem;"></td>
+                          <!-- <td>LB</td>
+                         <td>CB</td>
+                          <td>LT</td> -->
+                        </tr>
+                        <tr *ngIf="prod_la?.length > 0">
+                          <td style = "background-color: #157ab5;color:#efefef;font-size: 1rem;font-weight:Bold">LA</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_la[0]}}</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;"></td>
+                          <!-- <td>40</td>
+                          <td>20</td>
+                          <td>50</td> -->
+                        </tr>
+                        <tr *ngIf="prod_ca?.length > 0">
+                          <td style = "background-color: #157ab5;color:#efefef;font-size: 1rem;font-weight:Bold">CA</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_ca[0]}}</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;"></td>
+                        </tr>
+                        <tr *ngIf="prod_lb?.length > 0">
+                          <td style = "background-color: #157ab5;color:#efefef;font-size: 1rem;font-weight:Bold">LB</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_lb[0].stages}}</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_lb[0].user_name}}</td>
+                        </tr>
+                        <tr *ngIf="prod_cb?.length > 0">
+                          <td style = "background-color: #157ab5;color:#efefef;font-size: 1rem;font-weight:Bold">CB</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_cb[0].stages}}</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_cb[0].user_name}}-{{prod_cb[0].branch_name}}</td>
+                        </tr>
+                        <tr  *ngIf="prod_lt?.length > 0">
+                          <td style = "background-color: #157ab5;color:#efefef;font-size: 1rem;font-weight:Bold">LT</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;">{{prod_lt[0].stages}}</td>
+                          <td style="background-color: #66ccff;font-size: 1rem;"></td>
+                        </tr>
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+            </div>
+            <div class="col-md-6" style="float: right;">
+              <div class="card">
+                <div class="card-header">
+                  <strong>Average Time</strong>
+                </div>
+                <div class="card-body" style="padding: 0px;">
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto;">
+                      <tbody>
+                        <tr>
+                          <td colspan="2">Customer Handling</td>
+                          <td colspan="2">Repair Handling</td>
+                        </tr>
+                        <tr>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">MT</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">20</td>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">MT</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">10</td>
+                          </tr>
+                        <tr>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">LA</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">15</td>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">LA</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">35</td>
+                         </tr>
+                        <tr>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">CA</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">110</td>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">CA</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">150</td>
+                          </tr>
+                        <tr>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">LT</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">170</td>
+                          <td style = "background-color: #34852e;color:#efefef;font-size: 1rem;font-weight:Bold">LT</td>
+                          <td style="background-color: #9add96;font-size: 1rem;">1550</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-12" style="float: left;">
+              <div class="card">
+                <div class="card-header">
+                  <strong>My Account Basket - Active</strong>
+                </div>
+                <div class="card-body" style="padding: 0px;">
+                    <table class="table table-bordered table-striped table-sm" style="margin: auto;border-block-color: #808080">
+                      <tbody>
+                        <tr style="background-color: #FD8008;color:#efefef;font-size: 1rem;font-weight: bold">
+                            <td>Tickets</td>
+                            <td>UD</td>
+                            <td>SO</td>
+                            <td>PR</td>
+                            <td>RC</td>
+                            <td>PA</td>
+                            <td>AC</td>
+                            <!-- <td>-</td>
+                            <td>-</td>
+                            <td>-</td> -->
+                          </tr>
+                          <tr *ngFor="let item of my_basket_repairs; let idx = index">
+                            <td style="background-color: #E9B009">{{item.branch_code}}{{item.id}}</td>
+                            <td>15:55</td>
+                            <td>01:00</td>
+                            <td>00:12</td>
+                            <td>10:00</td>
+                            <td>11:11</td>
+                            <td>18:29</td>
+                            <!-- <td>-</td>
+                            <td>-</td>
+                            <td>-</td> -->
+                          </tr>
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-4" style="padding: 0px;">
+          <div class="col-md-12" style="float: left;">
+            <div class="card">
+              <div class="card-header">
+                <strong>Repair Status</strong>
+              </div>
+              <div class="card-body" style="padding: 0px;">
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto;">
+                      <tbody>
+                          <th colspan="4">iPhone</th>
+                          <tr>
+                            <td class="label-ip"></td>
+                            <td class="label-ip">Devices</td>
+                            <td class="label-ip">Stages</td>
+                            <td class="label-ip">Time(in Min)</td>
+                          </tr>
+                          <tr *ngIf="iphone_mt?.length > 0">
+                          <td class="label-ip">MT</td>
+                          <td class="data-ip">{{iphone_mt[0]}}</td>
+                          <td class="data-ip">{{iphone_mt[1].stages}}</td>
+                          <td class="data-ip">{{iphone_mt[1].time}}</td>
+                        </tr>
+                        <tr *ngIf="iphone_lb?.length > 0">
+                          <td class="label-ip">LB</td>
+                          <td class="data-ip">{{iphone_lb[0].devices}}</td>
+                          <td class="data-ip">{{iphone_lb[1].stages}}</td>
+                          <td class="data-ip">{{iphone_lb[1].time}}</td>
+                        </tr>
+                        <tr *ngIf="iphone_cb?.length > 0">
+                          <td class="label-ip">CB</td>
+                          <td class="data-ip">{{iphone_cb[0].devices}}</td>
+                          <td class="data-ip">{{iphone_cb[1].stages}}</td>
+                          <td class="data-ip">{{iphone_cb[1].time}}</td>
+                        </tr>
+                        <tr *ngIf="iphone_lt?.length > 0">
+                          <td class="label-ip">LT</td>
+                          <td class="data-ip">{{iphone_lt[0].devices}}</td>
+                          <td class="data-ip">{{iphone_lt[1].stages}}</td>
+                          <td class="data-ip">{{iphone_lt[1].time}}</td>
+                        </tr>
+                    </tbody>
+                  </table>
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;">
+                    <tbody>
+                        <th colspan="4">Mac</th>
+                        <tr>
+                            <td class="label-mac"></td>
+                            <td class="label-mac">Devices</td>
+                            <td class="label-mac">Stages</td>
+                            <td class="label-mac">Time(in Min)</td>
+                          </tr>
+                          <tr *ngIf="mac_mt?.length > 0">
+                              <td class="label-mac">MT</td>
+                              <td class="data-mac">{{mac_mt[0]}}</td>
+                              <td class="data-mac">{{mac_mt[1].stages}}</td>
+                              <td class="data-mac">{{mac_mt[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="mac_lb?.length > 0">
+                              <td class="label-mac">LB</td>
+                              <td class="data-mac">{{mac_lb[0].devices}}</td>
+                              <td class="data-mac">{{mac_lb[1].stages}}</td>
+                              <td class="data-mac">{{mac_lb[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="mac_cb?.length > 0">
+                              <td class="label-mac">CB</td>
+                              <td class="data-mac">{{mac_cb[0].devices}}</td>
+                              <td class="data-mac">{{mac_cb[1].stages}}</td>
+                              <td class="data-mac">{{mac_cb[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="mac_lt?.length > 0">
+                              <td class="label-mac">LT</td>
+                              <td class="data-mac">{{mac_lt[0].devices}}</td>
+                              <td class="data-mac">{{mac_lt[1].stages}}</td>
+                              <td class="data-mac">{{mac_lt[1].time}}</td>
+                            </tr>
+                    </tbody>
+                  </table>
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;">
+                    <tbody>
+                        <th colspan="4">Watches</th>
+                        <tr>
+                            <td class="label-wa"></td>
+                            <td class="label-wa"> Devices</td>
+                            <td class="label-wa">Stages</td>
+                            <td class="label-wa">Time(in Min)</td>
+                          </tr>
+                          <tr *ngIf="watch_mt?.length > 0">
+                              <td class="label-wa">MT</td>
+                              <td class="data-wa">{{watch_mt[0]}}</td>
+                              <td class="data-wa">{{watch_mt[1].stages}}</td>
+                              <td class="data-wa">{{watch_mt[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="watch_lb?.length > 0">
+                              <td class="label-wa">LB</td>
+                              <td class="data-wa">{{watch_lb[0].devices}}</td>
+                              <td class="data-wa">{{watch_lb[1].stages}}</td>
+                              <td class="data-wa">{{watch_lb[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="watch_cb?.length > 0">
+                              <td class="label-wa">CB</td>
+                              <td class="data-wa">{{watch_cb[0].devices}}</td>
+                              <td class="data-wa">{{watch_cb[1].stages}}</td>
+                              <td class="data-wa">{{watch_cb[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="watch_lt?.length > 0">
+                              <td class="label-wa">LT</td>
+                              <td class="data-wa">{{watch_lt[0].devices}}</td>
+                              <td class="data-wa">{{watch_lt[1].stages}}</td>
+                              <td class="data-wa">{{watch_lt[1].time}}</td>
+                            </tr>
+                    </tbody>
+                  </table>
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;">
+                    <tbody>
+                        <th colspan="4">iPad</th>
+                        <tr>
+                            <td class="label-ipd"></td>
+                            <td class="label-ipd">Devices</td>
+                            <td class="label-ipd">Stages</td>
+                            <td class="label-ipd">Time(in Min)</td>
+                          </tr>
+                          <tr *ngIf="ipad_mt?.length > 0">
+                              <td class="label-ipd">MT</td>
+                              <td class="data-ipd">{{ipad_mt[0]}}</td>
+                              <td class="data-ipd">{{ipad_mt[1].stages}}</td>
+                              <td class="data-ipd">{{ipad_mt[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="ipad_lb?.length > 0">
+                              <td class="label-ipd">LB</td>
+                              <td class="data-ipd">{{ipad_lb[0].devices}}</td>
+                              <td class="data-ipd">{{ipad_lb[1].stages}}</td>
+                              <td class="data-ipd">{{ipad_lb[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="ipad_cb?.length > 0">
+                              <td class="label-ipd">CB</td>
+                              <td class="data-ipd">{{ipad_cb[0].devices}}</td>
+                              <td class="data-ipd">{{ipad_cb[1].stages}}</td>
+                              <td class="data-ipd">{{ipad_cb[1].time}}</td>
+                            </tr>
+                            <tr *ngIf="ipad_lt?.length > 0">
+                              <td class="label-ipd">LT</td>
+                              <td class="data-ipd">{{ipad_lt[0].devices}}</td>
+                              <td class="data-ipd">{{ipad_lt[1].stages}}</td>
+                              <td class="data-ipd">{{ipad_lt[1].time}}</td>
+                            </tr>
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+            </div>
+          </div>
+    </div>
+</div>

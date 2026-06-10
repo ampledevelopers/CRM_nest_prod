@@ -1,0 +1,156 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div class="row" style="margin-top: 1rem;" *ngIf="userRole === '4'">
+    <div class="col-sm-12">
+      <div class="card">
+        <div *ngFor="let item of branch" class="card-header">
+          <b>{{item.branch_code}} - {{item.branch_name}} </b>
+        </div>
+        <div class="row" style="margin : 0.5rem;">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <b>SVR And Non-SVR Ageing Dashboard</b>
+              </div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Ageing</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let oneBranch of oneBranchAll">
+                      <td class="statuses">
+                        {{oneBranch.status_name}}
+                      </td>
+                      <td class="count">
+                        <a
+                          (click)="svrAgeingTicketList('ALL', oneBranch.status, ticket_list_temp, '1', 0)">{{oneBranch.total_count}}</a>
+                      </td>
+                      <td style="text-align: center;">
+                        <a class="ageing"
+                          (click)="svrAgeingTicketList('NSVR', oneBranch.status, ticket_list_temp, '2', 0)">{{oneBranch.ageing_count}}</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info_row" *ngIf="userRole !== '4'">
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card">
+        <div class="card-header">
+          <strong>SVR And Non-SVR Ageing Dashboard</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr class="tabelHeader" style="font-size: 0.8rem;">
+                <td colspan="2" class="def">
+                </td>
+                <td colspan="2" class="loc-tot" *ngFor="let status of allStatuses">
+                  {{status.status_name}}
+                </td>
+                <td class="def">
+                  Total Ageing
+                </td>
+              </tr>
+              <tr class="subTableHeader" style="text-align: center;">
+                <td class="iphone">Ship to</td>
+                <td class="iphone">location</td>
+                <td class="iphone" *ngFor="let headItem of headerArray">
+                  {{headItem.headName}}
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tableCount" *ngFor="let branch of countArray" style="text-align: center;">
+                <td class="iphone">{{branch.ship_to}}</td>
+                <td class="iphone">{{branch.branch_code}}</td>
+                <td class="iphone" *ngFor="let count of branch.branchStatuses; let idx = index">
+                  <span style="cursor: pointer;" *ngIf="(idx % 2 === 0)"
+                    [ngStyle]="{'color': [count.countColor], 'width': '10px', 'height': '10px'}">{{count.count}}</span>
+                  <span style="cursor: pointer;" *ngIf="(idx % 2 === 1)"
+                    (click)="svrAgeingTicketList('NSVR', count.statusId, ticket_list_temp, branch.branch_id)"
+                    [ngStyle]="{'color': [count.countColor], 'width': '10px', 'height': '10px'}">{{count.count}}</span>
+                  <span *ngIf="count.svgcount !== '0'"
+                    (click)="svrAgeingTicketList('SVR', count.statusId, ticket_list_temp, branch.branch_id)"
+                    style="color: red; margin-left: 0.5rem; cursor: pointer;"> {{count.svgcount}}</span>
+                </td>
+                <td class="iphone" style="width: 10%;"><span style="color: red;">{{branch.ageingCount}}</span><span
+                    style="color: #8A2BE2;"> {{branch.svrAgeingCount}}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="fade" #ticket_list_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Ticket List <span> - {{selectedStatus}}</span><span
+            *ngIf="isTicketList === false"> - {{selectedTicket}}</span></h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12" *ngIf="isTicketList === true">
+          <table class="table table-bordered table-striped table-md" style="word-wrap: anywhere;">
+            <thead class="popthead">
+              <th>
+                Ticket Id
+              </th>
+              <th>
+                Branch Code
+              </th>
+              <th>
+                Status Name
+              </th>
+              <th>
+                RAF Created Time
+              </th>
+              <th>
+                Ageing Since
+              </th>
+              <th>
+                Ageing Days
+              </th>
+            </thead>
+            <tbody class="popTableBody">
+              <tr *ngFor="let ticket of ticketsList">
+                <td>{{ticket.ticket_id}}</td>
+                <td>{{ticket.branch_code}}</td>
+                <td>{{ticket.status_name}}</td>
+                <td>{{ticket.RAF_created_date | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+                <td>{{ticket.ageing_since | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+                <td>{{ticket.ageing_days}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--/.col-->
+      </div>
+      <div class="modal-footer" style="height: 50px">
+        <button type="button" class="btn btn-secondary" *ngIf="isTicketList === false" (click)="back()">Back</button>
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="export()">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

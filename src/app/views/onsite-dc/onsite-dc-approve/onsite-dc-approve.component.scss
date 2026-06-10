@@ -1,0 +1,38 @@
+.actionbtns select {
+  margin-right: 0.5rem;
+  padding-right: 0.5rem;
+}
+button{
+  background-color: rgb(154, 152, 152);
+}
+thead {
+  background-color: #E6F0FA;
+}
+
+th {
+  text-align: center !important;
+}
+
+td {
+  text-align: center;
+}
+
+.search_input {
+  display: block;
+  border: 0px;
+  border-radius: 5px;
+  text-align: center;
+  margin: auto;
+  margin-top: 0.2rem
+}
+
+
+@media only screen and (min-width: 1000px) {
+  .modal-dialog {
+      margin: auto;
+      width: 100%;
+  }
+  .modal-lg {
+      min-width: 600px !important;
+  }
+}

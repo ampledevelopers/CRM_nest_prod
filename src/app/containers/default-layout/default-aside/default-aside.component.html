@@ -1,0 +1,139 @@
+
+ <!-- Sidebar Component -->
+<c-sidebar style="background-color: white !important;" #aside1="cSidebar" class="d-print-none" colorScheme="light"
+  id="aside1" overlaid placement="end" size="lg">
+
+  <!--  Sidebar Nav Tabs -->
+  <c-sidebar-header class="bg-transparent p-0">
+    <c-nav variant="underline">
+      <c-nav-item>
+        <a [active]="true" [cTabContent]="asideTabContent" [tabPaneIdx]="0" cNavLink>
+          <svg cIcon name="cilList"></svg>
+        </a>
+      </c-nav-item>
+      <c-nav-item>
+        <a [cTabContent]="asideTabContent" [tabPaneIdx]="1" cNavLink>
+          <svg cIcon name="cilSpeech"></svg>
+        </a>
+      </c-nav-item>
+      <c-nav-item class="ms-auto me-2 d-flex align-items-center">
+        <!-- Close Sidebar -->
+        <button title="aside" cButtonClose cSidebarToggle="aside1" class="me-2" toggle="visible">
+          <i class="material-icons" style="font-size: 0.9rem; font-weight: bold; color: black;margin-left: auto;">cancel</i>
+        </button>
+      </c-nav-item>
+    </c-nav>
+  </c-sidebar-header>
+
+  <!--  Tab Content -->
+  <c-tab-content #asideTabContent="cTabContent">
+    <c-tab-pane role="tabpanel">
+      <ng-container *ngTemplateOutlet="tabPane1"></ng-container>
+    </c-tab-pane>
+    <c-tab-pane class="p-3" role="tabpanel">
+      <ng-container *ngTemplateOutlet="tabPane2"></ng-container>
+    </c-tab-pane>
+    <c-tab-pane class="p-3" role="tabpanel">
+      <ng-container *ngTemplateOutlet="tabPane3"></ng-container>
+    </c-tab-pane>
+  </c-tab-content>
+</c-sidebar>
+
+<!--  Tab 1 – Message List -->
+<ng-template #tabPane1>
+  <div [flush]="true" cListGroup>
+    <div class="list-group-item list-group-item-accent-warning list-group-item-divider"
+      *ngFor="let message of messageList" (click)="openMessage(message.id)">
+      <div>{{ message.title }}</div>
+      <small class="text-muted mr-3 d-flex">
+        <i class="material-icons" style="font-size: 18px;">date_range</i>&nbsp;&nbsp;{{message.entry_time}}
+      </small>
+    </div>
+  </div>
+</ng-template>
+
+<!--  Tab 2 – All SMS -->
+<ng-template #tabPane2>
+  <div [flush]="true" cListGroup>
+    <div class="list-group-item list-group-item-accent-warning list-group-item-divider"
+      *ngFor="let aMessage of allSMS.reverse()" style="cursor: pointer; padding-left: 0;"
+      (click)="openSMSMessage(aMessage.id, 'R')">
+      <div class="d-flex">
+        <i class="material-icons me-1" style="font-size: 18px;">person_outline</i>{{aMessage.from_user_name}}
+      </div>
+      <small class="text-muted mr-3 d-flex">
+        <i class="material-icons me-1" style="font-size: 18px;">drafts</i>{{aMessage.text | slice:0:65}}
+      </small>
+      <small class="text-muted mr-3 d-flex">
+        <i class="material-icons me-1" style="font-size: 18px;">access_time</i>{{aMessage.entrytime}}
+      </small>
+    </div>
+  </div>
+</ng-template>
+
+<!--  Tab 3 – Empty Placeholder -->
+<ng-template #tabPane3></ng-template>
+
+<!--  Backdrops -->
+<div class="backdrop" [ngStyle]="{ 'display': display }"></div>
+<div class="backdrop" [ngStyle]="{ 'display': displayOpen }"></div>
+
+<!--  Message Modal -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{ 'display': display }">
+  <div class="modal-xlg" role="document" style="width: 80%; margin-top: 8rem; margin: auto;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title">Important Message</h4>
+      </div>
+      <div class="modal-body">
+        <h6 style="font-weight: bold;">{{messageTitle}}</h6>
+        <div class="col-md-12 mt-3" [innerHtml]="messageBoardText"></div>
+      </div>
+      <div class="modal-footer" *ngIf="enableBtn">
+        <div *ngIf="messageBoardBtn !== 'Done'">
+          <button class="btn btn-secondary" (click)="setMessageFlag()">Read and Understood</button>
+        </div>
+        <div *ngIf="messageBoardBtn === 'Done'">
+          <button class="btn btn-secondary" (click)="closeBoard()">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SMS Modal -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{ 'display': displayOpen }">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="height: 390px;">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title">Message</h4>
+      </div>
+      <div class="modal-body">
+        <input class="form-control mb-2" [(ngModel)]="openUnreadMessage.ticket_id" readonly placeholder="Ticket Id">
+        <input class="form-control mb-2" [(ngModel)]="openUnreadMessage.from_user_name" readonly placeholder="User Name">
+        <textarea class="form-control" rows="6" [(ngModel)]="openUnreadMessage.text" readonly></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeBoard()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  Confirmation Modal -->
+<ng-template #confirm_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title">Switch Service Type</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="confirm(confirmAlert.id)">Yes</button>
+        <button class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

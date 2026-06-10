@@ -1,0 +1,74 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="animated fadeIn" *ngIf="loading === false" style="margin-bottom : 1rem !important">
+  <div class="card">
+    <div class="card-header" style="margin-bottom : 1rem !important">
+      Free physical Location
+    </div>
+     <div class="header_right" style="margin-left: auto; margin-right: 0px; padding: 1rem;">
+        <div class="actionbtns">
+            <input type="search" class="form-control" placeholder="Search by Physical Location" id="locationSearch" [(ngModel)]="locationSearch" (keydown)="checkLocation($event)">
+        </div>
+    </div>
+    <div class="card-body" style="padding-top: 0px;">
+      <div style="overflow-x: auto;padding-top: 0px;">
+        <div style="margin-bottom: 1rem;" class="acceptbtns">
+          <button (click)="exportAsXLSX()">Export</button>
+        </div>
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>Ticket Id</th>
+              <th>Branch Code</th>
+              <th>Physical Location Id</th>
+              <th>Family ID</th>
+              <th>Family</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of dataTemp | paginate: { itemsPerPage: 15, currentPage: p }">
+              <!-- <td>{{idx}}</td> -->
+              <td>{{item.ticket_id}}</td>
+              <td>{{item.branch_code}}</td>
+              <td>{{item.device_location_id }}</td>
+              <td>{{item.product_family}}</td>
+              <td>{{item.family}}</td>
+              <td>{{item.status}}</td>
+              <td>
+                <button *ngIf="buttonSpin === false" (click)="updatePhyLocation(item, simple_alert_temp)"
+                  class="acceptbtns" style="color: #20a8d8; float: left; padding: 4px 14px;">Free</button>
+                <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display: flex;">
+          <pagination-controls style="display:block ruby; margin-top: 1rem;" (pageChange)="p = $event">
+          </pagination-controls>
+      </div>
+    </div>
+  </div>
+
+  <ng-template class="modal fade" #simple_alert_temp>
+    <div class="modal-dialog" role="document" style="margin: 0px">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{simpleAlert.msg}}</p>
+        </div>
+        <div class="modal-footer" style="height: 80px">
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>

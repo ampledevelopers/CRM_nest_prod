@@ -1,0 +1,107 @@
+<div class="card" style="border: 1px solid lightgray;">
+  <div class="card-header">Filters - Repairs Coverage Dashboard</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3">
+        <label>Report Type<sup style="color: red">*</sup></label>
+        <fieldset>
+          <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Report Type" bindLabel="label"
+            bindValue="value" [items]="dataTemp" [multiple]="false" [(ngModel)]="reportType"></ng-select>
+        </fieldset>
+      </div>
+      <div class="col-md-3">
+        <label>Financial Year<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="year" name="year" class="form-control" (change)="onSelectYear()">
+          <option value="" selected disabled>Select Year</option>
+          <option value="2023">FY 2022-23</option>
+          <option value="2024">FY 2023-24</option>
+          <option value="2025">FY 2024-25</option>
+          <option value="2026">FY 2025-26</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Period<sup style="color: red">*</sup></label>
+        <select id="period" name="period" class="form-control" [(ngModel)]="period" (click)="onPeriodSelect()">
+          <option value="" selected disabled>Select Period</option>
+          <option value="1">P01</option>
+          <option value="2">P02</option>
+          <option value="3">P03</option>
+          <option value="4">P04</option>
+          <option value="5">P05</option>
+          <option value="6">P06</option>
+          <option value="7">P07</option>
+          <option value="8">P08</option>
+          <option value="9">P09</option>
+          <option value="10">P10</option>
+          <option value="11">P11</option>
+          <option value="12">P12</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Select Week<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="week" name="year" class="form-control">
+          <option value="" selected disabled>Select Week</option>
+          <option value="1">W1</option>
+          <option value="2">W2</option>
+          <option value="3">W3</option>
+          <option value="4">W4</option>
+          <option value="5" *ngIf="showFifthWeek">W5</option>
+        </select>
+      </div>
+      <div class="row" style="margin: auto;width: 12rem;text-align: center;">
+        <button style="margin-top: 1.5rem;" class="btn btn-block btn-outline-primary" (click)="load()">Load</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === true" style="margin: auto; margin-top: 10% !important;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="card" *ngIf="showData === true" style="margin-bottom: 1rem;margin-top: 1.5rem;">
+  <div class="card-body">
+    <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+      <tbody style="text-align: center;">
+        <tr style="background-color: lightgrey;font-weight: bold;">
+          <td>Location</td>
+          <td>Apple Limited Warranty</td>
+          <td>AppleCare Protection Plan</td>
+          <td>Quality Program</td>
+          <td>Repeat Service</td>
+          <td>Out Of Warranty (No Coverage)</td>
+          <td>Customer Satisfaction (CS) Code</td>
+          <td *ngIf="reportType !== 'Mail-In Repair Report'" class="td1">Variable Warranty</td>
+          <td class="td1">Grand Total</td>
+        </tr>
+        <tr *ngFor="let data of entireData;">
+          <td style="background-color: #e9e9e9;">{{data.branch}}</td>
+          <td>{{data.warrantyDataTemp || ' '}}</td>
+          <td>{{data.appDataTemp || ' '}}</td>
+          <td>{{data.qualityPrgDataTemp || ' '}}</td>
+          <td>{{data.repeatServiceDataTemp || ' '}}</td>
+          <td>{{data.oowDataTemp || ' '}}</td>
+          <td>{{data.custSatDataTemp || ' '}}</td>
+          <td *ngIf="reportType !== 'Mail-In Repair Report'">{{data.variableWarTemp || ' '}}</td>
+          <td style="font-weight: bold;" *ngIf="reportType === 'Mail-In Repair Report'">{{+data.warrantyDataTemp +
+            +data.appDataTemp +
+            +data.qualityPrgDataTemp + +data.repeatServiceDataTemp + +data.oowDataTemp + +data.custSatDataTemp}}</td>
+          <td style="font-weight: bold;" *ngIf="reportType === 'Carry-In Repair Report'">{{+data.warrantyDataTemp +
+            +data.appDataTemp +
+            +data.qualityPrgDataTemp + +data.repeatServiceDataTemp + +data.oowDataTemp + +data.custSatDataTemp +
+            +data.variableWarTemp}}</td>
+        </tr>
+        <tr style="font-weight: bold;">
+          <td style="background-color: #e9e9e9;font-weight: bold;">Grand Total</td>
+          <td>{{totalWarranty}}</td>
+          <td>{{totalApp}}</td>
+          <td>{{totalQuality}}</td>
+          <td>{{totalRepeatService}}</td>
+          <td>{{totalOow}}</td>
+          <td>{{totalCustSat}}</td>
+          <td *ngIf="reportType !== 'Mail-In Repair Report'">{{totalVariableWar}}</td>
+          <td style="font-weight: bold;">{{grandTotal}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

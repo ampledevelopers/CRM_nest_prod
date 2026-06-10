@@ -1,0 +1,163 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - Payments Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" bindLabel="label" bindValue="value"
+              [items]="branches" [multiple]="true" [(ngModel)]="branchId"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="date">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="date">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left" *ngIf="buttonSpin === false">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns" *ngIf="buttonSpin === false">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="buttonSpin === false">
+            <button (click)="clear()">Clear</button>
+          </div>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4" style="margin: auto; margin-bottom: 1rem;">
+            <fieldset class="form-group">
+              <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="filters" [multiple]="false"
+                bindLabel="label" bindValue="value" [(ngModel)]="filter" (change)="filterSearch(filter)"></ng-select>
+            </fieldset>
+          </div>
+        </div>
+        <div style="overflow-x: auto;padding-top: 0px;">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Quote Id</th>
+                <th>Branch Code</th>
+                <th>New Branch Code</th>
+                <th>Customer Name</th>
+                <th>Ticket Id</th>
+                <th>Family</th>
+                <th>Product</th>
+                <th>Part No1</th>
+                <th>Description1</th>
+                <th>Part No2</th>
+                <th>Description2</th>
+                <th>Part No3</th>
+                <th>Description3</th>
+                <th>Part No4</th>
+                <th>Description4</th>
+                <th>Part No5</th>
+                <th>Description5</th>
+                <th>Mail Id</th>
+                <th>Create Date</th>
+                <th>Quote Amount</th>
+                <th>Quote Status</th>
+                <th>Payment Date</th>
+                <th>Pay Id</th>
+                <th>Transaction Id</th>
+                <th>Payment Status</th>
+                <th>Ticket Status</th>
+                <th>Paid Amount</th>
+                <th>Payment Declined Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of paymentData | paginate: { itemsPerPage: 50, currentPage: p }">
+                <td>{{item.quote.quotation_id}}</td>
+                <td>{{item.quote.branch_code}}</td>
+                <td>{{item.quote.new_branch_code}}</td>
+                <td>{{item.quote.customer_name}}</td>
+                <td>{{item.quote.ticket_id}}</td>
+                <td>{{item.quote.family}}</td>
+                <td>{{item.quote.product_name}}</td>
+                <td>{{item.parts[0].part_no}}</td>
+                <td>{{item.parts[0].description}}</td>
+                <td>{{item.parts[1].part_no}}</td>
+                <td>{{item.parts[1].description}}</td>
+                <td>{{item.parts[2].part_no}}</td>
+                <td>{{item.parts[2].description}}</td>
+                <td>{{item.parts[3].part_no}}</td>
+                <td>{{item.parts[3].description}}</td>
+                <td>{{item.parts[4].part_no}}</td>
+                <td>{{item.parts[4].description}}</td>
+                <td>{{item.quote.email_id}}</td>
+                <td>{{item.quote.entrytime}}</td>
+                <td>{{item.quote.quote_amount}}</td>
+                <td *ngIf="item.quote.Status === 'A'">Active</td>
+                <td *ngIf="item.quote.Status === 'D'">Deleted</td>
+                <td *ngIf="item.quote.Status === 'E'">Expired</td>
+                <td>{{item.quote.PaymentDate}}</td>
+                <td>{{item.quote.pay_id}}</td>
+                <td>{{item.quote.transaction_id}}</td>
+                <td>{{item.quote.payment_status}}</td>
+                <td>{{item.quote.status_name}}</td>
+                <td *ngIf="item.quote.amtPaid === item.quote.quote_amount">{{item.quote.amtPaid}}</td>
+                <td *ngIf="item.quote.amtPaid !== item.quote.quote_amount" style="color: red;">{{item.quote.amtPaid}}
+                </td>
+                <td>{{item.quote.payment_declined_reason}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <pagination-controls style="display:block ruby; margin-top: 1rem;" (pageChange)="p = $event">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

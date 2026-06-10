@@ -1,0 +1,21 @@
+.card button {
+  margin-right: 0.3rem;
+}
+
+@media only screen and (min-width: 1000px) {
+  .modal-dialog {
+      margin: auto;
+      width: 100%;
+  }
+  .modal-lg {
+      min-width: 600px !important;
+  }
+}
+
+/* .col-md-2 {
+  margin-right: 0.3rem;
+} */
+
+.form-control-file {
+   width: 95% !important;
+}

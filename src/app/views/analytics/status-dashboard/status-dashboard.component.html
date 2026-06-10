@@ -1,0 +1,149 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div *ngIf="(loading === false)">
+  <div class="card" *ngIf="userRole !== '4'">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body" style="padding: 1rem">
+
+      <div class="row">
+        <div class="col-md-3">
+          <label>Branch</label>
+          <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control">
+            <option>All Branches</option>
+            <option *ngFor="let branch of branches; let i = index" [value]="branch.branch_code">
+              {{branch.label}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display: block !important">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div class="row" style=" margin-top: 1rem !important;">
+    <div class="col-sm-12">
+      <div class="card" style="margin-bottom: 1rem;">
+        <div class="card-header">
+          <b>Status Dashboard</b>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <th>Status</th>
+              <th>iPhone/iPad/Watch</th>
+              <th>Mac</th>
+              <th>Others</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let statusData of statusDataList">
+                <td class="statuses">
+                  {{statusData.status}}
+                </td>
+                <td class="count">
+                  <a (click)="ticketList('iPhone', statusData, ticket_list_temp)">{{statusData.iPhoneCount}}</a>
+                </td>
+                <td class="count">
+                  <a (click)="ticketList('mac', statusData, ticket_list_temp)">{{statusData.macCount}}</a>
+                </td>
+                <td class="count">
+                  <a (click)="ticketList('others', statusData, ticket_list_temp)">{{statusData.othersCount}}</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template class="fade" #ticket_list_temp>
+    <div class="modal-xlg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2;">Ticket List <span> - {{selectedStatus}}</span><span
+              *ngIf="isTicketList === false"> - {{selectedTicket}}</span></h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-12" *ngIf="isTicketList === true">
+            <table class="table table-bordered table-striped table-sm" style="word-wrap: anywhere;">
+              <thead class="popthead" style=" border: 1px solid lightgray;">
+                <th>
+                  Ticket Id
+                </th>
+                <th>
+                  Branch
+                </th>
+                <th>
+                  DL Branch
+                </th>
+                <th>
+                  Serial Number
+                </th>
+                <th>
+                  Customer Name
+                </th>
+                <th>
+                  Mobile Number
+                </th>
+                <th>
+                  Aging Since
+                </th>
+                <th>
+                  Assigned To
+                </th>
+                <th>
+                  Analysis
+                </th>
+              </thead>
+              <tbody class="popTableBody">
+                <tr *ngFor="let ticket of ticketsList">
+                  <td>{{ticket.id}}</td>
+                  <td>{{ticket.branch_code}}</td>
+                  <td>{{ticket.dl_branch_code}}</td>
+                  <td>{{ticket.serial_no}}</td>
+                  <td>{{ticket.customer_name}}</td>
+                  <td>{{ticket.customer_phone_no}}</td>
+                  <td>{{ticket.aging_since}}</td>
+                  <td>{{ticket.user_name}}</td>
+                  <td>
+                    <button (click)="getAnalysis(ticket)" style="margin: auto; margin-top: 0.5;">Analysis</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--/.col-->
+
+          <div class="col-md-12" *ngIf="isTicketList === false">
+            <table class="table table-bordered table-striped table-sm" style="word-wrap: anywhere;">
+              <tbody class="popTableBody">
+                <tr *ngFor="let analysisData of analysisList;">
+                  <td style="width: 30%">
+                    <p style="margin-bottom: 0px">{{analysisData.entrytime}}</p>
+                  </td>
+                  <td style="width: 70%">{{analysisData.message}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer" style="height: 60px">
+          <button type="button" class="btn btn-secondary" *ngIf="isTicketList === false" (click)="back()">Back</button>
+          <div>
+            <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>

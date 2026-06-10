@@ -1,0 +1,343 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div class="row" style="margin-top: 1rem;" *ngIf="((userRole === '4') || (userRole === '5')) && type === 'iPhone'">
+    <div class="col-sm-12">
+      <div class="card">
+        <div *ngFor="let item of branch" class="card-header">
+          <b>{{item.branch_code}} - {{item.branch_name}} </b>
+        </div>
+        <div class="row" style="margin : 0.5rem;">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <b>iPhone/iPad/Watch/Accessories</b>
+              </div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Ageing</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let oneBranch of oneBranchAll">
+                      <td class="statuses">
+                        {{oneBranch.status_name}}
+                      </td>
+                      <td class="count">
+                        <a
+                          (click)="ageingTicketList('all', '',oneBranch.status, ticket_list_temp, '1', 0, oneBranch.status_name)">{{oneBranch.total_count}}</a>
+                      </td>
+                      <td style="text-align: center;">
+                        <a class="ageing"
+                          (click)="ageingTicketList('all','', oneBranch.status, ticket_list_temp, '2', 0, oneBranch.status_name)">{{oneBranch.ageing_count}}</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <b>Mac</b>
+              </div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Ageing</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let macStatus of oneBranchMac">
+                      <td class="statuses">
+                        {{macStatus.status_name}}
+                      </td>
+                      <td class="count">
+                        <a
+                          (click)="ageingTicketList('mac', '',macStatus.status, ticket_list_temp, '1', 0, macStatus.status_name)">{{macStatus.total_count}}</a>
+                      </td>
+                      <td style="text-align: center;">
+                        <a class="ageing"
+                          (click)="ageingTicketList('mac', '',macStatus.status, ticket_list_temp, '2', 0, macStatus.status_name)">{{macStatus.ageing_count}}</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="info_row" *ngIf="(userRole !== '4') && (sitetypeId === '1') && type === 'iPhone' ">
+    <!-- iPhone -->
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card">
+        <div class="card-header">
+          <strong>iPhone/iPad/Watch/Accessories</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr class="tabelHeader">
+                <td colspan="2" class="def">
+                </td>
+                <td colspan="2" class="loc-tot" *ngFor="let status of allStatuses">
+                  {{status.status_name}}
+                </td>
+                <td class="def">
+                  Total Ageing
+                </td>
+              </tr>
+              <tr class="subTableHeader">
+                <td class="iphone">Ship to</td>
+                <td class="iphone">location</td>
+                <td class="iphone" *ngFor="let headItem of headerArray">
+                  {{headItem.headName}}
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tableCount" *ngFor="let branch of countArray" style="text-align: center;">
+                <td class="iphone">{{branch.ship_to}}</td>
+                <td class="iphone">{{branch.branch_code}}</td>
+                <td class="iphone" *ngFor="let count of branch.branchStatuses; let idx = index">
+                  <span style="cursor: pointer;" *ngIf="(idx % 2 === 0)"
+                    (click)="ageingTicketList('all','', count.statusId, ticket_list_temp, idx,branch.branch_id, count.statusName)"
+                    [ngStyle]="{'color': [count.countColor], 'width': '10px', 'height': '10px'}">{{count.count}}</span>
+                  <span style="cursor: pointer;" *ngIf="(idx % 2 === 1)"
+                    (click)="ageingTicketList('all','NSVR', count.statusId, ticket_list_temp,idx, branch.branch_id, count.statusName)"
+                    [ngStyle]="{'color': [count.countColor], 'width': '10px', 'height': '10px'}">{{count.count}}</span>
+                </td>
+                <td class="iphone" style="width: 10%;"><span style="color: red;">{{branch.ageingCount}}</span>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="info_row" *ngIf="userRole !== '4' && type === 'MAC'  ">
+    <!-- MAC -->
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card">
+        <div class="card-header">
+          <strong>Mac</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto;">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr class="tabelHeader">
+                <td colspan="2" class="def">
+                </td>
+                <td colspan="2" class="loc-tot" *ngFor="let status of macStatuses">
+                  {{status.status_name}}
+                </td>
+                <td class="def">
+                  Total Ageing
+                </td>
+              </tr>
+              <tr class="subTableHeader">
+                <td class="iphone">Ship to</td>
+                <td class="iphone">location</td>
+                <td class="iphone" *ngFor="let headItem of macHeaderArray">
+                  {{headItem.headName}}
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tableCount" *ngFor="let branch1 of countArrayMac" style="text-align: center;">
+                <td class="iphone">{{branch1.ship_to}}</td>
+                <td class="iphone">{{branch1.branch_code}}</td>
+                <td class="iphone" *ngFor="let count1 of branch1.branchStatuses; let idx1 = index">
+                  <span
+                    (click)="ageingTicketList('mac', '',count1.statusId, ticket_list_temp, idx1, branch1.branch_id, count1.statusName)"
+                    [ngStyle]="{'color': [count1.countColor], 'width': '10px', 'height': '10px'}">{{count1.count}}</span>
+                </td>
+                <td class="iphone" style="color: red;">{{branch1.ageingCount}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="info_row" *ngIf="(userRole !== '4') && (sitetypeId === '2') && type === 'MAC'">
+    <!-- iPhone -->
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card">
+        <div class="card-header">
+          <strong>iPhone/iPad/Watch/Accessories</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr class="tabelHeader">
+                <td colspan="2" class="def">
+                </td>
+                <td colspan="2" class="loc-tot" *ngFor="let status of allStatuses">
+                  {{status.status_name}}
+                </td>
+                <td class="def">
+                  Total Ageing
+                </td>
+              </tr>
+              <tr class="subTableHeader">
+                <td class="iphone">Ship to</td>
+                <td class="iphone">location</td>
+                <td class="iphone" *ngFor="let headItem of headerArray">
+                  {{headItem.headName}}
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tableCount" *ngFor="let branch of countArray" style="text-align: center;">
+                <td class="iphone">{{branch.ship_to}}</td>
+                <td class="iphone">{{branch.branch_code}}</td>
+                <td class="iphone" *ngFor="let count of branch.branchStatuses; let idx = index">
+                  <span style="cursor: pointer;" *ngIf="(idx % 2 === 0)"
+                    (click)="ageingTicketList('all','', count.statusId, ticket_list_temp, idx,branch.branch_id, count.statusName)"
+                    [ngStyle]="{'color': [count.countColor], 'width': '10px', 'height': '10px'}">{{count.count}}</span>
+                  <span style="cursor: pointer;" *ngIf="(idx % 2 === 1)"
+                    (click)="ageingTicketList('all','NSVR', count.statusId, ticket_list_temp,idx, branch.branch_id, count.statusName)"
+                    [ngStyle]="{'color': [count.countColor], 'width': '10px', 'height': '10px'}">{{count.count}}</span>
+                </td>
+                <td class="iphone" style="width: 10%;"><span style="color: red;">{{branch.ageingCount}}</span>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> <!-- animated fadeIn Close -->
+
+<ng-template class="fade" #ticket_list_temp>
+  <div class="modal-xlg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2;font-size: 1.2rem !important;">Ticket List <span> -
+            {{selectedStatus}}</span><span *ngIf="isTicketList === false"> - {{selectedTicket}}</span></h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12" *ngIf="isTicketList === true && isNotificationList === false ">
+          <table class="table table-bordered table-striped table-md" style="word-wrap: anywhere;">
+            <thead class="popthead" style="border: 1px solid lightgray;">
+              <th>
+                Ticket Id
+              </th>
+              <th>
+                Branch Code
+              </th>
+              <th *ngIf="sitetypeId === '2'">
+                Company Name
+              </th>
+              <th>
+                Status Name
+              </th>
+              <th>
+                RAF Created Date
+              </th>
+              <th>
+                Ageing Since
+              </th>
+              <th>
+                Ageing Days
+              </th>
+              <th>
+                Call/Mail/SMS Status
+              </th>
+            </thead>
+            <tbody class="popTableBody">
+              <tr *ngFor="let ticket of ticketsList">
+                <td>{{ticket.ticket_id}}</td>
+                <td>{{ticket.branch_code}}</td>
+                <td *ngIf="sitetypeId === '2'">{{ticket.company_name}}</td>
+                <td>{{ticket.status_name}}</td>
+                <td *ngIf="ticket.RAF_created_date === '0000-00-00 00:00:00'">{{ticket.RAF_created_date}}</td>
+                <td *ngIf="ticket.RAF_created_date !== '0000-00-00 00:00:00'">{{ticket.RAF_created_date | date:
+                  'dd-MM-yyyy hh:mm:ss'}}</td>
+                <td *ngIf="ticket.ageing_since === '0000-00-00 00:00:00'">{{ticket.ageing_since}}</td>
+                <td *ngIf="ticket.ageing_since !== '0000-00-00 00:00:00'">{{ticket.ageing_since | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+                <td>{{ticket.ageing_days}}</td>
+                <td style="padding: 0.25rem !important;">
+                  <div style="display:flex;">
+                    <div style="display:block;">
+                      <a style="color: black !important;" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false" dropdownToggle (click)="getNotificationDetail('SMS',ticket.ticket_id)">
+                        <i class="material-icons">comment</i><sup>{{ticket.smsCount}}</sup>
+                      </a>
+                    </div>
+                    <div style="display: block;margin-left: 0.5rem">
+                      <a style="color: black !important;" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false" dropdownToggle (click)="getNotificationDetail('Email',ticket.ticket_id)">
+                        <i class="material-icons">mail_outline</i><sup>{{ticket.mailCount}}</sup>
+                      </a>
+                    </div>
+                    <div style="display: block;margin-left: 0.5rem">
+                      <a style="color: black !important;" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false" dropdownToggle (click)="getNotificationDetail('Call',ticket.ticket_id)">
+                        <i class="material-icons">local_phone</i><sup>{{ticket.callCount}}</sup>
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="isNotificationList === true" style="margin: 0px 1rem;">
+          <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem">
+            <thead class="popthead" style="border: 1px solid lightgray;">
+              <th style="width: 25%;">
+                Ticket Id
+              </th>
+              <th>
+                Message
+              </th>
+              <th style="width: 25%;">
+                Message Sent Time
+              </th>
+            </thead>
+            <tbody class="popTableBody">
+              <tr *ngFor="let notificationData of notificationDetails">
+                <td style="width: 25%; text-align: center;">{{notificationData.ticket_id}}</td>
+                <td style="word-wrap: break-word;">{{notificationData.message !== ''? notificationData.message :
+                  notificationData.type}}</td>
+                <td style="width: 25%; text-align: center;">{{notificationData.entrytime}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" *ngIf="isTicketList === false && isNotificationList == true"
+          (click)="back()">Back</button>
+        <div>
+          <button type="button" class="btn btn-secondary" *ngIf="isNotificationList === false"
+            (click)="cancelModel()">Close</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" *ngIf="isNotificationList === false"
+            (click)="export()">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

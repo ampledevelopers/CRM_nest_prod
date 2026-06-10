@@ -1,0 +1,191 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <!-- <label >Branch</label>
+        <fieldset class="form-group">
+            <ng-select ng-multiple="true"
+            class="bootstrap"
+            placeholder="any"
+            this.branches = [
+            [options]="branches"
+            [multiple]="true"
+            [(ngModel)]="branchId"></ng-select>
+          </fieldset> -->
+          <label>Branches</label>
+          <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control">
+            <option>Select Branch Name</option>
+            <option *ngFor="let branch of branches; let i = index" [value]="branch.id">
+              {{branch.label}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Year<sup style="color: red">*</sup></label>
+          <select id="year" [(ngModel)]="year" (change)="yearSelect($event.target.value)" name="year"
+            class="form-control">
+            <option value="">Please select Year</option>
+            <!-- <option value="2020">2020</option>
+              <option value="2019">2019</option> -->
+            <option *ngFor="let year of years; let i = index" [value]="year.value">
+              {{year.value}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Quarter<sup style="color: red">*</sup></label>
+          <select id="quarter" [(ngModel)]="quarter" name="quarter" class="form-control">
+            <option value="">Please select</option>
+            <option value="q1">Quarter 1(AMJ)</option>
+            <option value="q2">Quarter 2(JAS)</option>
+            <option value="q3">Quarter 3(OND)</option>
+            <option value="q4">Quarter 4(JFM)</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display: block !important;">
+          <div class="acceptbtns" style="float: left" *ngIf="buttonSpin === false">
+            <button (click)="load('load')">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns" *ngIf="buttonSpin === false">
+            <button (click)="load('export')">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="buttonSpin === false">
+            <button (click)="clear()">Clear</button>
+          </div>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" *ngIf="flag === 1" style="display: flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}} -
+        {{branch_data.branch_name}}
+      </div>
+      <div class="card-header" *ngIf="flag === 0" style="display: flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}} - All Locations
+      </div>
+      <div class="header_right" style="width: 100%;padding: 1rem;">
+        <div class="actionbtns">
+          <!-- <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch" [(ngModel)]="ticketSearch"> -->
+        </div>
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <!-- <table class="table table-bordered table-striped table-sm" datatable>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Total Tokens</th>
+              <th>RAF Tokens</th>
+              <th>WAR</th>
+              <th>OOW</th>
+              <th>RAF%</th>
+              <th>Delivery Tokens</th>
+              <th>Delivery%</th>
+              <th>NPT</th>
+              <th>AWT</th>
+              <th>AHT</th>
+              <th>Advance Total(WT)</th>
+              <th>Bill Total(PT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr [ngClass]="{'row-color': item.day === 'Sun'}" *ngFor="let item of data; let idx = index">
+              <td>{{item.date}}</td>
+              <td>{{item.day}}</td>
+              <td>{{item.token}}</td>
+              <td>{{item.raf}}</td>
+              <td>{{item.war}}</td>
+              <td>{{item.oow}}</td>
+              <td style="background-color: #ffe0a6" *ngIf="item.rafPcent > 0">{{item.rafPcent | number: '1.0-0'}}%</td>
+              <td style="background-color: #ffe0a6" *ngIf="item.rafPcent <= 0">0%</td>
+              <td>{{item.delivery}}</td>
+              <td style="background-color: #ffe0a6" *ngIf="item.deliveryPcent > 0">{{item.deliveryPcent | number :
+                '1.0-0'}}%</td>
+              <td style="background-color: #ffe0a6" *ngIf="item.deliveryPcent <= 0">0%</td>
+              <td style="background-color: #ffe9c0" *ngIf="item.npt > 0">{{item.npt | number: '1.0-0'}}%</td>
+              <td style="background-color: #ffe9c0" *ngIf="item.npt <= 0 ">0%</td>
+              <td>{{item.awt | number: '1.2-2'}}</td>
+              <td>{{item.aht | number: '1.2-2'}}</td>
+              <td>{{item.advTot}}</td>
+              <td>{{item.billTot}}</td>
+            </tr>
+          </tbody>
+        </table> -->
+
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td [cTableActive]="smartTable.tableDataCellProps(item, columnName)?.['active']"
+                [cTableColor]="smartTable.tableDataCellProps(item, columnName)?.color"
+                [cAlign]="smartTable.tableDataCellProps(item, columnName)?.align"
+                [ngClass]="smartTable.tableDataCellClasses(item, columnName)">
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchCase="'rafPcent'">
+                    <span *ngIf="(item['rafPcent'])> 0" style="background-color: #ffe0a6">{{(item['rafPcent']) | number: '1.0-0'}}%</span>
+                    <span *ngIf="(item['rafPcent']) <= 0" style="background-color: #ffe0a6">0%</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'deliveryPcent'">
+                    <span *ngIf="(item['deliveryPcent'])> 0" style="background-color: #ffe0a6">{{(item['deliveryPcent']) | number: '1.0-0'}}%</span>
+                    <span *ngIf="(item['deliveryPcent']) <= 0" style="background-color: #ffe0a6">0%</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'npt'">
+                    <span *ngIf="(item['npt'])> 0" style="background-color: #ffe9c0">{{(item['npt']) | number: '1.0-0'}}%</span>
+                    <span *ngIf="(item['npt']) <= 0" style="background-color: #ffe9c0">0%</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'awt'">
+                    {{(item['awt']) | number: '1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'aht'">
+                    {{(item['aht']) | number: '1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{tdContent}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Quarterly Token Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

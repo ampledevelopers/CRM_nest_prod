@@ -1,0 +1,144 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - Accessory Enquiry Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="branches" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="branchId" (change)="branchSelect(branchId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="mm/dd/yyyy">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="mm/dd/yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load('load')">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="load('export')">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+  <div *ngIf="loading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" *ngIf="isReport===true" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <!-- <div class="header_right" style="width: 100%;padding: 1rem;">
+    <div class="actionbtns">
+        <input type="search" class="form-control" placeholder="Search by Token ID" id="namesearch" [(ngModel)]="ticketSearch">
+    </div>
+</div> -->
+      <div class="card-body">
+        <div style="overflow-x: auto;padding-top: 0px;">
+          <!-- <table class="table table-bordered table-striped table-sm" datatable>
+            <thead>
+              <tr>
+                <th>Ticket_Id</th>
+                <th>Branch_Code</th>
+                <th>Sales_Executive_for_Delivery</th>
+                <th>Date_of_Delivery</th>
+                <th>Product_Mapped_to_the_Delivery</th>
+                <th>Warranty_Status_of_the_Product_Delivered</th>
+                <th>Customer_Briefed_about_the_Accessories</th>
+                <th>List_of_Accessories_Briefed_to_the_Customer</th>
+                <th>Reasons_Mentioned</th>
+                <th>Call_Back_Details </th>
+                <th>Contact_On </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of data; let idx = index">
+                <td>{{item.ticket_id}}</td>
+                <td>{{item.location}}</td>
+                <td>{{item.sales_executive}}</td>
+                <td>{{item.date_of_delivery}}</td>
+                <td>{{item.product_mapped_to_delivery}}</td>
+                <td>{{item.waaranty_status}}</td>
+                <td *ngIf="item.customer_briefed_about_acc === '1' ">Yes</td>
+                <td *ngIf="item.customer_briefed_about_acc !== '1' ">No</td>
+                <td>{{item.list_acc_briefed_cus}}</td>
+                <td>{{item.remarks}}</td>
+                <td *ngIf="item.call_back_details === '1' ">Yes</td>
+                <td *ngIf="item.call_back_details !== '1' ">No</td>
+                <td>{{item.contact_on}}</td>
+              </tr>
+            </tbody>
+          </table> -->
+
+          <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+  <td>
+    <ng-container [ngSwitch]="columnName">
+      <ng-container *ngSwitchCase="'customer_briefed_about_acc'">
+        {{ item['customer_briefed_about_acc'] === '1' ? 'Yes' : 'No' }}
+      </ng-container>
+      <ng-container *ngSwitchCase="'call_back_details'">
+        {{ item['call_back_details'] === '1' ? 'Yes' : 'No' }}
+      </ng-container>
+      <ng-container *ngSwitchCase="'list_acc_briefed_cus'">
+        <textarea rows="4" readonly style="width: 100%; border: none; background: transparent;">{{ item['list_acc_briefed_cus'] }}</textarea>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{ tdContent }}
+              </ng-container>
+            </ng-container>
+          </td>
+        </ng-template>
+
+            <ng-template cTemplateId="tableHeader" let-columnName="columnName">
+              <span>{{ columnName | titlecase }}</span>
+            </ng-template>
+
+          </c-smart-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top:1rem !important; margin-bottom:1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

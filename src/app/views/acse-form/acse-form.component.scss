@@ -1,0 +1,20 @@
+select {
+  border: 1px solid #b7b7b7 !important;
+  width: 70% !important;
+}
+
+.information {
+  border-bottom: 1px solid #b7b7b7 !important;
+  width: 70% !important;
+}
+
+@media only screen and (min-width: 1000px) {
+  .modal-dialog {
+      margin: auto;
+      margin-top: 0px;
+      width: 100%;
+  }
+  .modal-lg {
+      min-width: 600px !important;
+  }
+}

@@ -1,0 +1,157 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div style="display: flex; margin: 0.5rem;">
+    <div class="header_left" style="float: none; display: flex !important;">
+    </div>
+    <div class="header_right">
+      <div class="actionbtns">
+        <div style="display: flex;">
+        <select (change)="statusChange($event.target.value)" [(ngModel)]="status">
+          <option [value]="1">Approved</option>
+          <option [value]="2">Pending</option>
+        </select>
+        <input type="search" class="form-control" placeholder="NRDC No" id="namesearch" [(ngModel)]="nrdcSearch" (keydown)="searchNrdc($event)">
+        <input type="search" class="form-control" placeholder="Airway Bill" [(ngModel)]="awbSearch" (keydown)="searchAwb($event)" style="margin-left: 0.5rem;">
+        <input type="search" class="form-control" placeholder="Ticket Id" [(ngModel)]="ticketSearch" (keydown)="searchTicket($event)" style="margin-left: 0.5rem;">
+        <input type="search" class="form-control" placeholder="Tote ID" [(ngModel)]="toteSearch" (input)="filterByToteAndTag()" style="margin-left: 0.5rem;">
+        <input type="search" class="form-control" placeholder="Tag ID" [(ngModel)]="tagSearch" (input)="filterByToteAndTag()" style="margin-left: 0.5rem;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!showList" style="text-align: center; padding-top: 2rem;">
+    <p><b>No data available</b></p>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-right: 15px;" *ngIf="showList">
+    <div class="card" style="width: 100%; margin-top: 1rem; margin-bottom: 1rem !important; padding: 0;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+            <tr>
+              <th style="width: 10%;">
+                NRDC No
+              </th>
+              <th>Date</th>
+              <th>Return From</th>
+              <th>Return To</th>
+              <th>E-Way-Bill No</th>
+              <th style="width: 20%;">
+                Airway Bill No
+              </th>
+              <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sPart of data| paginate: { itemsPerPage: 10, currentPage: p }" class="exPartList">
+            <td>{{sPart.id}}</td>
+            <td>{{sPart.date}}</td>
+            <td>{{sPart.return_from}}</td>
+            <td style="text-transform: uppercase;">{{sPart.return_to}}</td>
+            <td>{{sPart.eway_bill_no}}</td>
+            <td>{{sPart.awb_no}}</td>
+            <td style="vertical-align: middle; display: flex;">
+              <button *ngIf="((buttonSpin === false) && (sPart.approved === 'N') )" (click)="goToForm(sPart.id)" style="margin-right: 0.5rem;">Open</button>
+              <!-- <button *ngIf="((buttonSpin === false) && (sPart.approved === 'Y'))" (click)="goToForm(sPart.id)">View</button> -->
+              <button *ngIf="((buttonSpin === false) && isView || (sPart.approved === 'Y'))" (click)="viewKbb(sPart, view_alert_temp)">View</button>
+              <button *ngIf="(buttonSpin === false) && ((branchType === 'I') || (branchType === 'A'))" (click)="getFileDetails(sPart.id)" style="margin-left:0.5rem !important; height: 30px;">
+                <i class="material-icons">movie</i>
+              </button>
+              <button *ngIf="(buttonSpin === false) && ((branchType === 'I') || (branchType === 'A')  || (branchType === 'O'))" (click)="getImageDetails(sPart.id)" style="margin-left:0.5rem !important; height: 30px;">
+                <i class="material-icons">image</i>
+              </button>
+              <button *ngIf="(buttonSpin === false) && ((branchType === 'I') || (branchType === 'A') || (branchType === 'O'))"
+              (click)="downloadZippedImages(sPart.id)"
+              style="margin-left: 0.5rem !important; height: 30px;"
+              title="Download ZIP" >
+              <i class="material-icons">archive</i>
+            </button>
+              <button *ngIf="((buttonSpin === false) && KBBShipperApprover && isView) && (sPart.return_to === 'rc') || (sPart.approved === 'Y')" (click)="kbbShipped(sPart.id, shipped_remarks_temp)" style="margin-left: 0.5rem;">KBB Shipped</button>
+              <!-- <button style="margin-left: 0.5rem;" (click)="kbbShipped(sPart.id, shipped_remarks_temp)">KBB Shipped</button> -->
+              <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="display:block ruby; margin-top: 1rem;">
+        <pagination-controls  (pageChange)="p = $event"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 65px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #view_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KBB Outward</h4>
+      </div>
+      <div class="modal-body">
+        <p>Kindly verify the Shipping Address DC or RC / AWB No / Total Box / Total Items / Mode of Transport / Tote No,Tag No, Carton Box No/ E-Way Bill No before Printing the document.</p>
+      </div>
+      <div class="modal-footer" style="height: 65px">
+        <a style="color: deepskyblue; text-decoration: underline; cursor: pointer" (click)="exportExcel()" *ngIf="(bulkReturnId !== '') && (bulkReturnId !== null)">Export</a>
+        <button type="button" class="btn btn-secondary" (click)="printReturnLabels()" *ngIf="((bulkReturnId !== '') && (bulkReturnId !== null) && (labelPrint))">Bulk Return Labels</button>
+        <button type="button" class="btn btn-secondary" (click)="printPackingList()" *ngIf="((bulkReturnId !== '') && (bulkReturnId !== null))">Packing List</button>
+        <button type="button" class="btn btn-secondary" (click)="printNrdc()">NRDC</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #shipped_remarks_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">NRDC Shipping Remarks</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="shippedNRDCRemarks" placeholder="Enter the remarks" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="fa fa-info-circle fa-lg mt-4" style="margin-top: 0 !important"></i>&nbsp; Fill mandatory fields
+        </div>
+
+
+      <div class="kbbVideo" *ngIf="(((branchType === 'I') || (branchType === 'A')))">
+        <input (change)="onImagePicked($event)" placeholder="Upload KBB Delivery Image" type="file" accept="image/*"/>
+        <a (click)="onVideoUpload()" *ngIf="(buttonSpin === false)">Upload Delivery Image</a>
+      </div>
+
+      </div>
+      <div class="modal-footer" style="height: 65px">
+        <div *ngIf="showShippedButton">
+            <button type="button" class="btn btn-secondary" (click)="kbbShippedConfirm(shippedNRDCRemarks)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<router-outlet></router-outlet>
+

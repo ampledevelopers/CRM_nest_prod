@@ -1,0 +1,158 @@
+<div class="card" style="border: 1px solid lightgray;">
+  <div class="card-header">
+    Performance Dashboard
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3">
+        <label>Site Type<sup style="color: red">*</sup></label>
+        <select class="form-control" [(ngModel)]="siteTypeId" (change)="siteTypeSelected($event.target.value)">
+          <option value="Select Site Type" selected disabled>Select Site Type</option>
+          <option *ngFor="let site of serviceTypeList" [value]="site.id">{{site.label}}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Branch<sup style="color: red">*</sup></label>
+        <select class="form-control" [(ngModel)]="branchCode" (change)="branchSelected($event.target.value)">
+          <option value="Select Branch" selected disabled>Select Branch</option>
+          <option value="">All</option>
+          <option *ngFor="let branch of branchList" [value]="branch.branch_code">{{branch.branch_name}}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Product Family<sup style="color: red">*</sup></label>
+        <select class="form-control" [(ngModel)]="productFamily">
+          <option value="Select Product Family" selected disabled>Select Product Family</option>
+          <option value="">All</option>
+          <option *ngFor="let product of productFamilies" [value]="product.value">{{product.label}}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Technician<sup style="color: red">*</sup></label>
+        <select id="technician" name="technician" class="form-control" [(ngModel)]="techId">
+          <option value="Select Technician" selected disabled>Select Technician</option>
+          <option value="">All</option>
+          <option *ngFor="let tech of technicians" [value]="tech.user_id">{{tech.user_name}}</option>
+        </select>
+      </div>
+      <div class="col-md-3" style="margin-top: 1rem !important">
+        <label>From Date<sup style="color: red">*</sup></label>
+        <input class="form-control" type="date" [(ngModel)]="fromDate">
+      </div>
+      <div class="col-md-3" style="margin-top: 1rem !important">
+        <label>To Date<sup style="color: red">*</sup></label>
+        <input class="form-control" type="date" [(ngModel)]="toDate">
+      </div>
+    </div>
+    <div *ngIf="errorMessage !== ''" class="error">
+      <p>{{errorMessage}}!</p>
+    </div>
+    <div style="margin: auto; margin-top: 1.3rem !important; width: 15% !important;">
+      <button class="loadBtn" (click)="load()">Load</button>
+    </div>
+  </div>
+</div>
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 2rem; width: 100%; text-align: center;">
+  <c-spinner size="sm" style="margin-left: 0 !important;"></c-spinner>
+</div>
+<div *ngIf="showNoData && loading === false" class="card" style="margin-top: 1rem;">
+  <div class="card-header" style="background-color: #ECA098 !important;">
+    NO DATA AVAILABLE
+  </div>
+</div>
+<div *ngIf="showTable && loading === false" class="card" style="margin-top: 1rem">
+  <div class="card-header">
+    Technician Productivity & Performance
+  </div>
+  <div class="card-body" style="overflow: auto; padding: 0;">
+  <table class="table table-bordered table-striped table-sm text-nowrap">
+    <thead>
+      <tr>
+        <td class="head" >Branch/Technician/Family</td>
+        <td>Total Count</td>
+        <td>Total Points</td>
+        <td style="border-right: 1px solid gray;">Negative Points</td>
+        <td colspan="3" *ngFor="let legend of legendsLIst" [ngbTooltip]="tooltipContent" placement="right auto" popover-trigger="'outsideClick'" container="body" style="text-align: center; border: 1px solid gray;">
+          {{legend}}
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let branch of branchesListData; let i = index;">
+        <tr>
+          <td class="head"><a (click)="expandBranch(i, branch.branchCode, 'open')" *ngIf="!branch.showInnerTable">+</a>
+            <a (click)="expandBranch(i, branch.branchCode, 'close')" *ngIf="branch.showInnerTable">-</a>{{branch.name}}
+          </td>
+          <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{totalCount[i]}}</td>
+          <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{totalPoints[i]}}</td>
+          <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal'}" [ngClass]="branch.showInnerTable ?  'branchExpand' : 'branchClose'" style="border-right: 1px solid gray;">{{negetivePoints[i]}}</td>
+          <td *ngFor="let bin of branch.branchBins, let rowIndex = index" [ngClass]="{'techExpand': expanded,'white-bg-head': rowIndex % 3 === 0, 'white-bg': rowIndex % 3 === 0 && !expanded, 'gray-bg': rowIndex % 3 === 1 && !expanded,'red-bg-head': rowIndex % 3 === 2 , 'red-bg': rowIndex % 3 === 2 && !expanded}"
+            [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{bin}}</td>
+        </tr>
+        <ng-container *ngIf="branch.showInnerTable">
+          <ng-container *ngFor="let tech of branchTechnicians; let j = index;">
+            <tr>
+              <td class="tech"><a (click)="expandTech(j, tech.id, 'open')" *ngIf="!tech.showProductList">+</a>
+                <!-- ({{tech.role === 'Location In-Charge' ? 'LIC' : tech.role === 'TeamLead' ? 'TL' : tech.role }}) -->
+                <a (click)="expandTech(j, tech.id, 'close')" *ngIf="tech.showProductList">-</a>{{tech.name}} <span style="font-weight: lighter !important; color: gray !important; font-size: 12px !important;">({{tech.role}})</span>
+              </td>
+              <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                {{tech.techCount}}</td>
+              <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                {{tech.techPoint}}</td>
+                <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'" style="border-right: 1px solid gray;">
+                  {{tech.techNpoint}}</td>
+                  <td *ngFor="let bins of tech.binsTotal; let binIndex = index"
+                  [ngClass]="{'childExpand': tech.showProductList,'techExpand': !expanded && !tech.showProductList,'white-bg-head': binIndex % 3 === 0 ,'white-bg': binIndex % 3 === 0 && !expanded && !tech.showProductList,
+                    'gray-bg': binIndex % 3 === 1 && !expanded && !tech.showProductList,'red-bg-head': binIndex % 3 === 2,'red-bg': binIndex % 3 === 2 && !expanded && !tech.showProductList}">{{bins}}</td>
+            </tr>
+            <ng-container *ngIf="tech.showProductList">
+              <tr *ngFor="let product of techniciansProduct" style="text-align: end;">
+                <td class="product">{{product.family}}</td>
+                <td [ngClass]="{'techExpand' : expanded}">{{product.count}}</td>
+                <td [ngClass]="{'techExpand' : expanded}">{{product.point}}</td>
+                <td [ngClass]="{'techExpand' : expanded}" style="background-color: #fa5656; border-right: 1px solid gray;">{{product.npoint}}</td>
+                <td *ngFor="let bin of product.binCountPoint, let rowIndex = index" [ngClass]="{'techExpand': expanded, 'white-bg': rowIndex % 3 === 0, 'gray-bg': rowIndex % 3 === 1, 'red-bg': rowIndex % 3 === 2}">{{bin}}</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </tbody>
+    <!--  <tr *ngFor="let branch of branchList; let i = index;">
+     <td><a (click)="expandBranch(i)" *ngIf="!branch.showInnerTable">+</a>
+        <a (click)="expandBranch(i)" *ngIf="branch.showInnerTable">-</a>{{branch.branch_name}}
+         <span *ngIf="branch.showInnerTable">
+          <tr *ngFor="let tech of technicians; let j = index;">
+            <td><a (click)="expandTech(j)">+</a>{{tech.user_name}}
+            <span *ngIf="tech.showProductList">
+              <tr *ngFor="let product of productFamilies">
+                {{product.name}}
+              </tr>
+            </span></td>
+          </tr>
+        </span>
+      </td>
+    </tr> -->
+  </table>
+</div>
+</div>
+
+<ng-template #tooltipContent>
+  <table class="table table-bordered table-striped table-sm" *ngIf="siteTypeId === '1'">
+    <th colspan="5" style="background-color: #20a8d8;">Status Value</th>
+    <th style="background-color: #20a8d8;">Status Code</th>
+    <tr *ngFor="let status of tooltipValues">
+      <td colspan="5" style="text-align: left;">{{ status.value }}</td>
+      <td style="text-align: right;">{{ status.code }}</td>
+    </tr>
+  </table>
+  <table class="table table-bordered table-striped table-sm" *ngIf="siteTypeId === '2'">
+    <th colspan="5" style="background-color: #20a8d8;">Status Value</th>
+    <th style="background-color: #20a8d8;">Status Code</th>
+    <tr *ngFor="let status of tooltipValuesOnsite">
+      <td colspan="5" style="text-align: left;">{{ status.value }}</td>
+      <td style="text-align: right;">{{ status.code }}</td>
+    </tr>
+  </table>
+</ng-template>

@@ -1,0 +1,198 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - Consignment Stock Status Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="branches" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="branchId" (change)="branchSelect(branchId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>Part No</label>
+          <input class="form-control" [(ngModel)]="partNo" id="input" type="text" name="input" placeholder="">
+        </div>
+        <div class="col-md-4">
+          <label>Stock Type<sup style="color: red">*</sup></label>
+          <select id="reportType" [(ngModel)]="stockType" name="stockType" class="form-control">
+            <option value="">Please select</option>
+            <option value="Ample">Ample</option>
+            <option value="Apple">Apple</option>
+          </select>
+        </div>
+        <div class="col-md-4" style="margin-top: 0.8rem;">
+          <label>Stock Status<sup style="color: red">*</sup></label>
+          <select id="reportType" [(ngModel)]="stockStatus" name="stockStatus" class="form-control">
+            <option value="">Please select</option>
+            <option value="A">Active</option>
+            <option value="I">Issued</option>
+            <option value="B">Blocked</option>
+            <option value="N">Inactive</option>
+          </select>
+        </div>
+        <!-- <div class="col-md-4">
+        <label>From Date<sup style="color: red">*</sup></label>
+        <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input" placeholder="dd/mm/yyyy">
+      </div>
+      <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" placeholder="dd/mm/yyyy">
+       </div> -->
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;" *ngIf="isReport===true">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Menu Log Details
+      </div>
+      <!-- <div class="header_right" style="width: 100%;padding: 1rem;">
+         <div class="actionbtns">
+                <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch" [(ngModel)]="ticketSearch">
+            </div>
+      </div> -->
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <!-- <table class="table table-bordered table-striped table-sm" datatable>
+          <thead>
+            <tr>
+              <th>Branch Code</th>
+              <th>Part Number</th>
+              <th>Serial No</th>
+              <th>Stock Type No</th>
+              <th>ASN No</th>
+              <th>ERP ASN No</th>
+              <th>Status</th>
+              <th>Acknowledge Date</th>
+              <th>Blocked Ticket Id</th>
+              <th>Blocked Time</th>
+              <th>Issued Ticket Id</th>
+              <th>Issued Date</th>
+              <th>Replenishment Ticket Id</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let idx = index">
+              <td>{{item.branch_code}}</td>
+              <td>{{item.part_no}}</td>
+              <td>{{item.serial_no}}</td>
+              <td>{{item.stock_type === 'Ample'? 'Ample' :item.stock_type === 'Apple'? 'Apple': 'NA' }}</td>
+              <td>{{item.asn_no}}</td>
+              <td>{{item.erp_asn}}</td>
+              <td>{{item.status === 'I'? 'Issued' : item.status === 'A' ? 'Active' : item.status === 'B'? 'Blocked' :
+                item.status === 'N' ? Inactive : 'NA' }}</td>
+              <td *ngIf="item.acknowledge_date === '0000-00-00 00:00:00'">{{item.acknowledge_date}}</td>
+              <td *ngIf="item.acknowledge_date !== '0000-00-00 00:00:00'">{{item.acknowledge_date | date: 'dd-MM-yyyy hh:mm:ss' }}</td>
+              <td>{{item.blocked_ticket_id}}</td>
+              <td *ngIf="item.blocked_time === '0000-00-00 00:00:00'">{{item.blocked_time}}</td>
+              <td *ngIf="item.blocked_time !== '0000-00-00 00:00:00'">{{item.blocked_time | date: 'dd-MM-yyyy hh:mm:ss'
+                }}</td>
+              <td>{{item.issued_ticket_id}}</td>
+              <td *ngIf="item.issued_date === '0000-00-00 00:00:00'">{{item.issued_date }}</td>
+              <td *ngIf="item.issued_date !== '0000-00-00 00:00:00'">{{item.issued_date | date: 'dd-MM-yyyy hh:mm:ss' }}
+              </td>
+              <td>{{item.replenishment_ticket_id}}</td>
+            </tr>
+          </tbody>
+        </table> -->
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td>
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchCase="'stock_type'">
+                    {{ item['stock_type'] === 'Ample' ? 'Ample' : item['stock_type'] === 'Apple' ? 'Apple' : 'NA' }}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'acknowledge_date'">
+                    {{
+                      item['acknowledge_date'] === '0000-00-00 00:00:00'
+                        ? item['acknowledge_date']
+                        : (item['acknowledge_date'] | date: 'dd-MM-yyyy hh:mm:ss')
+                    }}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'blocked_time'">
+                    {{
+                      item['blocked_time'] === '0000-00-00 00:00:00'
+                        ? item['blocked_time']
+                        : (item['blocked_time'] | date: 'dd-MM-yyyy hh:mm:ss')
+                    }}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'issued_date'">
+                    {{
+                      item['issued_date'] === '0000-00-00 00:00:00'
+                        ? item['issued_date']
+                        : (item['issued_date'] | date: 'dd-MM-yyyy hh:mm:ss')
+                    }}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'status'">
+                    {{
+                      item['status'] === 'I' ? 'Issued' :
+                      item['status'] === 'A' ? 'Active' :
+                      item['status'] === 'B' ? 'Blocked' :
+                      item['status'] === 'N' ? 'Inactive' : 'NA'
+                    }}
+                  </ng-container>
+
+                  <ng-container *ngSwitchDefault>
+                    {{ tdContent }}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Menu Log Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

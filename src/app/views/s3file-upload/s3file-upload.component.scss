@@ -1,0 +1,34 @@
+.header_left{
+    margin: auto;
+    display: table;
+    float: left;
+  }
+  
+  .dcolor {
+    color: red;
+    text-align: center;
+  }
+  
+  .nocolor {
+     color: #23282c;
+     text-align: center;
+  }
+  
+  .sk-three-bounce {
+    width: 62px;
+    margin: 0;
+  }
+  
+  .sk-three-bounce .sk-child{
+    width: 8px;
+    height: 8px;
+    background-color: #20a8d8;
+  }
+  
+  .btn.btn-primary.mr-1
+  {
+    background-color: #20a8d8;
+    --cui-btn-bg: #20a8d8 !important;
+    --cui-btn-hover-bg: #20a8d8 !important;
+  }
+  

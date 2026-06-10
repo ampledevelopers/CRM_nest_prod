@@ -1,0 +1,190 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+    <div *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')" style="text-align: center;">
+      <p>Location - <b>{{branch}}</b></p>
+    </div>
+    <div class="card" *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')" style="margin-bottom: 2rem !important;">
+        <div class="card-header">
+          Add Consignment
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-sm" style="margin-bottom: 0; border: 0px;">
+                <tbody class="addNew">
+                  <tr style="font-weight: normal; border: 0px;">
+                    <td style="width: 15% !important;">
+                      Stock Type<sup style="color: red;">*</sup>
+                      <ng-select
+                      class="bootstrap"
+                      placeholder="Select Stock Type"
+                      [items]="stockTypes"
+                      [(ngModel)]="stockType"
+                      bindLabel="label"
+                      bindValue="value"
+                      [multiple]="false" [clearable]="false"></ng-select>
+                    </td>
+                    <td>
+                      Serial No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="serialNo" class="information" style="border: 1px solid gray;" type="text" placeholder="Serial Number" [disabled]="isSerialised">
+                    </td>
+                    <td>
+                      Part No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="partNo" class="information" style="border: 1px solid gray;" type="text" placeholder="Part Number">
+                    </td>
+                    <td>
+                      Part Description<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="partDescription" class="information" style="border: 1px solid gray;" type="text" placeholder="Part Description">
+                    </td>
+                    <td *ngIf="stockType === 'Ample'">
+                      WS Item No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="wsItemNo" class="information" style="border: 1px solid gray;" type="text" placeholder="ERP ASN" [disabled]="isSerialised">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      WS STO No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="wsStoNo" class="information" style="border: 1px solid gray;" type="text" placeholder="WS STO NO">
+                    </td>
+                    <td>
+                      WS Item No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="wsItemNo" class="information" style="border: 1px solid gray;" type="text" placeholder="WS STO NO">
+                    </td>
+                    <td>
+                      STO Inward Date<sup style="color: red;">*</sup>
+                      <input class="form-control" [(ngModel)]="stoDate" id="date-input" type="date" name="date-input" placeholder="yyyy-mm-dd">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="display: flex;">
+                <div class="header_left" style="width: 30%; display: flex;">
+                  <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table" class="btn btn-block btn-outline-primary" (click)="saveAcknowledge(simple_alert_temp)">Save</button>
+                  <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table; margin-left: 1rem;" class="btn btn-block btn-outline-primary" (click)="reset()">Reset</button>
+                  <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!-- <div class="card" *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')">
+          <div class="card-header">
+            Add Bulk Consignments
+          </div>
+          <div class="card-body">
+                <div class="row" style="margin-top: 0.5rem;">
+                  <div class="header_left">
+                    <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput type="file" name="file" class="form-control-file" id="exampleFormControlFile1" (change)="onFileUploadfun($event)">
+                  </div>
+                </div>
+                <div style="display: flex;">
+                  <div class="header_left" style="width: 30%; display: flex;">
+                    <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table" class="btn btn-block btn-outline-primary" (click)="bulkUpload()">Save</button>
+                    <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table; margin-left: 1rem;" class="btn btn-block btn-outline-primary" (click)="cancel()">Cancel</button>
+                    <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div> -->
+
+        <div style="display: flex; margin-bottom: 2rem; overflow: auto;">
+          <div class="header_left" style="width: 100%; margin-top: 1rem ">
+              <div class="col-md-12" *ngIf="conError !== ''" style="text-align: center; color: red">
+                  <i class="material-icons">info</i>&nbsp; {{conError}}
+              </div>
+              <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0" datatable>
+                  <thead>
+                    <tr style="text-align: center; font-weight: normal;">
+                      <th>
+                        ASN
+                      </th>
+                      <th>
+                        WS Item No
+                      </th>
+                      <th>
+                        Stock Type
+                      </th>
+                      <th>
+                        Serial No
+                      </th>
+                      <th>
+                        Part No
+                      </th>
+                      <th>
+                        Description
+                      </th>
+                      <th>
+                        Blocked Ticket
+                      </th>
+                      <th>
+                        WS STO Date
+                      </th>
+                      <th>
+                        WS STO Number
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="grid-container" *ngFor="let item of consignments" style="height: auto !important; text-align: center;">
+                      <td>
+                        {{item.asn_no}}
+                      </td>
+                      <td>{{item.ws_item_no}}</td>
+                      <td>
+                        {{item.stock_type}}
+                      </td>
+                      <td>
+                        {{item.serial_no}}
+                      </td>
+                      <td>
+                        {{item.part_no}}
+                      </td>
+                      <td>
+                        {{item.description}}
+                      </td>
+                      <td>
+                        {{item.blocked_ticket_id}}
+                      </td>
+                      <td>
+                        {{item.sto_inward_date}}
+                      </td>
+                      <td>
+                        {{item.ws_sto_no}}
+                      </td>
+                      <td>
+                        {{item.status}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+          </div>
+    </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 50px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

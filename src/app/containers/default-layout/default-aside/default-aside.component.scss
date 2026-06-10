@@ -1,0 +1,45 @@
+.sidebar[_ngcontent-lam-c290] {
+  --cui-sidebar-width: 15rem ; /* Reduced width */
+}
+
+c-sidebar-header {
+  background-color: white !important;
+}
+
+.sidebar.sidebar-lg {
+  --cui-sidebar-width: 18rem; /* Reduced width for large sidebar */
+}
+
+.nav-underline .nav-link.active, .nav-underline .show > .nav-link {
+  color: var(--cui-nav-underline-link-active-color, #20a8d8);
+  background: transparent;
+  border-color: var(--cui-nav-underline-link-active-border-color, #20a8d8);
+}
+
+c-sidebar {
+  font-size: 0.875rem ;
+  padding: 0.5rem; /* Adjust padding to remove extra space */
+}
+.button-container {
+  background-color: white;    /* White background for container */
+  padding: 10px;              /* Some padding */
+  text-align: right;          /* Align contents to the right */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Optional subtle shadow */
+  border-bottom: 1px solid #ddd; /* Optional border */
+}
+
+.open-sidebar-btn {
+  background-color: white;    /* Button white background */
+  border: 1px solid #007bff; /* Blue border */
+  color: #007bff;             /* Blue text */
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.open-sidebar-btn:hover {
+  background-color: #007bff;
+  color: white;
+}

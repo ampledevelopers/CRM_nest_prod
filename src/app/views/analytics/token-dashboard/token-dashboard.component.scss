@@ -1,0 +1,27 @@
+.token-row {
+  display: flex;
+  flex-wrap: wrap;
+  // margin-right: -15px;
+  // margin-left: -15px;
+
+}
+
+.branch-card {
+  border: 1px solid #20a8d8;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.token-row .branch-card h1 {
+  margin: 0.2rem
+}
+
+.branch-card.drop-location {
+  background-color: #cecece;
+  color: #313131;
+}
+
+.branch-card {
+  background-color: #d6f5f7;
+  color: #313131;
+}

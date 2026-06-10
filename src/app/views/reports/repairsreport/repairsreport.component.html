@@ -1,0 +1,132 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - Repairs Report
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3" style="margin-bottom: 1rem !important">
+          <label>Branch</label>
+          <select [(ngModel)]="branch" (change)="branchSelect($event.target.value)" class="form-control">
+            <option>All Branches</option>
+            <option *ngFor="let branch of branches; let i = index" [value]="branch.id">
+              {{branch.label}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Site Type</label>
+          <select [(ngModel)]="siteType" (change)="sitetypeSelect($event.target.value)" class="form-control">
+            <option>Select Site Type</option>
+            <option *ngFor="let site_type of site_types; let i = index" [value]="site_type.id">
+              {{site_type.site_type}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Status</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="statuses" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="statusId" (change)="statusSelect(statusId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-3">
+          <label>Report Type<sup style="color: red">*</sup></label>
+          <select id="reportType" [(ngModel)]="reportType" name="reportType" class="form-control">
+            <option value="">Please select</option>
+            <option value="Repairs_analysis">Repair Analysis Report</option>
+            <option value="All_open_calls">All Open Call Report</option>
+            <option value="KGB_update">KGB Details Report</option>
+            <option value="GSX_repair">GSX Repair Report</option>
+            <option value="Mail_In_repair" *ngIf="(userRole === '3') || (userRole === '2')">RTS Repair Report</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input" placeholder="mm/dd/yyyy">
+        </div>
+        <div class="col-md-3">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" placeholder="mm/dd/yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load('load')">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="load('export')">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+    <td>
+      <ng-container [ngSwitch]="columnName">
+        <ng-container *ngSwitchCase="'repair_created_date'">
+          {{ item['repair_created_date'] === '0000-00-00 00:00:00' ? 'NA' : (item['repair_created_date'] | date: 'dd-MM-yyyy hh:mm:ss') }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'ready_for_pickup_date'">
+          {{ item['ready_for_pickup_date'] === null ? 'NA' : (item['ready_for_pickup_date'] | date: 'dd-MM-yyyy hh:mm:ss') }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'mark_complete_date'">
+          {{ item['mark_complete_date'] === '0000-00-00 00:00:00' ? 'NA' : (item['mark_complete_date'] | date: 'dd-MM-yyyy hh:mm:ss') }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'closed_and_complete_date'">
+          {{ item['closed_and_complete_date'] === '0000-00-00 00:00:00' ? 'NA' : (item['closed_and_complete_date'] | date: 'dd-MM-yyyy hh:mm:ss') }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'gsx_rfpu_date'">
+          {{ item['gsx_rfpu_date'] === null ? 'NA' : (item['gsx_rfpu_date'] | date: 'dd-MM-yyyy hh:mm:ss') }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'gsx_mark_complete_date'">
+          {{ item['gsx_mark_complete_date'] === null ? 'NA' : (item['gsx_mark_complete_date'] | date: 'dd-MM-yyyy hh:mm:ss') }}
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          {{ tdContent }}
+        </ng-container>
+      </ng-container>
+    </td>
+  </ng-template>
+
+  <div *ngIf="isReport" class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important; margin-bottom: 0.8rem;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+          [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+          [tableProps]="{ hover: true, striped: true, responsive: true }">
+          <ng-container *ngTemplateOutlet="tableData"></ng-container>
+        </c-smart-table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="isRecords === 1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important; margin-bottom: 0.8rem;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,133 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters - Inventory Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="bootstrap" placeholder="any" [items]="branches" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="branchId" (change)="branchSelect(branchId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;" *ngIf="isReport===true">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important; margin-bottom: .5rem;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Inventory Details
+      </div>
+      <div class="card-body" style="overflow-x: auto; padding-top: 0px;">
+        <!-- <table class="table table-bordered table-striped table-sm" datatable style="padding-top: 1rem;">
+          <thead>
+            <tr>
+              <th>Ticket Id</th>
+              <th>Branch Code</th>
+              <th>Warranty Status</th>
+              <th>Part No.</th>
+              <th>Part Description</th>
+              <th>Quantity</th>
+              <th>Consignment Type</th>
+              <th>ASN</th>
+              <th>Repair Type</th>
+              <th>G Number</th>
+              <th>Repair week</th>
+              <th>Repair Created Date</th>
+              <th>Repair Created By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data;">
+              <td>{{item.ticket_id}}</td>
+              <td>{{item.branch_code}}</td>
+              <td>{{item.warranty_status}}</td>
+              <td>{{item.part_number}}</td>
+              <td>{{item.description}}</td>
+              <td>{{item.qty}}</td>
+              <td>{{item.consignment_type === 'AM'? 'Ample': item.consignment_type === 'AP'? 'Apple': 'NA'}}</td>
+              <td>{{item.consignment_asn_no}}</td>
+              <td>{{item.repair_type}}</td>
+              <td>{{item.g_number}}</td>
+              <td>{{item.week_no }}</td>
+              <td>{{item.repair_created_date | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+              <td>{{item.user_name}}</td>
+            </tr>
+          </tbody>
+        </table> -->
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="dataTemp" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td>
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchCase="'consignment_type'">
+                    {{ item['consignment_type'] === 'AM' ? 'Ample' : item['consignment_type'] === 'AP' ? 'Apple' : 'NA' }}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{ tdContent }}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Inventory Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

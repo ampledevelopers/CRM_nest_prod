@@ -1,0 +1,70 @@
+c-badge {
+  font-size: 0.7rem !important;
+}
+
+.col-md-12 {
+  padding: .5rem;
+  border-bottom: 1px solid lightgray !important;
+
+  a {
+    color: #20a8d8;
+  }
+}
+c-container {
+  padding: 0 1rem;
+}
+
+/* Ensure the container is a flex container and spans full width */
+c-container {
+  display: flex ;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+/* Left nav stays on left */
+c-header-nav.me-auto {
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+}
+
+c-header-nav.ms-auto {
+  gap: 1rem; // reduce from 1.5rem to tighten icons
+  min-width: unset; // allows the container to shrink
+  width: fit-content; 
+  padding-right: 0.5rem; 
+}
+
+c-header-nav.ms-auto > * {
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem; 
+}
+
+
+/* Remove default margins from buttons or anchors inside nav items */
+c-header-nav.ms-auto button,
+c-header-nav.ms-auto a {
+  margin: 0;
+  padding: 0;
+}
+
+/* Badge positioning fix */
+.c-badge.position-absolute {
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+/* Avatar size */
+c-avatar {
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+}
+
+/* Dropdown menus alignment */
+ul[cDropdownMenu] {
+  min-width: 200px;
+}

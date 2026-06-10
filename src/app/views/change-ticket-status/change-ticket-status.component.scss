@@ -1,0 +1,55 @@
+.header_left input {
+    text-align: center;
+    margin-bottom: .2rem;
+    height: 30px;
+    width: 40%;
+    margin: auto;
+}
+
+.header_left span {
+    text-align: center;
+    display: block;
+    font-size: .7rem;
+    color: gray;
+}
+
+.header_left .col-md-4 {
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
+}
+
+.header_left a {
+    color: #20a8d8;
+    cursor: pointer;
+    text-decoration: auto;
+    display: block;
+    text-align: center;   
+    font-size: .7rem;
+}
+
+.card input {
+    text-align: left;
+    width: 100%;
+    color: gray;
+}
+
+.card {
+    border:1px solid #B5DAFF;
+}
+
+.card-header {
+    background-color: #E6F0FA;
+}
+
+select {
+    border: 1px solid lightgray;
+    width: 40% !important;
+    margin-left: 30%;
+    margin-top: 0.5rem;
+}
+
+textarea {
+    width: 40%;
+    margin-left: 30%;
+    border: 1px solid lightgray;
+}

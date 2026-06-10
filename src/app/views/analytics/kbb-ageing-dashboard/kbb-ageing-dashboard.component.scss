@@ -1,0 +1,31 @@
+table td{
+  font-size: 0.8rem;
+  text-align: center;
+  vertical-align: middle;
+}
+.muti-table {
+  padding: 0px;
+}
+.inner-table {
+  width: 100%;
+}
+.inner-table td{
+ width: 20% !important;
+
+}
+.loc-tot {
+  background-color: #604979;
+  // background-color: #0ca0c5;
+  color: white;
+  font-weight: bold;
+}
+
+.others {
+  background-color: #BFB6C9;
+  font-weight: bold;
+}
+.gtotal{
+  background-color:#8F7FA1;
+  // background-color: #0ca0c5;
+  font-weight: bold;
+}

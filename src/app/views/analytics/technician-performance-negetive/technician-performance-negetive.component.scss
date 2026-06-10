@@ -1,0 +1,136 @@
+.loadBtn {
+  margin: auto;
+  border: 1px solid #20a8d8;
+  background-color: white;
+  border-radius: 0.375rem;
+  padding: 4px;
+  padding-left: 8px;
+  width: 100%;
+  height: 42px;
+  color: #20a8d8;
+}
+
+a {
+  cursor: pointer;
+  border: 1px solid gray;
+  padding: 0px 3px;
+  margin-right: .5rem;
+}
+
+.tech {
+  // position: absolute;
+  background-color: lightgray !important;
+  a{
+    margin-left: 1rem !important;
+  }
+}
+
+.card {
+  width: 100% !important;
+}
+
+.card-header {
+  text-align: center;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.head,thead {
+  background-color: lightgray !important;
+}
+
+/* .head,.product {
+  position: absolute !important;
+} */
+
+ .error {
+  margin-top: 1.3rem !important;
+  text-align: center;
+  color: red;
+ }
+ .gray-bg {
+  background-color:#BBB99654 !important;
+}
+.white-bg-head {
+  border-left: 1px solid gray !important;
+ }
+
+ .red-bg {
+  background-color:rgb(252, 170, 170) !important;
+  border-right: 1px solid gray !important;
+ }
+ .red-bg-head {
+  border-right: 1px solid gray !important;
+ }
+
+ .white-bg {
+  border-left: 1px solid gray !important;
+ }
+
+ /* .left-border {
+  border-left: 1px solid black !important;
+ }
+
+ .right-border {
+  border-right: 1px solid black !important;
+ } */
+/* .techExpand:nth-child(odd){
+  background-color:#BBB99654;
+} */
+
+.techExpand:nth-child(2){
+  background-color: rgb(253, 227, 227)!important;;
+}
+
+.techExpand:nth-child(3){
+  background-color:rgb(239, 183, 183) !important;
+}
+
+.techExpand:nth-child(4){
+  background-color:#fa5656 !important;
+}
+
+.branchExpand {
+  background-color: '';
+}
+
+.branchClose {
+  background-color: rgb(252, 170, 170);
+}
+
+tbody>tr>:nth-child(1), thead tr, .childExpand {
+  font-weight: bold;
+}
+
+tbody>tr>:nth-child(1), head {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.table {
+  // display: initial;
+  tr>:nth-child(1), head {
+    width: 25% !important;
+  }
+}
+
+
+::ng-deep .tooltip-inner {
+  max-width: 500px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 10px;
+  box-shadow: 0 0 3px #00000040;
+  white-space: nowrap;
+  word-wrap: normal;
+  max-height: 900px;
+  overflow-y:scroll;
+  display: inline-block;
+}
+
+ng-template th{
+  background-color: #20a8d8 !important;
+}
+
+

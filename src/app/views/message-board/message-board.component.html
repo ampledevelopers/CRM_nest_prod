@@ -1,0 +1,19 @@
+<div style="margin-left:20%; margin-top: 1rem !important;">
+
+  <ng-select class="bootstrap" placeholder="Select User Group" [items]="userGroupList" [(ngModel)]="userGroupTemp"
+    bindLabel="label" bindValue="value" [multiple]="false" (change)="selectUserGroup(userGroupTemp)" [clearable]="false"
+    style="width:70% !important; margin-bottom: 1rem !important;">
+  </ng-select>
+<div>
+  <input type="text" class="title" placeholder="Enter Title here" [(ngModel)]="htmlTitleContent">
+</div>
+  <div style="margin-top: 6rem !important;">
+  <angular-editor id="body" (keypress)="!omit_special_char($event)" (cut)="$event.preventDefault()" [(ngModel)]="htmlBodyContent"
+    [config]="editorConfigBody">
+  </angular-editor>
+</div>
+</div>
+<div style="display:flex; margin-top:1rem;">
+  <button class="btn btn-block btn-outline-primary" style="margin-top:1rem; margin:auto"
+    (click)="sendMessage()">submit</button>
+</div>

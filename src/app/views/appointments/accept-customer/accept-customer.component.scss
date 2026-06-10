@@ -1,0 +1,132 @@
+.Header {
+  margin-top: 2rem;
+  display: flex;
+
+  .leftSide {
+    margin-left: 1rem;
+    display: flex;
+    color: #aeadad;
+    span {
+      color: #aeadad;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+  }
+
+  .rightBtn {
+    position: absolute;
+    right: 0;
+    margin-right: 1rem;
+  }
+}
+
+.reservationList {
+  margin: 1rem;
+  margin-top: 2rem;
+  font-size: 0.75rem;
+}
+
+.reservationListNoData {
+  margin: 1rem;
+  margin-top: 4rem;
+  font-size: 0.75rem;
+}
+
+.modal-body {
+  text-align: center;
+  input {
+    margin: auto;
+    width: 60%;
+    border-color: lightgray !important;
+  }
+  p {
+    margin-top: 1rem;
+  }
+
+  a{
+    display: block;
+    cursor: pointer;
+    color: #20a8d8;
+    font-size: 0.7rem;
+    margin-top: 0.3rem;
+  }
+
+}
+
+p {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20%;
+}
+
+/* .closeBtn {
+  border: 1px solid lightgray;
+  width: 1.5rem;
+  height: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  position:absolute;
+  left:100%;
+  border-radius: 20px;
+
+  span {
+    color: gray;
+  }
+} */
+
+.userName {
+  cursor: pointer;
+}
+
+.userName:hover {
+  color: #20a8d8;
+}
+
+.textField {
+  margin: auto;
+  width: 60%;
+  display: flex;
+  margin-bottom: 10px;
+  label {
+    margin: auto;
+  }
+}
+
+.radioBtn {
+   margin: auto;
+   width: auto !important;
+   margin-right: 8px !important;
+}
+
+.notDelivery {
+  color: red;
+  font-style: bold;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.details {
+  display: flex;
+  margin-top: 8px;
+  .label {
+    text-align: end;
+    margin-right: 8px;
+  }
+  .value {
+    text-align: start;
+    font-weight: bold;
+  }
+}
+
+.profile-modal-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  app-profile {
+    width: 100%;
+    max-width: 400px; 
+  }
+}

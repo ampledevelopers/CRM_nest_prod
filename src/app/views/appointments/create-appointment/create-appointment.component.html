@@ -1,0 +1,138 @@
+<h4>Quick Appointment</h4>
+<div class="animated fadeIn" style="position:  inherit; margin-top: 3%;">
+    <div class="row" style="width: 95%; margin: auto;">
+      <div style="margin: 0px; padding-top: 0px;">
+        <div class="card">
+          <div class="card-header">
+            Customer Details
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Contact Number</label>
+                  <input [(ngModel)]="phoneNo" maxlength="10" type="text" class="form-control" placeholder="Contact 1"
+                    readonly>
+                </div>
+              </div>
+            </div>
+            <!--/.row-->
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="nameField">
+                    <div style="width:49.2% !important; margin-right:0.5rem !important;">
+                      <label>First Name<sup style="color: red">*</sup></label>
+                      <input [(ngModel)]="customerFirstName" type="text" class="form-control" placeholder="Name"
+                        [disabled]="detailsEdited">
+                    </div>
+                    <div style="width:49.2% !important;">
+                      <label>Last Name<sup style="color: red">*</sup></label>
+                      <a *ngIf="!isDeliveryReschedule && !isDeliveryReserve" (click)="customerEdit()" style="margin-top: 8px !important;">{{editCancel}}</a>
+                      <input [(ngModel)]="customerLastName" type="text" class="form-control" placeholder="Name"
+                        [disabled]="detailsEdited">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--/.row-->
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>E-mail<sup style="color: red">*</sup></label>
+                  <input [(ngModel)]="emailId" type="text" class="form-control" placeholder="eMail"
+                    [disabled]="detailsEdited">
+                </div>
+              </div>
+            </div>
+            <!--/.row-->
+          </div>
+        </div>
+      </div>
+
+      <div style="margin: 0px; padding-top: 0px;">
+        <div class="card">
+          <div class="card-header">
+            Product Details
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Product Family<sup style="color: red">*</sup></label>
+                  <select [(ngModel)]="productFamily" (change)="onSelectProduct($event)"
+                    style="width: 100%; overflow: hidden; min-height: 30px;">
+                    <option selected disabled>Select Product Family</option>
+                    <option *ngFor="let product of productFamilies; let i = index" [value]="product.value">
+                      {{product.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!--/.row-->
+            <div class="blink_me" *ngIf="buttonSpin === true">...</div>
+            <p *ngIf="showTimeSlot && availSlotForDay.length === 0">Slots Not Available</p>
+            <div class="row" *ngIf="showTimeSlot && availSlotForDay.length > 0" style="margin-top: 1rem;">
+              <div class="col-sm-12">
+                <div class="form-group" style="display:block !important; width:40% !important; margin: auto;">
+                  <select #time style="text-align:center; width:100%;" (change)="onSelectTime(time.value)">
+                    <option disabled selected style="text-align: center;">Select time</option>
+                    <option style="text-align: center;" *ngFor="let slot of availSlotForDay">{{slot}}</option>
+                  </select>
+                </div>
+              </div>
+              <!--/.row-->
+            </div>
+            <div style="display: flex; margin-top: 1rem;" *ngIf="(showTimeSlot && (isDeliveryReschedule || isDeliveryReserve))">
+              <div style="margin: auto;">
+                <div class="rightBtn">
+                  <div class="btn-control" style="margin-top: 0px;">
+                    <button class="btn btn-block btn-outline-primary" [disabled]="buttonLoading || noSlot" *ngIf="buttonLoading === false" (click)="deliveryProcess()">Done</button>
+                    <button class="btn btn-secondary" type="button" disabled *ngIf="buttonLoading === true"><span
+                      class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                      style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right:.3rem;"></span>Loading...
+                    </button>
+                    <button class="btn btn-block btn-outline-primary" style="margin-left: 1rem;" (click)="cancel()">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="!isDeliveryReschedule && !isDeliveryReserve">
+          <div class="card-header">
+            Problem Report
+          </div>
+          <div class="card-body">
+            <div class="row" style="margin-top: 1rem;">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <textarea [ngClass]="{'bcolor': !bcolor, 'ncolor': bcolor}" [(ngModel)]="problem"
+                    placeholder="Detailed Summary of the problem" class="information" rows="4"
+                    style="width:100%"></textarea>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; margin-top: 1rem;">
+              <div style="margin: auto;">
+                <div class="rightBtn">
+                  <div class="btn-control" style="margin-top: 0px;">
+                    <button class="btn btn-block btn-outline-primary" (click)="submit()"
+                      [disabled]="buttonLoading || noSlot" *ngIf="buttonLoading === false">Done</button>
+                    <button class="btn btn-secondary" type="button" disabled *ngIf="buttonLoading === true"><span
+                        class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                        style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right:.3rem;"></span>Loading...
+                    </button>
+                    <button class="btn btn-block btn-outline-primary" style="margin-left: 1rem;" (click)="cancel()">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

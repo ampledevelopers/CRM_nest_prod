@@ -1,0 +1,67 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)" style="margin-top: 5%;">
+  <div class="info_row">
+    <div class="col-sm-12">
+      <table class="table table-striped table-sm" style="border: 1px double #B5DAFF;">
+          <thead style="background-color: #E6F0FA;">
+            <tr style="text-align: center">
+              <th>RAF No</th>
+              <th>Serial No</th>
+              <th>Email Id</th>
+              <th>CCID</th>
+              <th>Phone Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                  <input type="rafno" class="form-control" id="to" placeholder="Type here">
+              </td>
+              <td>
+                  <input type="serial no" class="form-control" id="to" placeholder="Type here">
+              </td>
+              <td>
+                  <input type="email" class="form-control" id="to" placeholder="Type here">
+              </td>
+              <td>
+                  <input type="ccid" class="form-control" id="to" placeholder="Type here">
+              </td>
+              <td>
+                  <input type="phone" class="form-control" id="to" placeholder="Type here">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display: flex; padding-bottom: 1rem;">
+            <div class="header_left">
+                <div class="acceptbtns" style="float: left">
+                    <button *ngIf="buttonSpin === false" style="color: #20a8d8; background-color: transparent; border: 0;">Search</button>
+                </div>
+                <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="info_row">
+    <div class="col-sm-12">
+      <div style="display: flex; padding-bottom: 1rem;">
+        <div class="header_left"> <!-- *ngIf="buttonSpin === false" -->
+          <a routerLink= "customer-enquiry" routerLinkActive="active"><button style="color: #20a8d8; background-color: transparent; border: 0;" (click)="customerUpdate()">Customer Update</button></a>
+          <a routerLink= "customer-enquiry" routerLinkActive="active"><button style="color: #20a8d8; background-color: transparent; border: 0;" (click)="newEnquiry()">New Enquiry</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

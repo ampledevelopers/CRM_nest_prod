@@ -1,0 +1,726 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div class="row" style="margin-top: 1rem;">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-header">
+          To
+        </div>
+        <div class="card-body">
+            <div class="form-group row" style="margin-bottom: 0.5rem;" *ngIf="!isApprover && nrdcNo == ''">
+              <div class="col-md-6" style="float: left;">
+                <input style="height: auto !important;" type="radio" name="radios" id="rc" value="rc"  (change)="selectRC()">
+                <label for="rc" style="margin-left: 10px;">RC</label>
+              </div>
+              <div class="col-md-6" style="float: right;">
+                <input style="height: auto !important;" type="radio" name="radios" id="dc" value="dc" (change)="selectDC()">
+                <label for="dc" style="margin-left: 10px;">DC</label>
+              </div>
+            </div>
+            <div class="info_row" style="display: flex !important;">
+              <div class="col-md-10" style="float: left; margin: auto; margin-bottom: .5rem;" *ngIf="!isApprover && toAd_type ==='dc' && nrdcNo == ''">
+                <select [(ngModel)]="toAddressId" style="border: 1px solid lightgray; width: 100%" (change)="changeToAddress($event.target.value)">
+                  <option>Select the Address</option>
+                  <option *ngFor="let toAdd of toAddressList" [value]="toAdd.city">
+                    {{toAdd.city}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1.2rem;" [innerHtml]="toAddress">
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-header">
+          From
+        </div>
+        <div class="card-body">
+          <div class="form-group row" style="margin-bottom: 0.5rem;"></div>
+          <div class="form-group row" style="margin-bottom: 0.5rem; margin-left: 0px;">
+            <div class="info_row">
+              <div class="col-md-12" style="color: gray; line-height: 1.2rem;" [innerHtml]="fromHtml">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4" style="display: grid;">
+      <div class="card" style="height: auto; margin: auto; position: relative; width: 100%;">
+        <div class="card-body">
+          <div class="form-group row" style="margin-bottom: 0.5rem;"></div>
+          <div class="form-group row" style="margin-bottom: 0.5rem; margin-left: 0px;">
+            <div class="info_row">
+              <div class="col-md-4">
+                  <label>NRDC No</label>
+              </div>
+              <div class="col-md-8">
+                  <input class="information" placeholder="NRDC No" [(ngModel)]="nrdcNo" style="background: transparent;" type="text" readonly>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                  <label>Date</label>
+              </div>
+              <div class="col-md-8">
+                  <b style="border-bottom: 1px solid lightgray;">{{outwardDate}}</b>
+                  <!-- <input [disabled]="isApprover" class="information" placeholder="dd/mm/yyyy" [(ngModel)]="outwardDate" style="background: transparent;" type="text" readonly> -->
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4" *ngIf="((branchType !== 'I') && (branchType !== 'A'))">
+                <label>E Way Bill</label>
+              </div>
+              <div class="col-md-4" *ngIf="((branchType === 'I') || (branchType === 'A'))">
+                  <label [ngbPopover]="popTemplateHtml1" popoverTitle="E Way Bill" triggers="mouseenter:mouseleave" placement="left">E Way Bill
+                    <ng-template #popTemplateHtml1>
+                      <div [innerHtml]="noEwayBillHtml"></div>
+                    </ng-template>
+                    <div class="ewabill">
+                      <button type="button" class="btn btn-info"
+                        style="border: 0px; background-color: transparent; box-shadow: none !important; width: auto !important;"><i
+                          class="material-icons" style="font-size: 1.2rem;">info</i>
+                      </button>
+                    </div>
+                    <!-- <button type="button" class="btn btn-secondary" data-coreui-toggle="tooltip" data-coreui-placement="top" title="Enter NOEWAYBILL for below 50000">
+                      <i class="material-icons" style="font-size: 1.2rem;">info</i>
+                    </button> -->
+                  </label>
+              </div>
+              <div class="col-md-8">
+                  <input class="information" placeholder="E Way Bill No" [(ngModel)]="eWayBillNo" style="background: transparent; width: 70%;" type="text">
+                  <a class="ewayupdate" *ngIf="(bulkReturnId !== '') && (bulkReturnId !== null) && ((branchType === 'I') || (branchType === 'A'))" (click)="updateEwayBill()">Update</a>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                  <label>Name</label>
+              </div>
+              <div class="col-md-8">
+                  <input [disabled]="isApprover" class="information" placeholder="Enter your name" [(ngModel)]="personName" style="background: transparent;" type="text" readonly>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                  <label>Mobile</label>
+              </div>
+              <div class="col-md-8">
+                  <input [disabled]="isApprover" class="information" placeholder="Enter mobile no" [(ngModel)]="personMobile" style="background: transparent;">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-bottom: 1rem !important; margin-top: 1rem !important;">
+    <div class="card" style="width: 100%; padding: 0px !important; min-width: 1000px; margin-bottom: 0.5rem;" *ngFor="let sPartInput of servicePartInput" >
+      <div style="overflow-x: auto; width: 100%;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem; width: 200%;">
+        <thead>
+            <tr>
+              <th>PO Number</th>
+              <th>Serial No</th>
+              <th>Part No</th>
+              <th>Part Description</th>
+              <th *ngIf="toAd_type.toLowerCase().includes('dc') && !isApprover">Validated KBB</th>
+              <th>Value</th>
+              <th>HSN Code</th>
+              <th *ngIf="isApprover">KBB Sl. No</th>
+              <th>Return Order</th>
+              <th>Repair No</th>
+              <th>Repair Type</th>
+              <th>Return Status</th>
+              <!-- <th>Value</th>
+              <th>HSN Code</th>
+              <th *ngIf="toAd_type.toLowerCase().includes('dc') && !isApprover">Validated KBB</th> -->
+              <th *ngIf="!isApprover && (nrdcNo !== '' && nrdcNo !== null)"></th>
+              <th *ngIf="(userRole == '2' || userRole == '6') && (bulkReturnId !== '' && bulkReturnId !== null)">Validation</th>
+              <th *ngIf="isApprover"></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sPart of partList; let indx = index" class="exPartList">
+            <td>{{sPart.po_number}}</td>
+            <td>{{sPart.serial_no}}</td>
+            <td>{{sPart.part_no}}</td>
+            <td style="width: 15% !important;"><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sPart.part_description}}</p></td>
+            <td style="width: 14% !important;" *ngIf="toAd_type.toLowerCase().includes('dc') && !isApprover"><input [disabled]="isApprover || nrdcNo!== ''" [(ngModel)]="sPart.captured_serial_no" class="information" type="text" name="partdetails" placeholder="KBB Value" (blur)="checkSerial(sPart, indx)" (keydown.enter)="checkSerial(sPart, indx)" (paste)="disablePaste($event)" (drop)="disablePaste($event)" (dragover)="disablePaste($event)" (oncontextmenu)="disablePaste($event)" [ngClass]="{'is-invalid': sPart.invalid}" style="width: 100%; min-width: 100px;"></td>
+            <!-- Value input field -->
+            <td style="width: 10% !important;">
+              <input type="text" name="partdetails" class="information" placeholder="Value"
+                [ngModel]="sPart.value == 0 ? '' : sPart.value" (ngModelChange)="sPart.value = $event" [disabled]="
+                  isReadOnlyMode ||
+                  (sPart.value !== 0 && !sPart._editing_value && !(sPart.value?.toString().includes(',')))
+                " (focus)="sPart._editing_value = true" (blur)="sPart._editing_value = false" [ngStyle]="{
+                  'background-color':
+                    (isReadOnlyMode ||
+                    (sPart.value !== 0 && !sPart._editing_value && !(sPart.value?.toString().includes(',')))
+                    ) ? '#e9ecef' : '#ffffff'
+                }" style="width: 100%;" />
+            </td>
+
+
+
+            <!-- HSN input field -->
+            <td style="width: 10% !important;">
+              <input type="text" name="partdetails" class="information" placeholder="HSN Code"
+                [ngModel]="sPart.hsn_code == 0 ? '' : sPart.hsn_code" (ngModelChange)="sPart.hsn_code = $event"
+                [disabled]="isReadOnlyMode || (sPart.hsn_code !== 0 && !sPart._editing_hsn)" (focus)="sPart._editing_hsn = true"
+                (blur)="sPart._editing_hsn = false" [ngStyle]="{
+                  'background-color': (isReadOnlyMode || (sPart.hsn_code !== 0 && !sPart._editing_hsn)) ? '#e9ecef' : '#ffffff'
+                }" style="width: 100%;" />
+            </td>
+
+            <td *ngIf="isApprover"><span>{{sPart.kbb_serial_no}}</span></td>
+            <td>{{sPart.return_order}}</td>
+            <td>{{sPart.repair_no}}</td>
+            <td>{{sPart.repair_type}}</td>
+            <td>{{sPart.return_status}}</td>
+            <!-- <td><input [disabled]="isApprover || nrdcNo != ''" [(ngModel)]="sPart.value" class="information" type="text" name="partdetails" placeholder="Value"></td>
+            <td style="width: 10% !important;"><input [disabled]="isApprover  || nrdcNo != ''" [(ngModel)]="sPart.hsn_code" class="information" type="text" name="partdetails" placeholder="HSN Code">
+            </td>
+            <td style="width: 14% !important;" *ngIf="toAd_type.toLowerCase().includes('dc') && !isApprover"><input [disabled]="isApprover || nrdcNo!== ''" [(ngModel)]="sPart.captured_serial_no" class="information" type="text" name="partdetails" placeholder="KBB Value" (blur)="checkSerial(sPart)" (keydown.enter)="checkSerial(sPart)" (paste)="disablePaste($event)" (oncontextmenu)="disablePaste($event)" [ngClass]="{'is-invalid': sPart.invalid}" style="width: 100%; min-width: 100px;"></td> -->
+
+            <td *ngIf="!isApprover && (nrdcNo == '' || nrdcNo == null)">
+              <div class="docBtn" style="float: right; margin: auto; display: block">
+                <a (click)="deleterow(indx)"><i class="material-icons" alt="Delete">delete</i></a>
+              </div>
+            </td>
+            <td *ngIf="(userRole == '2'  || userRole == '6') && (bulkReturnId !== '' && bulkReturnId !== null)">
+              <input type="checkbox" (change)="approverValidated(sPart, indx)" [(ngModel)]="sPart.approver_validated" >
+            </td>
+            <td *ngIf="isApprover && sPart.image_required == '1'">
+              <div class="docBtn" style="float: right; margin: auto; display: block">
+                <a (click)="imageVerification(sPart, image_verify_temp, indx)"><i [ngStyle]="{'color': [sPart.displayCheckColor]}" class="material-icons" alt="checkCircleOutline">check_circle_outline</i></a>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!isApprover && toAd_type.toLowerCase().includes('rc')">
+              <td colspan="12" style="text-align: center;"><button class="smbtn" (click)="addServicePart(sPartInput)">Add</button></td>
+          </tr>
+          <tr *ngIf="!isApprover && isFormValid() && toAd_type.toLowerCase().includes('dc') && nrdcNo == ''">
+            <td colspan="12" style="text-align: center;"><button class="smbtn" (click)="addServicePart(sPartInput)">Add</button></td>
+        </tr>
+
+        </tbody>
+      </table>
+      </div>
+      <div class="totalValue">
+        <span>Total Value: </span><span>{{totalValue}}</span>
+        <a (click)="exportPartList()">Export Parts List</a>
+        <a (click)="printReturnLabel()" *ngIf="((bulkReturnId !== '') && (bulkReturnId !== null) && (toAd_type === 'dc'))">Print Return Labels</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-box" style="overflow: auto !important;">
+    <div class="col-sm-4">
+      <div class="info_row">
+        <div class="col-md-5">
+            <label>Total Boxes</label>
+        </div>
+        <div class="col-md-7">
+            <input [disabled]="boxEdit || nrdcNo !== ''" class="information" placeholder="No. of Boxes" [(ngModel)]="totalBoxes" style="background: transparent;" type="text">
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-5">
+            <label>Total Items</label>
+        </div>
+        <div class="col-md-7">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="No. of Items" [(ngModel)]="totalItems" style="background: transparent;" type="text" readonly>
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-5">
+            <label>Total Wt/Kgs</label>
+        </div>
+        <div class="col-md-7">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Total Weight" [(ngModel)]="totalWg" style="background: transparent;" type="text">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4" style="display: grid;">
+      <div class="mode">
+        <div class="info_row">
+          <div class="col-md-5">
+            <label>Mode </label>
+          </div>
+          <div class="col-md-7">
+            <input disabled *ngIf="isApprover" class="information" placeholder="Carton Box No" [(ngModel)]="mode" style="background: transparent; margin-left: 8px;" type="text">
+            <select (change)="modeonChange($event.target.value)" [(ngModel)]="mode" [disabled]="nrdcNo !== '' && nrdcNo !== null">
+              <option [value]="1">Apex</option>
+              <option [value]="2">Surface</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="boxTypes">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '0')" [disabled]="isApprover || nrdcNo !== ''" [(ngModel)]="boxType[0].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[0].type === '1'">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[0].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[0].type === '2'">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[0].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[0].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo !== ''">
+            <button *ngIf="boxType[0].type === '2'" (click)="imageSelect(boxType[0], images_upload_temp)" [ngClass]="{'is-valid': (boxType[0].toteImage != '' && boxType[0].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[0].type === '1'" (click)="imageSelect( boxType[0], images_upload_temp)" [ngClass]="{'is-valid': (boxType[0].topSealImage != '' && boxType[0].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 2">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '1')" [disabled]="isApprover  || nrdcNo !== ''" [(ngModel)]="boxType[1].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[1].type === '1'">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[1].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[1].type === '2'">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[1].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover  || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[1].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo !== ''">
+            <button *ngIf="boxType[1].type === '2'" (click)="imageSelect(boxType[1], images_upload_temp)" [ngClass]="{'is-valid': (boxType[1].toteImage != '' && boxType[1].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[1].type === '1'" (click)="imageSelect( boxType[1], images_upload_temp)" [ngClass]="{'is-valid': (boxType[1].topSealImage != '' && boxType[1].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 3">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '2')" [disabled]="isApprover || nrdcNo !== ''" [(ngModel)]="boxType[2].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[2].type === '1'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[2].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[2].type === '2'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[2].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[2].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo!== ''">
+            <button *ngIf="boxType[2].type === '2'" (click)="imageSelect(boxType[2], images_upload_temp)"  [ngClass]="{'is-valid': (boxType[2].toteImage != '' && boxType[2].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[2].type === '1'" (click)="imageSelect( boxType[2], images_upload_temp)" [ngClass]="{'is-valid': (boxType[2].topSealImage != '' && boxType[2].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="boxTypes" *ngIf="totalBoxes >= 4">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '3')" [disabled]="isApprover || nrdcNo !== ''" [(ngModel)]="boxType[3].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[3].type === '1'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[3].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[3].type === '2'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[3].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[3].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo !== ''">
+            <button *ngIf="boxType[3].type === '2'" (click)="imageSelect(boxType[3], images_upload_temp)" [ngClass]="{'is-valid': (boxType[3].toteImage != '' && boxType[3].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[3].type === '1'" (click)="imageSelect( boxType[3], images_upload_temp)" [ngClass]="{'is-valid': (boxType[3].topSealImage != '' && boxType[3].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 5">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '4')" [disabled]="isApprover || nrdcNo !== ''" [(ngModel)]="boxType[4].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[4].type === '1'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[4].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[4].type === '2'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[4].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[4].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo !== ''">
+            <button *ngIf="boxType[4].type === '2'" (click)="imageSelect(boxType[4], images_upload_temp)" [ngClass]="{'is-valid': (boxType[4].toteImage != '' && boxType[4].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[4].type === '1'" (click)="imageSelect( boxType[4], images_upload_temp)" [ngClass]="{'is-valid': (boxType[4].topSealImage != '' && boxType[4].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 6">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '5')" [disabled]="isApprover || nrdcNo !== ''" [(ngModel)]="boxType[5].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[5].type === '1'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[5].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[5].type === '2'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[5].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[5].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo !== ''">
+            <button *ngIf="boxType[5].type === '2'" (click)="imageSelect(boxType[5], images_upload_temp)" [ngClass]="{'is-valid': (boxType[5].toteImage != '' && boxType[5].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[5].type === '1'" (click)="imageSelect( boxType[5], images_upload_temp)" [ngClass]="{'is-valid': (boxType[5].topSealImage != '' && boxType[5].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 7">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '6')" [disabled]="isApprover || nrdcNo !== ''" [(ngModel)]="boxType[6].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[6].type === '1'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[6].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[6].type === '2'">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tote Id" [(ngModel)]="boxType[6].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover || nrdcNo !== ''" class="information" placeholder="Tag Id" [(ngModel)]="boxType[6].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type && toAd_type.toLowerCase().includes('dc') && nrdcNo !== ''">
+            <button *ngIf="boxType[6].type === '2'" (click)="imageSelect(boxType[6], images_upload_temp)" [ngClass]="{'is-valid': (boxType[6].toteImage != '' && boxType[6].tagImage != '')}">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[6].type === '1'" (click)="imageSelect( boxType[6], images_upload_temp)" [ngClass]="{'is-valid': (boxType[6].topSealImage != '' && boxType[6].bottomSealImage != '')}">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-sm-4" style="width: 40%;">
+      <div class="boxTypes" *ngIf="totalBoxes >= 4">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '3')" [disabled]="isApprover" [(ngModel)]="boxType[3].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[3].type === '1'">
+            <input [disabled]="isApprover" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[3].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[3].type === '2'">
+            <input [disabled]="isApprover" class="information" placeholder="Tote Id" [(ngModel)]="boxType[3].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input class="information" placeholder="Tag Id" [(ngModel)]="boxType[3].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type ==='dc' && bulkReturnId !== ''">
+            <button *ngIf="boxType[0].type === '2'" (click)="imageSelect(boxType[0], images_upload_temp)">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[0].type === '1'" (click)="imageSelect( boxType[0], images_upload_temp)">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 5">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '4')" [disabled]="isApprover" [(ngModel)]="boxType[4].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[4].type === '1'">
+            <input [disabled]="isApprover" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[4].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[4].type === '2'">
+            <input [disabled]="isApprover" class="information" placeholder="Tote Id" [(ngModel)]="boxType[4].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover" class="information" placeholder="Tag Id" [(ngModel)]="boxType[4].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type ==='dc' && bulkReturnId !== ''">
+            <button *ngIf="boxType[0].type === '2'" (click)="imageSelect(boxType[0], images_upload_temp)">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[0].type === '1'" (click)="imageSelect( boxType[0], images_upload_temp)">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 6">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '5')" [disabled]="isApprover" [(ngModel)]="boxType[5].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[5].type === '1'">
+            <input [disabled]="isApprover" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[5].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[5].type === '2'">
+            <input [disabled]="isApprover" class="information" placeholder="Tote Id" [(ngModel)]="boxType[5].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover" class="information" placeholder="Tag Id" [(ngModel)]="boxType[5].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type ==='dc' && bulkReturnId !== ''">
+            <button *ngIf="boxType[0].type === '2'" (click)="imageSelect(boxType[0], images_upload_temp)">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[0].type === '1'" (click)="imageSelect( boxType[0], images_upload_temp)">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+      <div class="boxTypes" *ngIf="totalBoxes >= 7">
+        <div class="info_row">
+          <div class="col-md-5">
+            <select (change)="boxonChange($event.target.value, '6')" [disabled]="isApprover" [(ngModel)]="boxType[6].type">
+              <option [value]="1">Carton Box</option>
+              <option [value]="2">Tote Box</option>
+            </select>
+          </div>
+          <div class="col-md-7" *ngIf="boxType[6].type === '1'">
+            <input [disabled]="isApprover" class="information" placeholder="Carton Box No" [(ngModel)]="boxType[6].cartonBoxNo" style="background: transparent; margin-left: 8px;" type="text">
+          </div>
+          <div class="col-md-7" *ngIf="boxType[6].type === '2'">
+            <input [disabled]="isApprover" class="information" placeholder="Tote Id" [(ngModel)]="boxType[6].toteId" style="background: transparent; margin-left: 8px; width: 44%;" type="text">
+            <input [disabled]="isApprover" class="information" placeholder="Tag Id" [(ngModel)]="boxType[6].tagId" style="background: transparent; margin-left: 8px; width: 44%" type="text">
+          </div>
+          <div *ngIf="toAd_type ==='dc' && bulkReturnId !== ''">
+            <button *ngIf="boxType[0].type === '2'" (click)="imageSelect(boxType[0], images_upload_temp)">Upload Tag/Tote Image</button>
+            <button *ngIf="boxType[0].type === '1'" (click)="imageSelect( boxType[0], images_upload_temp)">Upload CartonBox Image</button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="row-box" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+    <div style="width: 100%; display: flex;">
+      <div class="col-sm-3">
+        <div class="customer_info_row">
+          <div class="col-md-12">
+            <label>Length</label>
+          </div>
+          <div class="col-md-12">
+            <input class="information" [(ngModel)]="length" [disabled]="isApprover" type="text" name="Length" placeholder="Enter here">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="customer_info_row">
+          <div class="col-md-12">
+            <label>Width</label>
+          </div>
+          <div class="col-md-12">
+            <input class="information" [(ngModel)]="width" [disabled]="isApprover" type="text" name="Width" placeholder="Enter here">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="customer_info_row">
+          <div class="col-md-12">
+            <label>Height</label>
+          </div>
+          <div class="col-md-12">
+            <input class="information" [(ngModel)]="height" [disabled]="isApprover" type="text" name="Height" placeholder="Enter here">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="customer_info_row">
+          <div class="col-md-12">
+            <label>AWB No</label>
+          </div>
+          <div class="col-md-12">
+            <input class="information" [disabled]="isApprover"  type="text" [(ngModel)]="awbNo" name="awb no" placeholder="Enter here">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12">
+      <div class="kbbVideo" *ngIf="((eWayBillNo !== '') && (eWayBillNo !== null)) && (((branchType === 'I') || (branchType === 'A')))">
+        <div class="kbbVideo" *ngIf="(((branchType === 'I') || (branchType === 'A')) && toAd_type.toLowerCase().includes('rc'))">
+          <!-- <div class="acceptbtns" style="float: none">
+            <button (click)="uploadKBB(images_upload_temp)">Upload KBB Image/Video</button>
+          </div> -->
+        <input (change)="onImagePicked($event)" placeholder="Upload KBB Packing Video"
+        type="file" accept="video/*"/>
+        <a (click)="onVideoUpload()" *ngIf="(buttonSpin === false)">Upload Video</a>
+      </div>
+        </div>
+      <div class="bulkReturn" *ngIf="(bulkReturnId !== '') && (bulkReturnId !== null)">
+        <h4 style="font-size: 1rem !important;">Bulk Return Id</h4>
+        <input [disabled]="true" class="information" placeholder="Enter Here" [(ngModel)]="bulkReturnId" style="background: transparent;" type="text">
+      </div>
+
+      <div class="bulkReturn" *ngIf="(bulkReturnId === '') || (bulkReturnId === null)">
+        <p>No Bulk Return Created</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; margin-top: 1.5rem; padding-bottom: 1rem;">
+    <div class="header_left" style="display: flex !important;">
+        <div class="acceptbtns" style="float: left" *ngIf="((buttonSpin === false) && (!isApprover) && (nrdcNo === ''))">
+          <button *ngIf="toAd_type.includes('rc')" (click)="saveKBB(simple_alert_temp)">Create NRDC</button>
+          <button *ngIf="toAd_type.includes('dc')" (click)="saveKBB(simple_alert_temp)">Save Draft</button>
+        </div>
+        <div class="acceptbtns" style="float: left" *ngIf="((buttonSpin === false) && (nrdcNo !== '') && (bulkReturnId == '' || bulkReturnId == null) && enableBulkReturn)">
+          <button (click)="createBulkReturn(simple_alert_temp)">Create Bulk Return</button>
+        </div>
+        <!-- <div
+        class="acceptbtns" style="float: left" *ngIf="((buttonSpin === false) && (nrdcNo !== '') && (bulkReturnId == '' || bulkReturnId == null) && enableBulkReturn)">
+      <button[disabled]="isTuesday()"(click)="createBulkReturn(simple_alert_temp)">Create Bulk Return</button>
+      </div> -->
+
+        <div class="acceptbtns" style="float: left; margin-left: 1rem;" *ngIf="((buttonSpin === false) && (!isApprover) && (forUpdate))">
+          <button (click)="cancelUpdate()">Back</button>
+        </div>
+        <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="(buttonSpin === false) && userRole !== '2' &&  (isApprover) && (bulkReturnId !== '' && bulkReturnId !== null)">
+          <button (click)="approveKbb(simple_alert_temp)">Approve</button>
+        </div>
+        <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="(buttonSpin === false) && (userRole == '2'  || userRole == '6') && (isApprover) && (bulkReturnId !== '' && bulkReturnId !== null)">
+          <button (click)="updateValidationDetails()">Validate KBB</button>
+        </div>
+        <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="(buttonSpin === false) && ((eWayBillNo !== '') && (eWayBillNo !== null)) && ((branchType === 'I') || (branchType === 'A'))">
+          <button (click)="printNrdc()">Print NRDC</button>
+        </div>
+        <!-- <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="((buttonSpin === false) && (isApprover) && ((this.bulkReturnId === '') || (this.bulkReturnId === null)))">
+          <button (click)="declineKbb(decline_temp)">Decline</button>
+        </div> -->
+        <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+    </div>
+  </div>
+</div>
+
+      <!-- ********************** Templates **********************-->
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="simpleAlert.msg !== ''">{{simpleAlert.msg}}</p>
+        <div [innerHtml]="bulkReturnError" *ngIf="(bulkReturnError !== '') && (bulkReturnError !== undefined)"></div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" *ngIf="(simpleAlert.msg === '')">Ok</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelAndBack()" *ngIf="simpleAlert.msg !== ''">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #decline_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KBB Outward</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="remarks" placeholder="Enter remarks" class="information" rows="3" style="border: 1px solid lightgrey; margin-bottom: .5rem;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill all mandatory fields
+        </div>
+      <div class="modal-footer" style="height: 60px">
+        <div>
+            <button type="button" class="btn btn-secondary" (click)="submit(simple_alert_temp, 'D')">Decline</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="fade" #image_verify_temp>
+  <div class="modal-lg" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KBB Image Verify</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px;">
+        <div class="modelBody">
+          <div class="col-md-6">
+            <span>Diagnosis KBB</span>
+            <div>
+              <img src="{{diagnosisImage}}" (click)="openImage(diagnosisImage)" style="width: 100%"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <span>Shipping KBB
+            <select class="gDriveImages" (change)="kbbImagetype($event.target.value)">
+              <option *ngFor="let img of kbbGDriveImage; let imgSideIdx = index" [value]="imgSideIdx">
+                {{img.side}}
+              </option>
+            </select>
+            </span>
+            <div>
+              <img src="{{kbbImage}}" (click)="openImage(kbbImage)" style="width: 100%" alt="Click here to login for get Google drive Image"/>
+            </div>
+          </div>
+        </div>
+      <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-secondary" (click)="kbbImageApprove()">Verified</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #images_upload_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KBB Image/Video Upload</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin: 3rem auto 3rem auto">
+        <div class="animated fadeIn" *ngIf="popLoading === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+        <div style="display: flex;">
+          <div class="header_left" style="width: 65%">
+            <select style="border: 1px solid lightgray; width: 100%" [(ngModel)]="imageType">
+              <option value="">Select Image type</option>
+              <option *ngIf="currentImageType.type == '2'" value="Tag">Tag image</option>
+              <option *ngIf="currentImageType.type == '2'" value="Tote">Tote image</option>
+              <option *ngIf="currentImageType.type == '1'" value="TopSeal">Top Seal image</option>
+              <option *ngIf="currentImageType.type == '1'" value="BottomSeal">Bottom Seal image</option>
+              <option value="AWB">AWB image</option>
+              <!-- <option value="video">KBB Video</option> -->
+            </select>
+            <input *ngIf="imageType !== ''" accept="image/*,video/*" [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" type="file" name="file" class="form-control-file" id="exampleFormControlFile1"
+            (change)="onImagePicked($event)">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onVideoUpload()" *ngIf="(buttonSpin === false)">Upload</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

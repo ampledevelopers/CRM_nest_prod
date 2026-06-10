@@ -1,0 +1,185 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="row text-center mt-3" style="color: black;" *ngIf="showTable">
+
+  <!-- iCare -->
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body" style="background-color: #d6f5f7;">
+        <small  style="font-size: 1.3rem; font-weight: bold; color: black;">iCare</small>
+      <h3 class="mb-0" style="color: black;">
+        {{ total_tokens?.total_token_data[0]['COUNT(*)'] || 0 }}
+      </h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- DL -->
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body" style="background-color: #cecece;">
+        <small  style="font-size: 1.3rem; font-weight: bold; color: black;">DL</small>
+        <h3 class="mb-0" style="color: black;">
+          {{ total_tokens?.total_token_dl_data[0]['COUNT(*)'] || 0 }}
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total -->
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body" style="background-color: #ffd8d8;">
+        <small  style="font-size: 1.3rem; font-weight: bold; color: black;">Total</small>
+         <h3 class="mb-0" style="color: black;">
+          {{
+            (+total_tokens?.total_token_data[0]['COUNT(*)'] || 0)
+            +
+            (+total_tokens?.total_token_dl_data[0]['COUNT(*)'] || 0)
+          }}
+        </h3>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false" style="margin-top: 1rem;">
+  <div class="card" style="border: 0px;">
+
+    <div class="card" *ngFor="let state of states" style="margin-top: 1rem;">
+      <div class="card-header">
+        <strong>{{state}}</strong>
+      </div>
+      <div class="card-body" style="padding: 0px;">
+        <div class="token-row">
+          <div class="col-md-2" *ngFor="let branch of filterBraches(state)" style="margin: 1rem">
+            <div class="branch-card" [ngClass]="{ 'drop-location': branch.drop_location_flag === '1' }">
+              <h1>{{ branch.count }}</h1>
+              <label>{{ branch.branch_name }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+   </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(userRole !== '12') && (!loading)" style="margin-top: 1rem;">
+  <div class="card">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="date">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="date">
+        </div>
+      </div>
+      <div style="display: flex; margin-top: 1rem ">
+        <div class="header_left" style="display: flex !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/.row-->
+  <div class="card" *ngIf="isReport === true" style="margin-top: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header">
+        <i class="fa fa-align-justify"></i> {{reportHeader}} - Service
+      </div>
+      <div class="card-body">
+        <div style="overflow-x: auto;padding-top: 0px;">
+          <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0px;">
+            <thead>
+              <tr>
+                <th>Branch_Code</th>
+                <th>Total_Tokens</th>
+                <th>Average_Wait_Time(in Min)</th>
+                <th>Max_Wait_Time(in Min)</th>
+                <th>Average_Handle_Time(in Min)</th>
+                <th>Max_Handle_Time(in Min)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let service of token_time_service; let idx = index" style="text-align: center;">
+                <td>{{service[0]}}</td>
+                <td>{{service[1]}}</td>
+                <td>{{service[2]}}</td>
+                <td>{{service[3]}}</td>
+                <td>{{service[4]}}</td>
+                <td>{{service[5]}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="isReport === true" style="margin-top: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header">
+        <i class="fa fa-align-justify"></i> {{reportHeader}} - Delivery
+      </div>
+
+      <div class="card-body">
+        <div style="overflow-x: auto;padding-top: 0px;">
+          <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0px;">
+            <thead>
+              <tr>
+                <th>Branch_Code</th>
+                <th>Total_Tokens</th>
+                <th>Average_Wait_Time(in Min)</th>
+                <th>Max_Wait_Time(in Min)</th>
+                <th>Average_Handle_Time(in Min)</th>
+                <th>Max_Handle_Time(in Min)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let delivery of token_time_delivery let idx = index" style="text-align: center;">
+                <td>{{delivery[0]}}</td>
+                <td>{{delivery[1]}}</td>
+                <td>{{delivery[2]}}</td>
+                <td>{{delivery[3]}}</td>
+                <td>{{delivery[4]}}</td>
+                <td>{{delivery[5]}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header">
+        <i class="fa fa-align-justify"></i> {{reportHeader}}
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

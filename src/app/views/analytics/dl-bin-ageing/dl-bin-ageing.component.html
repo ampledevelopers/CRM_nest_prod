@@ -1,0 +1,154 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+<div class="info_row">
+  <div class="col-md-12" style="float: left; padding: 0px;">
+    <div class="card">
+      <div class="card-header">
+        <strong>DL- Bin Ageing Dashboard</strong>
+      </div>
+      <div class="card-body" style="padding: 0px; overflow-x: auto;">
+        <table class="table table-bordered table-sm" style="margin: auto; border-block-color: #808080">
+          <thead>
+            <tr class="tabelHeader">
+              <td>Ship To</td>
+              <td>Location</td>
+              <td class="loc-tot" *ngFor="let status of statuses">
+                {{status.status_name}}
+              </td>
+              <td>Total Count</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tableCount" *ngFor="let data of finalData" style="text-align: center;">
+              <td class="iphone">{{data.shipTo}}</td>
+              <td class="iphone">{{data.branchCode}}</td>
+              <td class="count" *ngFor="let count of data.statuses" style="text-align: center;">
+                <a (click)="ageingTicketList(count.status, data.branchCode, ticket_list_temp, count.status_name)">{{count.count}}</a>
+              </td>
+              <td>{{data.total}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="fade" #ticket_list_temp>
+  <div class="modal-xlg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2;font-size: 1.2rem !important;">Ticket List <span> -
+            {{selectedStatus}}</span><span *ngIf="isTicketList === false"> - {{selectedTicket}}</span></h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12" *ngIf="isTicketList === true && isNotificationList === false ">
+          <table class="table table-bordered table-striped table-md" style="word-wrap: anywhere;">
+            <thead class="popthead" style="border: 1px solid lightgray;">
+              <th>
+                Ticket Id
+              </th>
+              <th>
+                Branch Code
+              </th>
+              <th *ngIf="sitetypeId === '2'">
+                Company Name
+              </th>
+              <th>
+                Status Name
+              </th>
+              <th>
+                RAF Created Date
+              </th>
+              <th>
+                Ageing Since
+              </th>
+              <th>
+                Ageing Days
+              </th>
+              <th>
+                Call/Mail/SMS Status
+              </th>
+            </thead>
+            <tbody class="popTableBody">
+              <tr *ngFor="let ticket of ticketsList">
+                <td>{{ticket.ticket_id}}</td>
+                <td>{{ticket.branch_code}}</td>
+                <td *ngIf="sitetypeId === '2'">{{ticket.company_name}}</td>
+                <td>{{ticket.status_name}}</td>
+                <td *ngIf="ticket.RAF_created_date === '0000-00-00 00:00:00'">{{ticket.RAF_created_date}}</td>
+                <td *ngIf="ticket.RAF_created_date !== '0000-00-00 00:00:00'">{{ticket.RAF_created_date | date:
+                  'dd-MM-yyyy hh:mm:ss'}}</td>
+                <td *ngIf="ticket.ageing_since === '0000-00-00 00:00:00'">{{ticket.ageing_since}}</td>
+                <td *ngIf="ticket.ageing_since !== '0000-00-00 00:00:00'">{{ticket.ageing_since | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+                <td>{{ticket.ageing_days}}</td>
+                <td style="padding: 0.25rem !important;">
+                  <div style="display:flex;">
+                    <div style="display:block;">
+                      <a style="color: black !important;" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false" dropdownToggle (click)="getNotificationDetail('SMS',ticket.ticket_id)">
+                        <i class="material-icons">comment</i><sup>{{ticket.smsCount}}</sup>
+                      </a>
+                    </div>
+                    <div style="display: block;margin-left: 0.5rem">
+                      <a style="color: black !important;" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false" dropdownToggle (click)="getNotificationDetail('Email',ticket.ticket_id)">
+                        <i class="material-icons">mail_outline</i><sup>{{ticket.mailCount}}</sup>
+                      </a>
+                    </div>
+                    <div style="display: block;margin-left: 0.5rem">
+                      <a style="color: black !important;" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false" dropdownToggle (click)="getNotificationDetail('Call',ticket.ticket_id)">
+                        <i class="material-icons">local_phone</i><sup>{{ticket.callCount}}</sup>
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="isNotificationList === true" style="margin: 0px 1rem;">
+          <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem">
+            <thead class="popthead" style="border: 1px solid lightgray;">
+              <th style="width: 25%;">
+                Ticket Id
+              </th>
+              <th>
+                Message
+              </th>
+              <th style="width: 25%;">
+                Message Sent Time
+              </th>
+            </thead>
+            <tbody class="popTableBody">
+              <tr *ngFor="let notificationData of notificationDetails">
+                <td style="width: 25%; text-align: center;">{{notificationData.ticket_id}}</td>
+                <td style="word-wrap: break-word;">{{notificationData.message !== ''? notificationData.message :notificationData.type}}</td>
+                <td style="width: 25%; text-align: center;">{{notificationData.entrytime}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" *ngIf="isTicketList === false && isNotificationList == true"
+          (click)="back()">Back</button>
+        <div>
+          <button type="button" class="btn btn-secondary" *ngIf="isNotificationList === false"
+            (click)="cancelModel()">Close</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" *ngIf="isNotificationList === false"
+            (click)="export()">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+

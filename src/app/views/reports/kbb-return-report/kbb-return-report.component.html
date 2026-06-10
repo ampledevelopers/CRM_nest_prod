@@ -1,0 +1,72 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - KBB Return Report
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch<span style="color: red;">*</span></label>
+          <select class="form-control" [(ngModel)]="selectedBranch">
+            <option selected disabled>Select Branch</option>
+            <option *ngIf="userRole === '2' || userRole === '3'" value="">All</option>
+            <option *ngFor="let branch of branchList; let i = index" [value]="branch.branch_code">
+              {{branch.label}} - {{branch.branch_code}}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Status</label>
+          <select class="form-control" [(ngModel)]="selectedStatus">
+            <option selected value="" selected>All</option>
+            <option value="CONFIRMED">Return Confirmed</option>
+            <option value="PENDING">Return Pending</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:  block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading === true" style="margin-top: 1rem; text-align: center;">
+    <c-spinner size="sm" style="margin: auto !important;"></c-spinner>
+  </div>
+
+
+  <div class="card" *ngIf="loading === false && showTable" style="margin-top: 2rem; margin-bottom: 1rem;">
+    <div class="col-lg-16">
+      <div class="card-header" style="margin-bottom: 1rem; display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> KBB Return Report
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="kbbData" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td [cTableActive]="smartTable.tableDataCellProps(item, columnName)?.['active']"
+                [cTableColor]="smartTable.tableDataCellProps(item, columnName)?.color"
+                [cAlign]="smartTable.tableDataCellProps(item, columnName)?.align"
+                [ngClass]="smartTable.tableDataCellClasses(item, columnName)">
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchDefault>
+                    {{tdContent}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+          </c-smart-table>
+      </div>
+    </div>
+  </div>

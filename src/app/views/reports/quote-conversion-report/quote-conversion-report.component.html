@@ -1,0 +1,147 @@
+<div class="card">
+    <div class="card-header">
+        Filters - Quote Conversion Report
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Report Type<sup style="color: red">*</sup></label>
+                <fieldset>
+                    <ng-select ng-multiple="false" class="bootstrap" placeholder="Select Report Type" bindLabel="label"
+                        bindValue="value" [items]="reportTemp" [multiple]="false" [(ngModel)]="reportType"
+                        (change)="onChangeReport(reportType)"></ng-select>
+                </fieldset>
+            </div>
+            <div *ngIf="reportSelected === true" class="col-md-4">
+                <label>From Date<sup style="color: red">*</sup></label>
+                <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+                    placeholder="date">
+            </div>
+            <div *ngIf="reportSelected === true" class="col-md-4">
+                <label>To Date<sup style="color: red">*</sup></label>
+                <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+                    placeholder="date">
+            </div>
+        </div>
+    </div>
+    <div style="display: flex;margin-bottom: 1rem;">
+        <div class="header_left" style="display:  block !important;">
+            <div class="acceptbtns" style="float: left">
+                <button (click)="load()">Load</button>
+            </div>
+            <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                <button (click)="exportAsXLSX()">Export</button>
+            </div>
+            <div style="margin-left: 1rem;" class="acceptbtns">
+                <button (click)="clear()">Clear</button>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+</div>
+
+<div *ngIf="loading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+</div>
+
+<div *ngIf="loading === false && branchBasis === true" class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Branch Code</th>
+                <th>Total Quote Id</th>
+                <th>Count Amount Paid</th>
+                <th>Conversion Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of branchDataTemp">
+                <td>{{item.branch}}</td>
+                <td>{{item.branchTotalCount}}</td>
+                <td>{{item.branchPaidCount}}</td>
+                <td>{{item.conversionData}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  <div *ngIf="loading === false && productBasis === true" class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Total Quote Id</th>
+                <th>Count Amount Paid</th>
+                <th>Conversion Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of productDataTemp">
+                <td>{{item.productTemp}}</td>
+                <td>{{item.productTotalCount}}</td>
+                <td>{{item.productPaidCount}}</td>
+                <td>{{item.conversionData}}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading === false && lostQoute === true" class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Branch Code</th>
+                <th>Total Quote Id</th>
+                <th>Lost Quote</th>
+                <th>Lost Value</th>
+                <th>Conversion Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of conversionLostTemp">
+                <td>{{item.branch}}</td>
+                <td>{{item.totalQoute}}</td>
+                <td>{{item.lostQoute}}</td>
+                <td>{{item.lostValue}}</td>
+                <td>{{item.conversionData}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  <div *ngIf="loading === false && lostQoute === true" class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header">
+      Lost Count Details
+      </div>
+      <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Branch Code</th>
+                <th>Ticket Id</th>
+              </tr>
+            </thead>
+            <tbody style="word-wrap: anywhere;">
+              <tr *ngFor="let item of lostCountTemp">
+                <td style="width:8rem;">{{item.branch}}</td>
+                <td>{{item.ticketId}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

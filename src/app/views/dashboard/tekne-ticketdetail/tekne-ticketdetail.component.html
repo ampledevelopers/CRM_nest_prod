@@ -1,0 +1,2747 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="alert alert-danger" role="alert" *ngIf="data.call_only_option === '1'" style="text-align: center; font-weight: bold; font-size: 0.9rem !important;">
+    Customer looking updates through Calls only
+  </div>
+  <div>
+    <div style="display: flex;">
+      <div class="ticketDiv">
+        <div class="ticketId">
+          <b>T</b>
+          <b *ngIf="data.ticket_date <= '2024-03-31'">{{data.branch_code}}</b>
+          <b *ngIf="data.ticket_date > '2024-03-31'">{{data.new_branch_code}}</b>
+          <b>{{ticketId}}</b>
+          <span *ngIf="data.ticket_date > '2024-03-31'" style="display: block; font-size: 0.7rem">({{data.branch_code}})</span>
+        </div>
+      </div>
+
+      <div class="token" *ngIf="data.site_type_id === '1'">
+        <ng-template #popTemplateHtml>
+          <div [innerHtml]="html"></div>
+        </ng-template>
+        <div style="padding: 0px;">
+          <button type="button" class="btn btn-info" [ngbPopover]="popTemplateHtml" popoverTitle="Token Information" triggers="mouseenter:mouseleave" placement="bottom"
+            style="box-shadow:none;  display:flex !important; --cui-btn-hover-color:black !important;">{{data.token_no}}/{{data.ticket_date | date: 'dd-MM-yyyy'}}&nbsp;&nbsp;<i class="material-icons"
+              style="margin-top:0rem !important; font-size:18px !important; display: flex !important;">info </i>
+          </button>
+        </div>
+      </div>
+
+      <div class="status">
+        <h6 style="font-size: 0.875rem;">{{data.status}}</h6>
+        <!-- <span style="font-size: 0.7rem; color: red; display: inline-flex !important;">Ageing: {{ageingTime}} -->
+          <!-- <i class="material-icons" (click)="sendAgeingSMSTemp(sms_email_temp)" style="color: #20a8d8; margin-left: 0.5rem; cursor: pointer; display:flex !important; font-size: large;">mail</i> -->
+        <!-- </span> -->
+      </div>
+
+      <div class="assignee" *ngIf="(data.branch_code === userBranch) && (data.site_type_id === '1')">
+        <select [(ngModel)]="assignedUserName" (change)="selectTechnician($event.target.value, confirm_alert_temp)" *ngIf="data.site_type_id === '1'">
+          <option *ngFor="let assign of technicianList; let i = index" [value]="assign.user_name">
+            {{assign.user_name}}
+          </option>
+        </select>
+      </div>
+      <div class="assignee" *ngIf="(data.branch_code !== userBranch) && (data.site_type_id === '1')">
+        <label>{{data.assigned_user_name}}</label>
+      </div>
+
+      <div class="timeline" style="margin-top: 0.7rem;">
+        <button type="button" ngbTooltip="Recent Updates" placement="top">
+          <i class="material-icons" (click)="gettimelinedata(data.id, recent_update_temp)">insights</i>
+        </button>
+      </div>
+    </div>
+    <div class="card" style="width: 100%; border: 1px solid lightgray; margin-top: 1rem; margin-bottom: 0rem;">
+      <div class="card-header" [ngStyle]="{'background-color': [customerDisSatStyles.cDisStatBColor], 'color': [customerDisSatStyles.cDisStatFColor]}"
+        style="background-color: white; float: left;" *ngIf="upArrow" (click)="collapse()">
+        <div class="headerInfo">
+          <div *ngIf="productName !== ''">
+            Product&nbsp;<b>{{productName}}&nbsp;</b>
+          </div>
+          <div *ngIf="(data.serial_no !== '')">
+            Sl.No&nbsp;<b>{{data.serial_no}}</b>
+          </div>
+          <div *ngIf="(data.warranty_status !== '') && (data.coverage_status_description === '')">
+            Warranty&nbsp;<b>{{data.warranty_status}}</b>
+          </div>
+          <div *ngIf="(data.coverage_status_description !== '')">
+            Warranty&nbsp;<b>{{data.coverage_status_description}}</b>
+          </div>
+          <div *ngIf="customerInfo.name !== ''">
+            Name <b>{{customerInfo.name}}</b>
+          </div>
+        </div>
+        <div class="card-header-actions" style="cursor: pointer; float: right">
+          <div>
+            <i class="material-icons">keyboard_arrow_down</i>
+          </div>
+        </div>
+      </div>
+      <div class="card-header" *ngIf="!upArrow" [ngStyle]="{'background-color': [customerDisSatStyles.cDisStatBColor], 'color': [customerDisSatStyles.cDisStatFColor]}"
+        style="height: 100%; background-color: #f7f7f7; width: 30%; position: absolute;  border-right: 1px solid lightgray;">
+        <div *ngIf="!upArrow" style="float: left; width:100%">
+          <b style="float: left;">Device</b>
+        </div>
+      </div>
+      <div class="card-header" [ngStyle]="{'background-color': [customerDisSatStyles.cDisStatBColor], 'color': [customerDisSatStyles.cDisStatFColor]}" *ngIf="!upArrow"
+        style="background-color: #f7f7f7; width: 70%; margin-left: 30%;" (click)="collapse()">
+        <div *ngIf="!upArrow" style="float: left;">
+          <b>Customer</b>
+        </div>
+        <div class="card-header-actions" style="cursor: pointer; float: right;">
+          <div>
+            <i class="material-icons">keyboard_arrow_up</i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body" [(ngbcollapse)]="isCollapsed" style="margin-bottom:1rem !important;">
+      <div class="card-body" *ngIf="isCollapsed"
+        style="display: flex; background-color: white; padding: 0px; display: flex; border: 1px solid lightgray; border-top: 0px; border-radius: 5px;">
+        <div style="display: flex; width: 100%;">
+          <div class="deviceInfo"> <!-- style="width: 30%; padding: 1rem; float: left" -->
+            <div class="info_row">
+              <div class="col-md-5">
+                <label>Serial Number</label>
+                <input [(ngModel)]="data.serial_no" style="background: transparent; border: 0; width: 80%" class="information" type="text" name="serial_no" placeholder="N/A"
+                  disabled>
+              </div>
+              <!-- <div class="col-md-7">
+                <label>IMEI Number</label>
+                <input [(ngModel)]="imeiNo" style="background: transparent; border: 0" class="information" type="text" name="imei_no" placeholder="N/A" readonly>
+              </div> -->
+            </div>
+            <div class="info_row">
+              <div class="col-md-5">
+                <label>Product Family</label>
+                <input class="information" [(ngModel)]="data.product_family" style="background: transparent; border: 0" type="text" name="Product Family" placeholder="N/A"
+                  readonly>
+              </div>
+              <div class="col-md-7">
+                <label>Product Name</label>
+                <input class="information" [(ngModel)]="productName" style="background: transparent; border: 0" type="text" name="Product Name" placeholder="N/A" readonly>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-5">
+                <label>Warranty Status</label>
+              </div>
+              <div class="col-md-7" *ngIf="(warrantyStatus !== '')">
+                <input class="information" [(ngModel)]="warrantyStatus" style="background: transparent; border: 0" type="text" name="warranty_status" placeholder="N/A" readonly>
+              </div>
+            </div>
+            <div class="info_row" *ngIf="(data.coverage_status_description !== '')">
+              <div class="col-md-5">
+                <label>Repair Warranty</label>
+              </div>
+              <div class="col-md-7">
+                <input class="information" [(ngModel)]="repairWarranty" style="background: transparent; border: 0" type="text" name="repair_warranty"
+                  placeholder="N/A" readonly>
+              </div>
+            </div>
+            <div class="info_row" style="padding-bottom: 0px !important;">
+              <div class="col-md-4">
+                <label>Product Config</label>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-12">
+                <textarea class="information" [(ngModel)]="data.product_config" style="background: transparent;" rows="2" placeholder="N/A" readonly></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="customerInfo">
+            <div style="width: 40%; float: left; padding: 0.5rem; padding-top: 0px;">
+              <div class="customer_info_row">
+                <div class="col-md-12">
+                  <label>Name</label>
+                </div>
+                <div class="col-md-12">
+                  <input class="information" [(ngModel)]="customerInfo.name" type="text" name="Customer name" placeholder="Customer Name" readonly>
+                </div>
+              </div>
+              <div class="customer_info_row">
+                <div class="col-md-12">
+                  <label>Address</label>
+                </div>
+                <div class="col-md-12">
+                  <textarea [(ngModel)]="customerInfo.address" class="information" rows="5" name="address" placeholder="Address here..." readonly></textarea>
+                </div>
+              </div>
+              <div class="customer_info_row">
+                <div class="col-md-12">
+                  <label>Contact Number</label>
+                </div>
+                <div class="col-md-12">
+                  <input [(ngModel)]="data.customer_phone_no" style="width: 50%" class="information" type="text" name="contact" placeholder="Contact Number" readonly>
+                  <div class="sk-three-bounce" style="width: 25%; float: right; margin-right: 13%;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+                </div>
+                <div class="col-md-12" *ngIf="(customerInfo.phone2 !== '') && (customerInfo.phone2 !== '0')">
+                  <hr class="customerPhoneSec"/>
+                  <input [(ngModel)]="customerInfo.phone2" style="width: 50%" class="information" type="text" name="contact" placeholder="Contact Number" readonly>
+                  <!-- <span class="callHistory"><i class="material-icons" (click)="getPhoneCalls(customerInfo.phone2, call_log_alert_temp)" *ngIf="(!buttonSpin)"
+                      style="font-size:large;">menu_book</i></span>
+                  <span class="makeCall"><i class="material-icons" (click)="makeCall(customerInfo.phone2, call_alert_temp)" *ngIf="(!buttonSpin) && (enableCall) && (callId !== '0')"
+                      style="font-size:large;">call</i></span> -->
+                  <div class="sk-three-bounce" style="width: 25%; float: right; margin-right: 13%;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="customer_info_row">
+                <div class="col-md-12">
+                  <label>Email ID</label>
+                </div>
+                <div class="col-md-12">
+                  <input [(ngModel)]="data.customer_email_id" class="information" type="text" name="email" placeholder="Email ID" readonly>
+                </div>
+              </div>
+            </div>
+            <div style="width: 60%; float: right; padding: 0.5rem; padding-top: 0px;">
+              <div class="customer_info_row">
+                <div class="col-md-12">
+                  <label style="width: 50%; display: flex;">
+                    <p style="margin-bottom: 0px; float: left;">RAF Information</p>
+                    <a *ngIf="(data.site_type_id === '1') && (data.enquiry_flag === 'N') && (data.raf_email_send === 'Y')" style="color: #20a8d8; margin-left: 2rem; cursor: pointer; display: block"
+                      (click)="viewRaf()">View RAF</a>
+                    <a *ngIf="(data.site_type_id === '1') && (data.raf_email_send !== 'Y') && (data.enquiry_flag === 'N')" style="color: #20a8d8; margin-left: 1rem; cursor: pointer; display: block"
+                      (click)="sendRaf()">Send RAF</a>
+                    <a *ngIf="(data.site_type_id === '1') && (data.enquiry_flag === 'Y')" style="color: #20a8d8; margin-left: 2rem; cursor: pointer; display: block" (click)="viewEnquiry()">View Enquiry</a>
+                  </label>
+                </div>
+                <div class="col-md-12">
+                  <textarea [(ngModel)]="data.problem_reported" class="information" rows="2" name="Problem reported" placeholder="Problem reported" readonly></textarea>
+                </div>
+              </div>
+              <div class="customer_info_row" style="margin-top: 0.5rem;">
+                <div class="col-md-12">
+                  <label>Customer's Query</label>
+                </div>
+                <div class="col-md-12">
+                  <textarea [(ngModel)]="data.customer_query" class="information" rows="4" name="Customer's_Query" placeholder="Customer's Query" readonly></textarea>
+                </div>
+              </div>
+              <div class="customer_info_row" style="margin-top: 0.5rem;">
+                <div class="col-md-12">
+                  <label>Technician Comment</label>
+                </div>
+                <div class="col-md-12">
+                  <textarea [(ngModel)]="data.technician_comment" class="information" rows="4" name="Technician Comment" placeholder="Technician Comment" readonly></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row" style="display: contents; width: 100%">
+      <div class="col-md-12 mb-4" style="padding: 0px; margin-bottom: 0px !important">
+        <div style="display: flex;">
+          <div class="scrollDiv">
+            <div id="div1" style="display: grid;">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">format_quote</i><b>Analysis</b>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="overflow-y: scroll;">
+                <div style="display: flex;">
+                  <div class="header_left" style="width: 90%">
+                    <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="analysisText" placeholder="Enter text here" class="information" rows="3"
+                      style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                    <button *ngIf="buttonSpin === false" style="margin-top: .5rem" class="btn btn-block btn-outline-primary" (click)="updateAnalysis(analysisText)">Save</button>
+                    <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: flex; margin-bottom: 1rem" *ngIf="analysisList.length !== 0">
+                  <div class="header_left" style="width: 90%">
+                    <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem; word-wrap: anywhere !important;">
+                      <thead>
+                        <tr style="background-color: #E6F0FA;">
+                          <th>Technician</th>
+                          <th>Update</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let analysisData of analysisList;">
+                          <td style="width: 30%" *ngIf="(analysisData.group_id === '10')" style="color: #ff6c00;">
+                            <p style="margin-bottom: 0px">{{analysisData.user_name}}</p>
+                            <span style="font-size: .7rem; color: #ff6c00;">{{analysisData.entrytime | date:'dd-MM-yyyy, hh:mm a'}}</span>
+                          </td>
+                          <td style="width: 70%; color: #ff6c00;" *ngIf="analysisData.group_id === '10'">
+                            {{analysisData.remarks}}</td>
+
+                          <td style="width: 30%"
+                            *ngIf="(analysisData.group_id !== '10') && (analysisData.group_id !== '9') && (analysisData.group_id !== '16') && (analysisData.group_id !== '17')">
+                            <p style="margin-bottom: 0px">{{analysisData.user_name}}</p>
+                            <span style="font-size: .7rem">{{analysisData.entrytime | date:'dd-MM-yyyy, hh:mm a'}}</span>
+                          </td>
+                          <td style="width: 70%"
+                            *ngIf="(analysisData.group_id !== '10') && (analysisData.group_id !== '9') && (analysisData.group_id !== '16') && (analysisData.group_id !== '17')">
+                            {{analysisData.remarks}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="div2">
+              <div>
+                <div class="card-header">
+                  <i class="material-icons" style="margin-top: 0px !important;">description</i><b>Device & Physical
+                    Location</b>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="info_row">
+                  <div class="col-md-12" style="padding: 0px;">
+                    <div style="width: 100%;" *ngIf="(this.data.physical_location === '') && (data.site_type_id === '1')">
+                      <div>
+                        <b>Physical Location</b>
+                        <hr style="margin: 0.3rem 0px;">
+                      </div>
+                      <input class="information" [(ngModel)]="physicalLocation" type="text" name="Physical Location" placeholder="Enter Device Physical Location"
+                        style="text-align: center; margin-top: 1rem;">
+                      <div class="info_row" style="padding-bottom: 0px;">
+                        <div class="col-md-12" *ngIf="physicalError !== ''" style="text-align: center; color: red; margin:1rem;">
+                          <i class="material-icons"></i>&nbsp; {{physicalError}}
+                        </div>
+                      </div>
+                      <div class="info_row" style="padding-bottom: 0px;">
+                        <div class="col-md-12" *ngIf="physicalMsg !== ''" style="text-align: center; color: green">
+                          <i class="material-icons"></i>&nbsp; {{physicalMsg}}
+                        </div>
+                      </div>
+                      <div style="display: flex;">
+                        <button *ngIf="(data.device_physical_location === '') && (buttonSpin === false)" style="margin: auto; margin-top: 1rem; width: 50%"
+                          class="btn btn-block btn-outline-primary" (click)="checkPhysicalLocation()">Check</button>
+                      </div>
+                      <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                    </div>
+                    <div *ngIf="data.device_physical_location !== ''">
+                      <div>
+                        <b>Physical Location</b>
+                        <hr style="margin: 0.3rem 0px;">
+                      </div>
+                      <div style="margin-top: 1rem;">
+                        <span>{{data.device_physical_location}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="padding-bottom: 1rem; padding-top: 1rem; ">
+                  <div>
+                    <b>Condition of Equipments</b>
+                    <hr style="margin: 0.3rem 0px;">
+                  </div>
+                  <div>
+                    <div class="info_row">
+                      <div class="col-md-12" *ngIf="(this.data.condition_of_device !== '') && (this.data.site_type_id === '1')" style="padding: 0px;">
+                        {{data.condition_of_device}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="div4" style="display: grid;">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">image</i><b>Documents</b>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div style="display: flex;" *ngIf="(onlyView !== true)">
+                    <div class="header_left">
+                      <select [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="documentType">
+                        <option *ngFor="let docType of documentTypes" [value]="docType.value">
+                          <!--[ngClass]="{bcolor: bcolor}" style="width: 100%; border: 1px solid lightgray; overflow: hidden; min-height: 30px; height: 30px; margin-bottom: .5rem" -->
+                          {{docType.name}}
+                        </option>
+                      </select>
+                      <textarea [(ngModel)]="description" placeholder="Description" class="information" rows="3"
+                        style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                      <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #myInput type="file" class="form-control-file" id="exampleFormControlFile1"
+                        (change)="onFileUpload($event)">
+                      <button *ngIf="buttonSpin === false" style="margin-top: .5rem" class="btn btn-block btn-outline-primary" (click)="upload(description)">Upload
+                        Document</button>
+                      <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                      <div class="col-md-12" *ngIf="dError !== ''" style="text-align: center; color: red">
+                        <i class="material-icons">info</i>&nbsp; {{dError}}
+                      </div>
+                    </div>
+                  </div>
+
+                  <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem;" *ngIf="isExDocuments === true">
+                    <thead>
+                      <tr style="text-align: center; background-color: #E6F0FA">
+                        <th>Type / Date</th>
+                        <th>Description</th>
+                        <!-- <th>Date</th> -->
+                        <th *ngIf="onlyView !== true">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let doc of documents;">
+                        <tr *ngIf="isS3Document === true" style="font-size: 0.8rem;">
+                          <td style="width: 20%"><span>{{doc.type}}</span>&nbsp;<span>{{doc.datetime | date: 'dd-MM-yyyy HH:mm:ss'}}</span></td>
+                          <td style="width: 20%">{{doc.side}}</td>
+                          <!-- <td style="width: 20%">{{doc.date}}</td> -->
+                          <td style="width: 30%" *ngIf="onlyView !== true">
+                            <div class="docBtn">
+                              <a style="color: #20a8d8;" (click)="openS3Image(doc.folder, doc.file_id, S3_image_temp, doc.type)"><i class="material-icons" alt="View"
+                                  style="font-size: 1.6em !important">remove_red_eye</i></a>
+                            </div>
+                            <div class="docBtn" *ngIf="(doc.removeDocOpt === true)">
+                              <a (click)="removeDoc(null,confirm_alert_temp, true, doc.folder, doc.file_id )"><i class="material-icons" alt="Delete"
+                                  style="font-size: 1.6em !important">delete</i></a>
+                            </div>
+                            <div class="docBtn">
+                              <a (click)="openS3Image(doc.folder, doc.file_id)"><i class="material-icons" alt="Download" style="font-size: 1.6em !important">download</i></a>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+
+                  <p *ngIf="S3Data.length !== 0" style="text-align: center; margin-top: 3rem; font-weight: bold;">S3 Images</p>
+                  <p *ngIf="S3Data.length === 0" style="text-align: center; margin-top: 3rem; color: gray">S3 images not available</p>
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;" *ngIf="S3Data.length !== 0">
+                    <thead>
+                      <tr style="background-color: #E6F0FA;">
+                        <th>File Name</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Sides</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let sData of S3Data">
+                        <tr>
+                          <td style="width: 70%">
+                            <p style="margin-bottom: 0px; cursor: pointer;" (click)="openS3Image(sData.folder, sData.file_id)">
+                              <a style="color: #20a8d8;">{{sData.file_id}}</a>
+                            </p>
+                          </td>
+                          <td style="width: 30%">{{sData.datetime | date: 'dd-MM-yyyy HH:mm:ss'}}</td>
+                          <td>{{sData.type}}</td>
+                          <td>{{sData.side}}</td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="div5" style="display: grid;">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">support</i><b>Repair Notes</b>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="overflow-y: scroll;">
+                   <div style="display: flex;">
+                  <div class="header_left" style="width: 90%">
+                    <textarea *ngIf="data.status_id == 11000" [(ngModel)]="svcRemarks" class="information" rows="4"
+                      placeholder="Enter Repair Notes" onPaste="return false"
+                      style="border: 1px solid lightgray; margin-bottom: .5rem; background: #f9f9f9" pattern="[a-zA-Z ]*">
+                    </textarea>
+                    <p *ngIf="data.status_id != 11000" class="information"
+                      style=" margin-bottom: .5rem; padding: .5rem;">
+                      {{ svcRemarks }}
+                    </p>
+                  </div>
+                </div>
+                <div style="display: block;" *ngIf="technicianComments.length > 0">
+                  <div *ngFor="let techNotes of technicianComments">
+                    <p style="margin-bottom: 0.5rem">{{techNotes.comment}}</p>
+                    <hr style="margin-top: 0.5rem; margin-bottom: 0.5rem" />
+                  </div>
+                </div>
+                <div style="display: flex;">
+                  <div class="header_left" style="width: 90%">
+                    <div class="gsxdiagnosis">
+                      <div class="info_row">
+                        <div class="col-md-6">
+                          <span>Reference Number<sup style="color: red">*</sup></span>
+                          <input class="form-control" [(ngModel)]="repairHd.reference_number" [maxlength]="14" type="text" name="Reference no" placeholder="Enter Reference No"
+                            style="font-size: 0.875rem">
+                        </div>
+                        <div class="col-md-6">
+                          <span>Select Repair Type<sup style="color: red">*</sup></span>
+                          <fieldset class="form-group">
+                            <ng-select class="bootstrap" placeholder="Select Repair Strategy" [items]="repairTypes" bindLabel="label" bindValue="value" [multiple]="false"
+                              (change)="repairSelect($event.value)" [(ngModel)]="repairType" [clearable]="false"></ng-select>
+                          </fieldset>
+                        </div>
+                      </div>
+
+                      <div class="info_row">
+                        <div class="col-md-6" style="margin: auto;">
+                          <span>Select Repair Classification<sup style="color: red">*</sup></span>
+                          <fieldset class="form-group">
+                            <ng-select class="bootstrap" placeholder="Select Repair Classification" [items]="repairClassifications" bindLabel="label" bindValue="value"
+                              [multiple]="false" [(ngModel)]="repairClassification" [clearable]="false"></ng-select>
+                          </fieldset>
+                        </div>
+
+                        <div class="col-md-6" style="margin: auto;">
+                          <span>Select Repair Warranty<sup style="color: red">*</sup></span>
+                          <fieldset class="form-group">
+                            <ng-select class="bootstrap" placeholder="Select Repair Warranty" [items]="repairWarrantys" bindLabel="name" bindValue="value"
+                              [multiple]="false" [(ngModel)]="repairWarranty" [clearable]="false"></ng-select>
+                          </fieldset>
+                        </div>
+                      </div>
+
+                      <div class="info_row">
+                        <div class="col-md-6">
+                          <span><a (click)="validatePOP(POP_image_temp)" *ngIf="(l1InvoiceNo == '' || l1InvoiceNo == undefined) && isApprover">Validate Proof of Purchase (POP)</a></span>
+                          <span><a *ngIf="l1InvoiceNo !== '' && l1InvoiceNo !== undefined" style="color: green;">Proof of Purchase (POP) Validated</a></span>
+                        </div>
+                        <div class="col-md-6" style="padding-left: 1rem">
+                          <div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="info_row">
+                        <div class="col-md-6">
+                          <div class="applereview" style=" width: 100%; display: flex;">
+                            <p><span>Warranty Exception</span></p>
+                            <input [(ngModel)]="isException" class="form-check-input" type="checkbox" value="option1" id="checkbox1" style="width: 7% !important;" (change)="onExceptionSelect($event, exception_modal)" [disabled]="otpValidated">
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div>
+                            <span style="display: block;"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: flex; margin-bottom: 1rem" *ngIf="serviceTeamUsers">
+                  <div class="header_left" style="width: 30%">
+                    <div style="display: flex !important;">
+                      <button *ngIf="(buttonSpin === false) && data.status_id	== 11000" style="float: left;"
+                        class="btn btn-block btn-outline-primary" (click)="saveRepairNotes(simple_alert_temp)">Save</button>
+                      <button *ngIf="partsSaved && (buttonSpin === false) && data.status_id	== 11000" style="float: left;"
+                        class="btn btn-block btn-outline-primary" (click)="onSaveRepairNotes(simple_alert_temp, qcModal); buttonSpin = true;">
+                        Send for Approval</button>
+                    </div>
+                    <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                </div>
+
+            <div id="div6" style="display: grid;">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header" *ngIf="(data.site_type_id === '1')" style="height: 2.6rem;">
+                    <i class="material-icons" style="margin-top: 0px !important;">developer_board</i><b>Parts</b>
+                    <div class="card-header-actions"
+                      style="cursor: pointer; margin-left: 1.2rem !important; width: 100% !important;">
+                      <div style="float: right !important;">
+                        <div (click)="addPart(part_list_temp)"
+                          *ngIf="(buttonSpin === false) && (repairType !== 'SVNR') && (repairType !== undefined)  && (data.status_id !== '2800')"
+                          style="float: left !important;">
+                          <button *ngIf="data.status_id	== 11000" type="button" tooltip="Add Parts" placement="top"
+                            style="background-color: transparent; border: 0px; width: auto !important;">
+                            <i class="material-icons" style="color: #20a8d8;">add</i>
+                          </button>
+                        </div>
+                        <div class="sk-three-bounce" style="text-align: center;" *ngIf="(buttonSpin === true)">
+                          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="overflow-y: scroll;">
+                <div>
+                  <div class="card-body" *ngIf="(repairType !== undefined) && (components.length !== 0)"
+                    style="padding: 0px; overflow-y: inherit !important">
+                    <div class="info_row" style="padding-bottom: 0px;">
+                      <div class="col-md-6" style="width: 48% !important; margin-right: 0.8rem !important">
+                        <span>Primary Component<sup style="color: red">*</sup></span>
+                        <fieldset class="form-group">
+                          <ng-select class="bootstrap" placeholder="Select Component" [items]="components" bindLabel="label"
+                            bindValue="value" [multiple]="false" (change)="componentsSelect($event, 'comp')"
+                            [(ngModel)]="componentCode" [clearable]="false"></ng-select>
+                        </fieldset>
+                      </div>
+                      <div class="col-md-6" style="width: 48% !important">
+                        <span>Primary Issue<sup style="color: red">*</sup></span>
+                        <fieldset class="form-group">
+                          <ng-select [disabled]="flagIssue" class="bootstrap" [placeholder]="flagIssue ? issueSelected : 'Select Issue'" [items]="issues"
+                            bindLabel="label" bindValue="value" [multiple]="false" (change)="issueSelect($event, 'issu')"
+                            [(ngModel)]="issueCode" [clearable]="false">
+                            <ng-template ng-option-tmp let-item="item">
+                              {{ item.label }} ({{ item.value }})
+                            </ng-template>
+                            <ng-template ng-label-tmp let-item="item">
+                              {{ item.label }}
+                            </ng-template>
+                          </ng-select>
+                        </fieldset>
+                      </div>
+                    </div>
+
+                    <div class="info_row" *ngIf="isMailIn" style="margin-top: 1rem !important">
+                      <div class="col-md-3">
+                      </div>
+                      <div class="col-md-6">
+                        <span>Coverage Options<sup style="color: red">*</sup></span>
+                        <fieldset class="form-group">
+                          <ng-select class="bootstrap" placeholder="Select Coverage Option" [items]="coverageOptions"
+                            bindLabel="label" bindValue="value" [multiple]="false" (change)="coverageOnChange($event, '')"
+                            [(ngModel)]="coverageOption" [clearable]="false"></ng-select>
+                        </fieldset>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body" style="padding: 0px; overflow-y: inherit !important">
+                    <div class="info_row">
+                      <div *ngFor="let sPart of selectedParts"
+                        style="width: 100% !important; border: 1px solid #B5DAFF; border-radius: 3px; margin-top: .5rem;">
+                        <div style="margin: .5rem">
+                          <b><a (click)="gsxPartDetails(sPart.number, part_detail_temp)"
+                              style="cursor: pointer; color: #20a8d8">{{sPart.number}}</a></b>
+                          <span class="gsxPartRightIcon"
+                            *ngIf="(!sPart.readOnly) && (data.status_id == 11000)"><a
+                              (click)="removePart(sPart.number, confirmPart_alert_temp)"><i class="material-icons"
+                                alt="Delete">delete</i></a>
+                          </span>
+                          <p style="margin-bottom: 0px">{{sPart.description}}</p>
+                          <p style="padding-bottom: .5rem; margin-bottom: 0px">{{sPart.typeDescription}}</p>
+                          <div>
+                            <span>Coverage Options<sup style="color: red">*</sup></span>
+                            <ng-select class="bootstrap" placeholder="Select" [items]="coverageOptions" bindLabel="label"
+                              bindValue="value" [multiple]="false" (change)="coverageOnChange($event, sPart.part_no)"
+                              [(ngModel)]="sPart.coverageOption" style="margin-bottom: .2rem" [clearable]="false"></ng-select>
+
+                            <div class="col-sm-12" style="padding: 0px; font-size: 0.8rem;" *ngIf="data.site_type_id === '1'">
+                              <span style="color: black;">Use Consignment Part: </span>
+                              <input [(ngModel)]="sPart.fromConsignedStock" [disabled]="data.status_id != 11000"
+                                (change)="consignmentCheck(sPart, consignment_temp, simple_alert_temp)" class="form-check-input"
+                                type="checkbox" value="option1" id="checkbox1" style="margin-left: .5rem; margin-top: 0.2rem;">
+                              <span *ngIf="sPart.fromConsignedStock" style="margin-left: 8px; color: #20a8d8">{{ sPart.consignmentType === 'St' ? 'Stock' : 'Service' }} {{sPart.consignmentASN}}</span>
+                            </div>
+                            <!-- <div style="width: 100%; text-align: center; padding: 0px 0px 1rem 0px;"
+                              *ngIf="(data.site_type_id === '1') && (sPart.fromConsignedStock === true)">
+
+                              <span *ngIf="sPart.fromConsignedStock === true"
+                                style="font-size: 0.7rem; color: #FF3F3F; font-weight: bold">{{sPart.consignmentType}}{{sPart.consignmentASN}}</span>
+                            </div> -->
+
+                            <div style="width: 100%; padding: 0px 0px 1rem 0px;" *ngIf="sPart.kbbInputType === 'BARCODE'">
+                              <span>KBB Serial Number<sup style="color: red">*</sup></span>
+                              <div>
+                                <input class="form-control" onPaste="return false" [(ngModel)]="sPart.kbb_serial_no" type="text"
+                                  placeholder="Scan KBB Serial No" [maxLength]="18" [disabled]="sPart.readOnly"
+                                  [readonly]="sPart.kbbReadonly" (keyup)="onKeyUp(sPart.number)" style="float: left; width: 90%;">
+                                <a (click)="removeKbb(sPart.number)" style="margin-left: 1rem;" *ngIf="!sPart.readOnly"><i
+                                    class="material-icons" alt="Delete">delete</i></a>
+                              </div>
+                            </div>
+                            <div style="width: 100%; padding: 0px 0px 1rem 0px;" *ngIf="sPart.kbbInputType != 'BARCODE'">
+                              <span>KBB Serial Number<sup style="color: red">*</sup></span>
+                              <input class="form-control" [(ngModel)]="sPart.kbb_serial_no" type="text"
+                                placeholder="Enter KBB Serial No" [maxLength]="18" [disabled]="sPart.readOnly">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <div style="display: flex; margin-bottom: 1rem" *ngIf="(data.site_type_id === '1')">
+              <div class="header_left" style="width: 30%"
+                *ngIf="(repairType !== '') && (components.length !== 0)">
+
+                <button *ngIf="(buttonSpin === false) && data.status_id	== 11000" style="margin-top: .5rem; display: flex; justify-content: center; align-items: center; text-align: center"
+                  class="btn btn-block btn-outline-primary"
+                  (click)="savePartsDetails(simple_alert_temp); buttonSpin = true;">Save Parts</button>
+                  <button *ngIf="(buttonSpin === false) && data.status_id	== 11010 && isApprover" style="margin-top: .5rem;"
+                  class="btn btn-block btn-outline-primary"
+                  (click)="approveL1(); buttonSpin = true;">Approve</button>
+                  <button *ngIf="(buttonSpin === false) && data.status_id	== 11010 && isApprover" style="margin-top: .5rem;"
+                  class="btn btn-block btn-outline-primary"
+                  (click)="rejectL1(); buttonSpin = true;">Decline</button>
+                  <button *ngIf="(buttonSpin === false) && data.status_id	== 11030 && (userRole == '4' || userRole == '18' )" style="margin-top: .5rem;"
+                  class="btn btn-block btn-outline-primary"
+                  (click)="openModal(qcModal); buttonSpin = true;">Send for QC Approval</button>
+                  <button *ngIf="(buttonSpin === false) && data.status_id	== 11040 && (userRole == '2' || userRole == '18')" style="margin-top: .5rem;"
+                  class="btn btn-block btn-outline-primary"
+                  (click)="approveQC(); buttonSpin = true;">QC Approve</button>
+              <!-- </div> -->
+              <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+            </div>
+            </div>
+          </div>
+
+            <div id="div8">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">edit_note</i><b>Service Report</b>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div style="display: flex;">
+                    <div class="header_left" style="width: 90%">
+                      <textarea *ngIf="data.status_id >= 11020 && data.status_id <= 11040" ngModel pattern="[a-zA-Z ]*" [(ngModel)]="svcRemarks" onPaste="return false" [placeholder]="data.status_id < 11020 ? 'Enter Repair Notes' : 'Enter additional svc remarks'" class="information" rows="4"
+                        style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                      <!-- <button *ngIf="buttonSpin === false && data.status_id < 11020" style="margin-top: .5rem" class="btn btn-block btn-outline-primary" (click)="updateSvcRemarks(analysisText)">Save
+                        Repair Notes</button> -->
+                        <button *ngIf="buttonSpin === false && data.status_id >= 11020 && data.status_id <= 11040" style="margin-top: .5rem" class="btn btn-block btn-outline-primary" (click)="updateSvcRemarks(analysisText)">Save
+                          Additional SVC Remarks</button>
+                      <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <p style="text-align: center; margin-top: 2rem; color: gray;" *ngIf="!isExistSvc">No Service Report Available</p>
+                  <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem" *ngIf="isExistSvc">
+                    <thead *ngIf="existSvc.lenght !== 0">
+                      <tr style="text-align: center; background-color: #E6F0FA">
+                        <th>SVC ID</th>
+                        <th>Date</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let svc of existSvc;">
+                        <td>{{svc.id}}</td>
+                        <!-- <td style="width: 20%">{{svc.gsx_no}}</td> -->
+                        <td style="width: 30%">{{svc.entrytime | date: 'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td style="width: 30%">
+                          <div *ngIf="svc.status === 'Deleted'" style="color: darkgray;">
+                            {{svc.status}}
+                          </div>
+                          <div *ngIf="svc.status !== 'Deleted'">
+                            <div class="docBtn">
+                              <a (click)="viewSVC()"><i class="material-icons" alt="View" style="font-size: 1.6em !important">remove_red_eye</i></a>
+                            </div>
+                            <div class="docBtn" *ngIf="(userRole === '3') || (userRole === '8')">
+                              <!-- || (userRole === '2') -->
+                              <!-- <a (click)="deleteSVC(svc.id, delete_svc_temp)"><i class="material-icons" alt="Delete">delete</i></a> -->
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="deviceAwayStatus" *ngIf="(data.kd_call === '1') && (data.status_id === '3500')">
+                    <div>
+                      <b>Device Delivery to Customer Place</b>
+                      <hr style="margin: 0.3rem 0px;">
+                    </div>
+                    <div>
+                      <div class="info_row" *ngIf="data.home_delivery_otp === '0'">
+                        <div class="col-md-12" style="padding: 0px; margin-top: 0.5rem;">
+                          <div style="width: 100%; text-align: center">
+                            <button *ngIf="(buttonSpin === false)" style="margin-top: 1rem; width: 50%" class="btn btn-block btn-outline-primary"
+                              (click)="generateOTPforDelivery('new')">Generate
+                              OTP for Device Delivery</button>
+                            <div class="sk-three-bounce" style="width: 50%; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="info_row" *ngIf="(data.home_delivery_otp !== '0') && (data.status_id === '3500')">
+                        <div class="col-md-12" style="padding: 0px; margin-top: 0.5rem;">
+                          <div style="width: 100%; text-align: center;">
+                            <input class="form-control" [(ngModel)]="homeDeliveryOtp" type="text" placeholder="Enter the OTP"
+                              style="margin: auto; width: 45% !important; text-align: center;">
+                            <a (click)="generateOTPforDelivery('resend')" style="display: block; margin-top: 0.5rem; font-size: 0.7rem; color: #20a8d8;">Re-Send
+                              OTP</a>
+                            <input #homeOtpInput type="file" class="form-control-file" id="exampleFormControlFile1" (change)="svcFileUpload($event)"
+                              style="margin-top: 1rem; text-align: center;">
+                            <!-- (change)="onFileUpload($event)" -->
+                            <button *ngIf="buttonSpin === false" style="margin-top: 2rem" class="btn btn-block btn-outline-primary" (click)="homeDeliverySubmit()">Submit</button>
+                            <!-- (click)="upload(description)" -->
+                            <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div id="div9" *ngIf="(ccTeam) || (ccAnalysisList.length !== 0)">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">question_answer</i><b>CC Update</b>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div style="display: flex;" *ngIf="(ccTeam) && ((data.status_id === '3600') || (data.status_id === '5600') || (data.status_id === '9050'))">
+                    <div class="header_left">
+                      <div style="text-align: center; margin-bottom: 0.5rem">
+                        <b>Post Service Feedback</b>
+                      </div>
+                      <select [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="ccFeedBack">
+                        <option *ngFor="let ccFeedBack of ccFeedBackList" [value]="ccFeedBack.value">
+                          {{ccFeedBack.name}}
+                        </option>
+                      </select>
+                      <textarea [(ngModel)]="ccFeedBackRemarks" placeholder="Enter comments here" class="information" rows="3"
+                        style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                      <button *ngIf="buttonSpin === false" style="margin-top: .5rem" class="btn btn-block btn-outline-success" (click)="ccFeedBackSubmit()">Submit</button>
+                      <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; margin-top: 1rem;" *ngIf="ccTeam">
+                    <div class="header_left" style="width: 30%">
+                      <textarea [(ngModel)]="ccAnalysisText" placeholder="Enter the call details" class="information" rows="3"
+                        style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+                      <button *ngIf="buttonSpin === false" style="margin-top: .5rem" class="btn btn-block btn-outline-primary"
+                        (click)="ccUpdateAnalysis(ccAnalysisText)">Save</button>
+                      <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p *ngIf="(ccAnalysisList.length === 0) && (!ccTeam)" style="text-align: center;">No Data Available
+                  </p>
+
+                  <div style="display: flex;" *ngIf="ccAnalysisList.length !== 0">
+                    <div class="header_left" style="width: 60%">
+                      <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;">
+                        <thead>
+                          <tr style="background-color: #E6F0FA;">
+                            <th>Agent</th>
+                            <th>Update</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let ccanalysisData of ccAnalysisList;">
+                            <td style="width: 30%" *ngIf="(ccanalysisData.group_id === '9') || (ccanalysisData.group_id === '16') || (ccanalysisData.group_id === '17')">
+                              <p style="margin-bottom: 0px">{{ccanalysisData.user_name}}</p>
+                              <span style="font-size: .7rem">{{ccanalysisData.entrytime | date: 'dd-MM-yyyy HH:mm:ss'}}</span>
+                            </td>
+                            <td style="width: 70%">{{ccanalysisData.remarks}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <!-- <div id="div10">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">drafts</i><b>Message</b>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <p *ngIf="messageList.length === 0" style="text-align: center">No Message Available</p>
+                  <table class="table table-bordered table-striped table-sm" style="margin: auto; margin-top: 1rem;" *ngIf="messageList.length !== 0">
+                    <thead>
+                      <tr style="background-color: #E6F0FA;">
+                        <th>From</th>
+                        <th>Message</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let messageData of messageList;">
+                        <td style="width: 30%">
+                          <p style="margin-bottom: 0px">{{messageData.from_user_name}}</p>
+                          <span style="font-size: .7rem">{{messageData.entrytime}}</span>
+                        </td>
+                        <td style="width: 70%">{{messageData.text}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div> -->
+            <div id="div11">
+              <div style="display: grid; overflow-y: hidden">
+                <div>
+                  <div class="card-header">
+                    <i class="material-icons" style="margin-top: 0px !important;">notifications_active</i><b>Notifications</b>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="details-card" style="display: grid;" *ngIf="(smsNotifications.length !== 0)">
+                    <div class="card-header" (click)="smsmNotifyFun()" style="width: 100%; padding-right: 8px;">
+                      <div class="headerInfo" style="float: left; width: 90%; font-weight: bold; margin-left: 0.5rem !important; margin: auto">
+                        SMS Notifications
+                      </div>
+                      <div class="card-header-actions" *ngIf="!smsUpArrow" style="cursor:pointer;">
+                        <i class="material-icons">keyboard_arrow_down</i>
+                      </div>
+                      <div class="card-header-actions" *ngIf="smsUpArrow" style="cursor:pointer;">
+                        <i class="material-icons">keyboard_arrow_up</i>
+                      </div>
+                    </div>
+                    <div class="card" [(ngbCollapse)]="smsUpArrow" style="padding: 0px;">
+                      <div class="card-body" *ngIf="!smsUpArrow" style="padding: 0px;">
+                        <div class="info_row" style="display: block; padding: 0px;">
+                          <table class="table table-striped table-sm" style="border: 1px solid lightgray; font-size: 0.7rem; margin: 0px;" *ngIf="smsNotifications.length !== 0">
+                            <thead class="popthead">
+                              <tr style="text-align: center;">
+                                <th style="width: 20%;">Mobile & Date</th>
+                                <th style="width: 50%;">Message</th>
+                                <th style="width: 10%;">Type</th>
+                                <th style="width: 20%;">Delivered</th>
+                              </tr>
+                            </thead>
+                            <tbody class="popTableBody">
+                              <tr style="text-align: center;" *ngFor="let sms of smsNotifications">
+                                <td style="width: 20%;">{{sms.phone}} {{sms.date | date: 'dd-MM-yyyy HH:mm:ss'}}</td>
+                                <td style="width: 50%; word-wrap: break-word; padding-left: 1rem;">{{sms.message}}</td>
+                                <td style="width: 10%;">{{sms.type}}</td>
+                                <td style="width: 20%; text-align: center;">{{sms.send_status}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="details-card" style="display: grid; margin-top: 1rem" *ngIf="emailNotifications.length !== 0">
+                    <div class="card-header" (click)="emailNotifyFun()" style="width: 100%; padding-right: 8px;">
+                      <div class="headerInfo" style="float: left; width: 90%; font-weight: bold; margin-left: 0.5rem !important; margin:auto;">
+                        Email Notifications
+                      </div>
+                      <div class="card-header-actions" *ngIf="!emailUpArrow" style="cursor:pointer;">
+                        <i class="material-icons">keyboard_arrow_down</i>
+                      </div>
+                      <div class="card-header-actions" *ngIf="emailUpArrow" style="cursor:pointer;">
+                        <i class="material-icons">keyboard_arrow_up</i>
+                      </div>
+                    </div>
+
+                    <div class="card" [(ngbCollapse)]="emailNotifyTab" style="padding: 0px;">
+                      <div class="card-body" *ngIf="!emailNotifyTab" style="padding: 0px;">
+                        <div class="info_row" style="display: block; padding: 0px;">
+                          <table class="table table-striped table-sm" style="border: 1px solid lightgray; font-size: 0.7rem; margin: 0px;" *ngIf="smsNotifications.length !== 0">
+                            <thead class="popthead">
+                              <tr style="text-align: center;">
+                                <th style="width: 30%;">Type</th>
+                                <th style="width: 30%;">Date</th>
+                                <th style="width: 30%;">Status</th>
+                                <th style="width: 30%;">Email Sent</th>
+                              </tr>
+                            </thead>
+                            <tbody class="popTableBody">
+                              <tr style="text-align: center;" *ngFor="let email of emailNotifications">
+                                <td style="width: 30%;">{{email.type}}</td>
+                                <td style="width: 30%;">{{email.date | date: 'dd-MM-yyyy HH:mm:ss'}}</td>
+                                <td style="width: 30%;">
+                                  <span *ngIf="email.status === 'A'">Approved</span>
+                                  <span *ngIf="email.status === 'D'">Deleted</span>
+                                  <span *ngIf="email.status === 'R'">Rejected</span>
+                                  <span *ngIf="email.status === 'P'">Pending</span>
+                                </td>
+                                <td style="width: 30%;">
+                                  <span *ngIf="email.sendStatus === 'Y'">Yes</span>
+                                  <span *ngIf="email.sendStatus === 'N'">No</span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="#div1" style="margin-right: 1rem;" title="Analysis"><i class="material-icons">format_quote</i></a>
+        <a href="#div2" style="margin-right: 1rem;" title="Device & Physical Location"><i class="material-icons">description</i></a>
+        <a href="#div3" style="margin-right: 1rem;" title="Payment" *ngIf="isAdvance || isInvoice"><i class="material-icons">credit_card</i></a>
+        <a href="#div4" style="margin-right: 1rem;" title="Documents"><i class="material-icons">image</i></a>
+        <a href="#div5" style="margin-right: 1rem;" title="Repair Notes"><i class="material-icons">support</i></a>
+        <a href="#div6" style="margin-right: 1rem;" title="Parts"><i class="material-icons">developer_board</i></a>
+        <a href="#div8" style="margin-right: 1rem;" title="Service Report"><i class="material-icons">edit_note</i></a>
+        <!-- <a href="#div9" style="margin-right: 1rem;" title="CC Update" *ngIf="(ccTeam) || (ccAnalysisList.length !== 0)"><i class="material-icons">question_answer</i></a> -->
+        <a href="#div11" style="margin-right: 1rem;" title="Notifications"><i class="material-icons">notifications_active</i></a>
+        <div style="float: right; cursor: pointer;">
+          <a *ngIf="buttonSpin === false" (click)="getRepairsStatus(repair_log_temp)">Repair Log</a>
+          <div class="sk-three-bounce" style="margin: auto;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********************** Templates **********************-->
+
+<ng-template class="modal fade" #delete_svc_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Delete Service Report</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="deleteSvcRemarks" placeholder="Enter the remarks for Delete Service Report" class="information" rows="3"
+          style="border: 1px solid lightgrey; margin-bottom: .5rem;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill all mandatory fields
+        </div>
+        <div class="modal-footer">
+          <div>
+            <button type="button" class="btn btn-secondary" (click)="deleteSvcConfirm(simple_alert_temp)">Delete</button>
+          </div>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+        <div class="countdownTimer" *ngIf="showTimer">{{countDown}}</div>
+
+      </div>
+      <div class="modal-footer" *ngIf="!showTimer">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #case_id_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Validate Case ID</h4>
+      </div>
+      <div class="modal-body">
+        <div class="caseid">
+          <label>Case ID</label>
+          <input [(ngModel)]="caseId" type="text" placeholder="Enter Case ID" style="margin-bottom: 1rem">
+          <label>Warranty Expiry Date</label>
+          <input [(ngModel)]="warrantyExpiryDate" type="date" style="margin-bottom: 1rem;">
+          <label *ngIf="invalidCaseIdMsg !== ''" style="color: red; display: block;">{{invalidCaseIdMsg}}</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="validateCaseId()">Validate</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<!-- <ng-template class="modal fade" #S3_image_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 style="margin-left: 96% !important; color: gray; font-weight: lighter; cursor: pointer;" (click)="cancelModel()">X</h4>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <img [src]="s3ImageUrl" alt="S3 Image" style="max-width: 100%; max-height: 100%;">
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <img [src]="s3ImageUrl" alt="S3 Image" style="max-width: 100%; max-height: 100%;">
+      </div>
+    </div>
+  </div>
+</ng-template> -->
+
+<ng-template class="popup" #S3_image_temp>
+  <h4 style="margin-left: 96% !important; color: gray; font-weight: bold; cursor: pointer;" (click)="cancelModel()">X</h4>
+  <ng-container *ngIf="contentType === 'image'; else videoTemplate">
+    <img [src]="s3ImageUrl" alt="Image" (error)="imageLoadError($event)">
+    <h6 *ngIf="s3ImageOpenAlert !== ''" style="text-align: center; color: red; padding: 1rem;">{{s3ImageOpenAlert}}</h6>
+  </ng-container>
+  <ng-template #videoTemplate>
+    <video controls>
+      <source [src]="s3ImageUrl" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </ng-template>
+</ng-template>
+
+<ng-template class="popup" #POP_image_temp>
+  <!-- <h4 style="margin-left: 96% !important; color: gray; font-weight: bold; cursor: pointer;" (click)="cancelModel()">X</h4> -->
+  <div class="modal-content">
+    <div class="modal-body">
+    <ng-container>
+      <img [src]="POPImageUrl" alt="Image" (error)="imageLoadError($event)">
+      <h6 *ngIf="POPImageUrlAlert !== ''" style="text-align: center; color: red; padding: 1rem;">{{POPImageUrlAlert}}</h6>
+    </ng-container>
+      <input style="text-align: center;" type="text" placeholder="Enter Invoice Number" [(ngModel)]="l1InvoiceNo">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="validateL1POP()">Done</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirm_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirm(confirmAlert.id, simple_alert_temp, create_svc_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirmDeleteQuote_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Delete Quotation</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are sure want to delete this Quotation?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirmDeleteQuote(simple_alert_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="fade" #recent_update_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px; position: relative;">
+      <h4 class="modal-title" style="line-height: 1.2;">Recent Updates</h4>
+      <i class="material-icons close-button" (click)="cancel()">close</i>
+    </div>
+      <div class="modal-body">
+        <div *ngIf="recentData.length === 0">
+          <p style="text-align: center">No Recent Update</p>
+        </div>
+        <div class="row_line" *ngIf="recentData.length !== 0">
+          <div class="main-timeline">
+            <div class="timeline" *ngFor="let redata of recentData" style="margin-left: 0px;">
+              <div class="timeline-icon"></div>
+              <div class="timeline-content">
+                <span class="date">{{redata.entrytime | date: 'dd-MM-yyyy HH:mm:ss'}}</span>
+                <h5 class="title_line">{{redata.message}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="fade" #create_svc_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Service Report</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12" style="padding: 0" *ngIf="showSVCForm === 'true'">
+          <div class="card" style="width: 100%;" *ngFor="let sPartInput of servicePartInput">
+            <table class="table table-bordered table-striped table-sm">
+              <thead style="text-align: center">
+                <tr style="background-color: #E6F0FA">
+                  <th colspan="2">Enter Repair Diagnosis</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 50%">
+                    <p style="float: right; margin-bottom: 0">Enter GSX No<sup style="color: red">*</sup></p>
+                  </td>
+                  <td>
+                    <input [(ngModel)]="gsxNo" class="information" name="gsxno" placeholder="Enter GSX No" (keypress)="getGSX($event, simple_alert_temp, confirm_alert_temp)">
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%">
+                    <p style="float: right; margin-bottom: 0">{{sameUnitRepairData.label}}<sup style="color: red">*</sup></p>
+                    <!-- Is SUR/WUR/NA (Same Unit Repair/Whole Unit Repair/Not Applicable)? -->
+                  </td>
+                  <td>
+                    <select (change)="serviceTypeSelect($event.target.value)"
+                      style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                      <option>Select</option>
+                      <option *ngFor="let roption of sameUnitRepairData.options; let i = index" [value]="roption.name">
+                        {{roption.name}}
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="col-md-12" style="padding: 0">
+              <div class="diagnosis">
+                <span style="margin-left: 5%;">Diagnosis<sup style="color: red">*</sup></span>
+                <textarea [(ngModel)]="svcDiagnosis" class="information" rows="3" name="diagnosis" placeholder="Enter Diagnosis"
+                  style="width: 90%; margin-left: 5%; margin-top: .2rem; border: 1px solid gray;"></textarea>
+              </div>
+              <div style="width: 50%; float: right;">
+                <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+                  <thead style="text-align: center">
+                    <tr style="background-color: #E6F0FA">
+                      <th colspan="3">Enter Repair Diagnosis</th>
+                    </tr>
+                    <tr style="text-align: center">
+                      <td><b>Serial No</b></td>
+                      <td><b>Part No</b></td>
+                      <td><b>Part Details</b></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let sPart of sPartDetails; let indx = index">
+                      <td>{{sPart.serialNo}}</td>
+                      <td>{{sPart.partNo}}</td>
+                      <td>
+                        <p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sPart.partDetail}}
+                        </p>
+                        <div class="docBtn" style="float: right; margin: auto; display: block">
+                          <a (click)="deleterow(indx)"><i class="material-icons" alt="Delete">delete</i></a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input [(ngModel)]="sPartInput.serialNo" class="information" type="text" name="serialno" placeholder="Serial No"></td>
+                      <td><input [(ngModel)]="sPartInput.partNo" class="information" type="text" name="partno" placeholder="Part No"></td>
+                      <td><input [(ngModel)]="sPartInput.partDetail" class="information" type="text" name="partdetails" placeholder="Part Details"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" style="text-align: center;"><button class="smbtn" (click)="addServicePart(sPartInput)">Add</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="display: flex; padding-bottom: 1rem; margin-top: 1rem;">
+              <div class="header_left">
+                <div class="acceptbtns" style="float: left;">
+                  <button (click)="generatesvc(svcDiagnosis, sPartInput, additionalDetails, simple_alert_temp)"
+                    *ngIf="(data.generate_svc_show_flag === 'Y') && (buttonSpin === false)">Gererate SVC</button>
+                  <button (click)="cancel()">Cancel</button>
+                </div>
+                <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #assignee_list_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Assign Ticket</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped table-sm">
+          <thead class="popthead">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody class="popTableBody">
+            <tr *ngFor="let engg of onsiteEngg" (click)="selectEngg(engg, confirm_assign_engg_temp)">
+              <td>{{engg.user_id}}</td>
+              <td>{{engg.user_name}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div ngbModel #largeModal class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" style="max-width: 100%" role="document">
+    <div class="modal-content">
+      <main style="margin-left: 1rem">
+        <p class="text-center">New Mail</p>
+        <form>
+          <div class="form-row mb-3">
+            <label for="to" class="col-2 col-sm-1 col-form-label">To:</label>
+            <div class="col-10 col-sm-11">
+              <input type="email" class="form-control" id="to" placeholder="Type email">
+            </div>
+          </div>
+          <div class="form-row mb-3">
+            <label for="cc" class="col-2 col-sm-1 col-form-label">CC:</label>
+            <div class="col-10 col-sm-11">
+              <input type="email" class="form-control" id="cc" placeholder="Type email">
+            </div>
+          </div>
+          <div class="form-row mb-3">
+            <label for="bcc" class="col-2 col-sm-1 col-form-label">BCC:</label>
+            <div class="col-10 col-sm-11">
+              <input type="email" class="form-control" id="bcc" placeholder="Type email">
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-sm-11 ml-auto">
+            <div class="toolbar" role="toolbar">
+              <div class="btn-group">
+                <button type="button" class="btn btn-light"><span class="fa fa-bold"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-italic"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-underline"></span></button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-light"><span class="fa fa-align-left"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-align-right"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-align-center"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-align-justify"></span></button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-light"><span class="fa fa-indent"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-outdent"></span></button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-light"><span class="fa fa-list-ul"></span></button>
+                <button type="button" class="btn btn-light"><span class="fa fa-list-ol"></span></button>
+              </div>
+              <button type="button" class="btn btn-light"><span class="fa fa-trash-o"></span></button>
+              <button type="button" class="btn btn-light"><span class="fa fa-paperclip"></span></button>
+              <div class="btn-group" dropdown placement="bottom right">
+                <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle
+                  (click)="false">
+                  <span class="fa fa-tags"></span> <span class="caret"></span>
+                </button>
+                <div class="dropdown-menu" *dropdownMenu>
+                  <a class="dropdown-item" href="#">add label <span class="badge badge-danger"> Home</span></a>
+                  <a class="dropdown-item" href="#">add label <span class="badge badge-info"> Job</span></a>
+                  <a class="dropdown-item" href="#">add label <span class="badge badge-success"> Clients</span></a>
+                  <a class="dropdown-item" href="#">add label <span class="badge badge-warning"> News</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mt-4">
+              <textarea class="form-control" id="message" name="body" rows="12" placeholder="Click here to reply"></textarea>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success">Send</button>
+              <button type="submit" class="btn btn-light" style="margin-left: .5rem">Draft</button>
+              <button type="submit" class="btn btn-danger" (click)="largeModal.hide()" style="margin-left: .5rem">Discard</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<ng-template class="fade" #blueDart_details>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Tracking Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12" style="margin-top: 1.5rem;">
+          <div class="bluedart">
+            <div [innerHtml]="blueDartResult"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #product_detail_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Coverage Details</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin-top: .5rem">
+        <div class="animated fadeIn" *ngIf="popLoading === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+        <div *ngIf="(popLoading === false)">
+          <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem">
+            <tbody>
+              <tr>
+                <td style="width: 25%; border-top: 1px solid #c8ced3 !important">Product Sold By</td>
+                <td style="width: 70%; border-top: 1px solid #c8ced3 !important">{{productDetail.soldToName}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Coverage Status</td>
+                <td style="width: 70%">{{productDetail.warrantyInfo.warrantyStatusDescription}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Coverage End Date</td>
+                <td style="width: 70%">{{productDetail.warrantyInfo.coverageEndDate}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Estimated Purchase Date</td>
+                <td style="width: 70%">{{productDetail.warrantyInfo.purchaseDate}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Loaner</td>
+                <td style="width: 70%">{{productDetail.loaner}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="color: gray; margin-left: .5rem;">*Final Repair coverage is determined at the part level.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="popClose()">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #pop_upload_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">POP Upload</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin: 3rem auto 3rem auto">
+        <div class="animated fadeIn" *ngIf="popLoading === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+        <div style="display: flex;">
+          <div class="header_left">
+            <input accept=".pdf" [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #myPopInput type="file" name="file" class="form-control-file" id="exampleFormControlFile1"
+              (change)="onFileUploadfun($event)">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="uploadfun('POP')">Done</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #images_upload_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Device Image/Zip/Video Upload</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin: 3rem auto 3rem auto">
+        <div class="animated fadeIn" *ngIf="popLoading === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+        <div style="display: flex;">
+          <div class="header_left">
+            <input accept=".pdf" [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #myPopInput type="file" name="file" class="form-control-file" id="exampleFormControlFile1"
+              (change)="onFileUploadfun($event)">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="uploadfun('REPAIR')">Done</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #part_list_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{addPartLoaner}}</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin-top: .5rem;">
+        <p style="text-align: center; margin-top: 5rem;" *ngIf="errorMsg !== ''">{{errorMsg}}</p>
+        <div *ngIf="(isPartDetail === false  && errorMsg === '')" style="padding-bottom: 0.5rem; border-bottom: 1px solid #eee;">
+          <input [(ngModel)]="eeeSearch" class="form-control-file" placeholder="Search by Part Number" (input)="searchPart($event, 'eee')"
+            style="width: 48%; float:left; margin-right: .6rem; margin-left: .6rem">
+          <input [(ngModel)]="partSearch" autofocus class="form-control-file" placeholder="Search by Description" (input)="searchPart($event, 'part')" style="width: 48%;">
+        </div>
+        <div class="list" *ngIf="(popLoading === false && isPartDetail === false)">
+          <div class="col-sm-12" style="margin-top: .5rem; margin-left: 1rem">
+            <div class="list-item" *ngFor="let part of parts; let idx = index">
+              <div style="float: left; margin-top: 3%; ">
+                <input [(ngModel)]="part.isCheck" class="form-check-input" type="checkbox" value="option1" id="checkbox1" (change)="selectPart(part)">
+              </div>
+              <div style="float: right; margin-top: 3%; margin-right: 1rem; color: lightgray">
+                <i class="material-icons" style="cursor: pointer;" (click)="addPartDetail(part.number)">keyboard_arrow_right</i>
+              </div>
+              <div (click)="addPartDetail(part.number)" style="margin-left: 1.5rem !important;">
+                <b>{{part.part_no}}</b>
+                <p style="overflow: hidden;">{{part.description}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="animated fadeIn" *ngIf="popLoading === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+
+        <!-- <div *ngIf="isPartDetail === true" style="margin: 0px 1rem;">
+          <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem">
+            <tbody>
+              <tr>
+                <td style="width: 25%; border-top: 1px solid #c8ced3 !important">Part Number</td>
+                <td style="width: 70%; border-top: 1px solid #c8ced3 !important">{{partDetail.number}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%; border-top: 1px solid #c8ced3 !important">Description</td>
+                <td style="width: 70%; border-top: 1px solid #c8ced3 !important">{{partDetail.description}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">EEE Codes</td>
+                <td style="width: 70%">{{partDetail.eeeCodes}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Stock Price</td>
+                <td style="width: 70%">{{partDetail.stockPrice}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Exchange Price</td>
+                <td style="width: 70%">{{partDetail.exchangePrice}}</td>
+              </tr>
+              <tr *ngIf="partDetail.isSubstitute">
+                <td style="width: 25%">Substitute to</td>
+                <td style="width: 70%">{{partDetail.substitutePartNumber}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" *ngIf="isPartDetail === true" (click)="back()">Back</button> -->
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Done</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #loaner_list_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{addPartLoaner}}</h4>
+      </div>
+      <div class="modal-body" style="padding: 0px; margin-top: .5rem;">
+        <p style="text-align: center;" *ngIf="errorMsg !== ''">{{errorMsg}}</p>
+        <div class="list" *ngIf="(popLoading === false && isPartDetail === false)">
+          <div class="col-sm-12" style="margin-top: .5rem; margin-left: 1rem">
+            <div class="list-item" *ngFor="let part of parts; let idx = index">
+              <div style="float: left; margin-top: 3%;">
+                <input [(ngModel)]="part.isCheck" class="form-check-input" type="checkbox" value="option1" id="checkbox1" (change)="selectLoanerPart(part)">
+              </div>
+              <div style="float: right; margin-top: 3%; margin-right: 1rem; color: lightgray">
+                <i class="material-icons" style="cursor: pointer;" (click)="addPartDetail(part.number)">keyboard_arrow_right</i>
+              </div>
+              <div (click)="addPartDetail(part.number)" style="margin-left: 1.5rem !important;">
+                <b>{{part.number}}</b>
+                <p>{{part.description}}</p>
+                <p style="padding-bottom: .5rem">{{part.typeDescription}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="animated fadeIn" *ngIf="popLoading === true">
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        </div>
+
+        <div *ngIf="isPartDetail === true" style="margin: 0px 1rem;">
+          <table class="table table-bordered table-striped table-sm" style="margin-top: 1rem">
+            <tbody>
+              <tr>
+                <td style="width: 25%; border-top: 1px solid #c8ced3 !important">Part Number</td>
+                <td style="width: 70%; border-top: 1px solid #c8ced3 !important">{{partDetail.number}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%; border-top: 1px solid #c8ced3 !important">Description</td>
+                <td style="width: 70%; border-top: 1px solid #c8ced3 !important">{{partDetail.description}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">EEE Codes</td>
+                <td style="width: 70%">{{partDetail.eeeCodes}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Stock Price</td>
+                <td style="width: 70%">{{partDetail.stockPrice}}</td>
+              </tr>
+              <tr>
+                <td style="width: 25%">Exchange Price</td>
+                <td style="width: 70%">{{partDetail.exchangePrice}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Done</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirmPart_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirmPart(confirmAlert.id, simple_alert_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirm_ack_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirmAck('Y')">Accept</button>
+        <button type="button" class="btn btn-secondary" (click)="confirmAck('N')">Decline</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #hold_review_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Hold Review Notes</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="holdReview" placeholder="Enter the Hold Review Notes" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill mandatory fields
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="saveHoldReview()">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelHoldReview()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #consignment_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Block Consignment - {{consignmentPartNumber}}</h4>
+      </div>
+      <div class="modal-body">
+        <select [(ngModel)]="consignmentType" (change)="stockTypeChange()"
+          style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;" [disabled]="!enableStockTypeChange">
+          <option value="">Select</option>
+          <option value="Service">Service</option>
+          <option value="Store">Stock</option>
+        </select>
+        <input class="form-control" [(ngModel)]="consignmentASN" type="text" style="margin-top: 0.5rem;" disabled>
+        <div *ngIf="consignmentASNError !== ''" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; {{consignmentASNError}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="blockConsignment(consignmentASN, simple)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelConsignment(consignmentPartNumber, simple_alert_temp)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- //Adhesive -->
+<ng-template class="modal fade" #adhesive_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Block Adhesive</h4>
+      </div>
+      <div class="modal-body">
+        <select [(ngModel)]="adhesiveType" (change)="stockTypeChange()"
+          style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;" [disabled]="!enableStockTypeChange">
+          <option value="">Select</option>
+          <option value="AM">Ample</option>
+          <option value="AP">Apple</option>
+        </select>
+        <!-- <input class="form-control" [(ngModel)]="adhesiveASN" type="text" placeholder="Enter Adhesive ASN" style="margin-top: 0.5rem;"> -->
+        <select [(ngModel)]="adhesiveASN" style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px; margin-top: .5rem;">
+          <option selected disabled value="">Select ASN</option>
+          <optgroup label="iPhone 8" *ngIf="adhesive8SE">
+            <option *ngFor="let adhesive of filterAvailableAdhesives('iPhone 8')"> {{adhesive.asn_no}} - {{adhesive.description}} </option>
+            <option *ngIf="!filterAvailableAdhesives('iPhone 8').length" disabled> {{'No Adhesives Available'}} </option>
+          </optgroup>
+          <optgroup label="iPhone SE (2nd generation)" *ngIf="adhesive8SE">
+            <option *ngFor="let adhesive of filterAvailableAdhesives('iPhone SE (2nd generation)')"> {{adhesive.asn_no}} - {{adhesive.description}} </option>
+            <option *ngIf="!filterAvailableAdhesives('iPhone SE (2nd generation)').length" disabled> {{'No Adhesives Available'}} </option>
+          </optgroup>
+          <optgroup label="iPhone SE (3rd generation)" *ngIf="adhesive8SE">
+            <option *ngFor="let adhesive of filterAvailableAdhesives('iPhone SE (3rd generation)')"> {{adhesive.asn_no}} - {{adhesive.description}} </option>
+            <option *ngIf="!filterAvailableAdhesives('iPhone SE (3rd generation)').length" disabled> {{'No Adhesives Available'}} </option>
+          </optgroup>
+          <optgroup *ngIf="!adhesive8SE" [label]="data.product_description">
+            <option *ngFor="let adhesive of adhesivesList">{{adhesive.asn_no}} - {{adhesive.description}}</option>
+            <option *ngIf="adhesivesList.length === 0" disabled>{{'No Adhesives Available'}}</option>
+          </optgroup>
+        </select>
+        <div *ngIf="adhesiveASNError !== ''" style="color: red; margin-bottom: 0.5rem; display: flex; margin-top: 1rem;">
+          <i class="material-icons" style="margin-top: 0 !important; font-size: 19px;">info</i>&nbsp; {{adhesiveASNError}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="blockAdhesiveASN(adhesiveASN)">Block</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelAdhesive()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #unblockAdhesive_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Unblock Adhesive</h4>
+      </div>
+      <div class="modal-body">
+        <select [(ngModel)]="unblockASN" style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+          <option value="">Select</option>
+          <option *ngFor="let item of adhesivePartsList" [value]="item.asn">{{item.asn}}</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="unblockAdhesiveASN(unblockASN)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelAdhesive()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template class="modal fade" #view_image_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">View Images</h4>
+      </div>
+      <div class="modal-body">
+        <span *ngIf="deviceImages.length === 0">No Images are uploaded</span>
+        <table class="table table-bordered table-striped table-sm">
+          <tbody class="eligibilityTable">
+            <tr *ngFor="let dImage of deviceImages; let i = index">
+              <td>
+                <a (click)="viewDeviceImage(dImage.id)" style="color: #20a8d8; cursor: pointer;">{{dImage.imageName}}</a>
+              </td>
+              <td>
+                {{dImage.type}}
+              </td>
+              <td>
+                {{dImage.entrytime}}
+              </td>
+              <td *ngIf="((data.status_id === '300') || (userRole === '2')) || ((userRole === '6') || (userRole === '20'))">
+                <a (click)="deleteDeviceImage(dImage.id)"><i class="material-icons" alt="Delete" style="margin-top: 0px !important;">delete</i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngFor="let dImage of deviceImages; let i = index">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Done</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirmRepairStage_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Repair Stage Update</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure want to change the Repair Stage?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirmRepairStage(confirmAlert.id, simple_alert_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" (click)="notConfirmStage()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #qc_decline_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">QC Decline Remarks</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="qcDeclineReview" placeholder="Enter the remarks" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill mandatory fields
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="callQCProcess('Declined')">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #l1_decline_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" *ngIf="data.status_id !== '800'" style="line-height: 1.2">L1 Decline Remarks</h4>
+        <h4 class="modal-title" *ngIf="data.status_id === '800'" style="line-height: 1.2">L1 Deviation Remarks</h4>
+      </div>
+      <div class="modal-body">
+        <ng-select class="bootstrap" placeholder="Select Decline Remarks" [items]="declinedRemarks" bindLabel="label" bindValue="value" [multiple]="false"
+          [(ngModel)]="L1L2DeclineReview" style="margin-bottom: .5rem" *ngIf="data.status_id !== '800'"></ng-select>
+        <ng-select class="bootstrap" placeholder="Select L1 Deviation Remarks" [items]="declinedRemarks" bindLabel="label" bindValue="value" [multiple]="false"
+          [(ngModel)]="L1L2DeclineReview" style="margin-bottom: .5rem" *ngIf="data.status_id === '800'"></ng-select>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Select Remarks
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="L1ApproveReject('L1-Declined', simple_alert_temp)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #l2_approve_confirm_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">L2 Approval</h4>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to Approve this Ticket {{ticketId}} ({{data.g_number}})</p>
+        <b>GSX Status - {{data.gsx_status_description === ''? 'N/A': data.gsx_status_description}}</b>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" *ngIf="diagnosisHd.additional_part === '0'" (click)="L2ApproveReject('L2-Approved')">Yes I want to Approve</button>
+        <button type="button" class="btn btn-secondary" *ngIf="diagnosisHd.additional_part === '1'" (click)="L2ApproveReject('L2-Approved-Additional-Part')">Yes I want to
+          Approve</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #l2_decline_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">L2 Decline Remarks</h4>
+      </div>
+      <div class="modal-body">
+        <ng-select class="bootstrap" placeholder="Select Decline Remarks" [items]="declinedRemarks" bindLabel="label" bindValue="value" [multiple]="false"
+          [(ngModel)]="L1L2DeclineReview" style="margin-bottom: .5rem"></ng-select>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Select Decline Remarks
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" *ngIf="diagnosisHd.additional_part === '0'" (click)="L2ApproveReject('L2-Declined')">Done</button>
+          <button type="button" class="btn btn-secondary" *ngIf="diagnosisHd.additional_part === '1'" (click)="L2ApproveReject('L2-Declined-Additional-Part')">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #kgbInward_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KGB Inward - {{kgbSelectedPart}}</h4>
+      </div>
+      <div class="modal-body">
+        <input class="form-control" *ngIf="(((repairType === 'CIN') || (repairType === 'OSR') || (repairType === 'OSCR'))) && (this.kbbNotRequired === false)"
+          [(ngModel)]="kbbDeviceDetail" type="text" placeholder="Enter KBB Serial Number" style="margin-top: 0.5rem;" [disabled]="exKBBDisplayAvail">
+        <input class="form-control" [(ngModel)]="kgbDeviceDetail" type="text" placeholder="Enter KGB Serial Number" style="margin-top: 0.5rem;" [disabled]="exKGBSerialAvail">
+        <input class="form-control" *ngIf="repairType === 'WUMS'" [(ngModel)]="kgbPartNo" type="text" placeholder="Enter KGB Part Number" style="margin-top: 0.5rem;">
+        <input class="form-control" [(ngModel)]="kgbAWBNo" type="text" placeholder="Enter AWB Number" style="margin-top: 0.5rem;"> <!-- *ngIf="repairType === 'CIN'" -->
+        <input class="form-control" [(ngModel)]="kgbToteId" type="text" placeholder="Enter Tote Id" style="margin-top: 0.5rem;">
+        <div style="display: flex">
+          <div style="margin: auto; margin-left: 0px;">
+            <input [(ngModel)]="isSubstitutePart" class="form-check-input" type="checkbox" value="option1" id="checkbox1" style="font-size:initial;">
+            <label style="margin-left: 0.5rem;">Use Substitute part?</label>
+          </div>
+          <input *ngIf="isSubstitutePart" class="form-control" [(ngModel)]="substituteParNo" type="text" placeholder="Enter Substitute Part No"
+            style="margin-top: 0.5rem; margin-left: 1rem; width: 60%;">
+        </div>
+        <span style="padding: 0px; font-size: 0.7rem; color: gray">** Use <b style="margin-left: 0px !important;">COTTONBOX</b> for non-tote shipments</span>
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; All the fields are mandatory
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="saveKgbDetail()">Update</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #technician_notes_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">GSX Technician Notes</h4>
+      </div>
+      <div class="modal-body" style="height: 330px">
+        <div class="header_left" style="width: 100%">
+          <b>Issue:<sup style="color: red">*</sup></b>
+          <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="diagIssue" placeholder="Enter issue" class="information" rows="2"
+            style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+          <b>Steps to Reproduce:<sup style="color: red">*</sup></b>
+          <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="diagReproduce" placeholder="Enter steps to reproduce" class="information" rows="2"
+            style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+          <b>Diagnosis Performed:<sup style="color: red">*</sup></b>
+          <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="diagPerformed" placeholder="Enter diagnosis performed" class="information" rows="3"
+            style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+          <b>Cosmetic Condition:<sup style="color: red">*</sup></b>
+          <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="diagCondition" placeholder="Enter Cosmetic condition" class="information" rows="2"
+            style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+          <b>Proposed Resolution:<sup style="color: red">*</sup></b>
+          <textarea ngModel pattern="[a-zA-Z ]*" [(ngModel)]="diagResolution" placeholder="Enter proposed resolution" class="information" rows="2"
+            style="border: 1px solid lightgray; margin-bottom: .5rem"></textarea>
+        </div>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill all mandatory fields
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="saveTechnicianNotes(simple_alert_temp)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelHoldReview()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #sms_email_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Ageing SMS/Email</h4>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="ageingSMSEmails.length === 0" style="text-align: center; margin-top: 1rem;">No message template
+          available</p>
+        <table class="table table-striped table-sm" *ngIf="ageingSMSEmails.length !== 0">
+          <thead class="popthead">
+            <tr style="text-align: center;">
+              <th style="width: 85%;">Message</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="popTableBody">
+            <tr *ngFor="let smsmail of ageingSMSEmails">
+              <td style="width: 85%;">{{smsmail.notification_text}}</td>
+              <td style="text-align: center;">
+                <!-- <i class="fa fa-commenting fa-lg mt-4" style="color: #20a8d8 !important; cursor: pointer;" (click)="sendSMSMailConfirm(confirmSMSMail_temp, smsmail.notification_text)"></i> -->
+                <i class="material-icons" style="color: #20a8d8 !important; cursor: pointer;" (click)="sendSMSMailConfirm(confirmSMSMail_temp, smsmail.notification_text)">mail</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirmSMSMail_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Send SMS/Email</h4>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to notify the customer via SMS and Email?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="smsMailConfirm(simple_alert_temp)">Yes I want</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirm_assign_engg_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{confirmAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{confirmAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" *ngIf="buttonSpin === false" (click)="confirmEnggAssign(confirmAlert.id, simple_alert_temp)">Yes</button>
+        <button type="button" class="btn btn-secondary" disabled="" *ngIf="buttonSpin === true"><span class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span> Assigning...</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">No</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #diagnoisis_move_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Move to Diagnosis</h4>
+      </div>
+      <div class="modal-body">
+        <select class="form-control" [(ngModel)]="moveBackToStage" style="margin-bottom: 1rem;">
+          <option selected disabled value="">Select Status</option>
+          <option value="300">Under Diagnosis</option>
+          <option value="1600" *ngIf="repairType !== 'SVNR'">In-Repair</option>
+        </select>
+        <ng-select class="bootstrap" placeholder="Select the reason" [items]="diagnosisMoveReasons" bindLabel="label" bindValue="value" [multiple]="false"
+          [(ngModel)]="dianosisMoveReason" style="margin-bottom: .5rem"></ng-select>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Select the reason for change
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button *ngIf="moveBackToStage === '300' && dianosisMoveReason !== undefined" type="button" class="btn btn-secondary" (click)="moveToDianosisConfirm()">Done</button>
+          <button *ngIf="moveBackToStage === '1600' && dianosisMoveReason !== undefined" type="button" class="btn btn-secondary"
+            (click)="deleteSvcConfirm(simple_alert_temp, dianosisMoveReason)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template class="modal fade" #pending_status_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Pending Status</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="pendingRemarks" placeholder="Enter the Remarks" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Enter the Remarks
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="pendingConfimation()">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- <ng-template class="modal fade" #delivery_customer_temp>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">Delivery to Customer Place</h4>
+        </div>
+        <div class="modal-body">
+          <div>
+            <span>Date and Time</span>
+            <input class="form-control" type="datetime-local" id="datePicker" name="datePicker" placeholder="dd/mm/yyyy HH:MM" [(ngModel)]="deliverToCustomer.dateTime" style="width: 100%; margin-bottom: 0.5rem;">
+          </div>
+          <div>
+            <span>Delivery Person Name</span>
+            <input class="form-control" [(ngModel)]="deliverToCustomer.name" type="text" placeholder="Enter the name" style="margin-bottom: 0.5rem;">
+          </div>
+          <div>
+            <span>Mode of Transport</span>
+            <input class="form-control" [(ngModel)]="deliverToCustomer.mode" type="text" placeholder="Enter the mode of transport" style="margin-bottom: 0.5rem;">
+          </div>
+          <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+            <i class="fa fa-info-circle fa-lg mt-4" style="margin-top: 0 !important"></i>&nbsp; All the fields are mandatory
+          </div>
+        </div>
+        <div class="modal-footer" style="height: 50px">
+          <div>
+              <button type="button" class="btn btn-secondary" (click)="deliveryToCustomerPlaceConfirm()">Done</button>
+          </div>
+          <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-template> -->
+
+<ng-template class="modal fade" #acknowledge_part_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Acknowledge To In-Repair</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngFor="let item of ackParts">
+          <span>{{item.part_number}}</span>
+          <div class="info_row">
+            <div class="col-md-6" style="margin: auto;">
+              <input class="form-control" readonly [(ngModel)]="item.kbb_serial_no" type="text" placeholder="KBB Serial no. Not Available">
+            </div>
+            <div class="col-md-6">
+              <input class="form-control" readonly [(ngModel)]="item.kgb_serial_no" type="text" placeholder="KGB Serial no. Not Available">
+            </div>
+          </div>
+        </div>
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; KGB Serial Numbers are not matched
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="acknowledgedToInrepairConfirm()">Acknowleged</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #kbbVerify_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KBB Verify</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngFor="let item of kbbVerificationParts">
+          <span style="color: #ff4545;">{{item.part_number}} - {{item.description}}</span>
+          <div class="info_row">
+            <div class="col-md-12" style="margin: auto; margin-top: 0.5rem;">
+              <input class="form-control" [(ngModel)]="item.kbbVerifySerialNo" type="text" [maxlength]="18" placeholder="Enter KBB Serial no" style="text-align: center;">
+            </div>
+          </div>
+        </div>
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+          <span style="padding: 0px; font-size: 0.7rem; color: gray">** Use <b style="margin-left: 0px !important;">NONSERIALIZED</b> for KBB serial number is not available</span>
+        </div>
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Please enter valid serial numbers
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="kbbVerified(gsx_status_update_temp)">Verify</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #gsx_status_update_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+        <!-- <button type="button" class="btn btn-secondary" (click)="manualTicketChangeConfirm('8850', 'KBB Verified')">Ok</button> -->
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #ipad_highconfig_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">iPad High Configuration</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #tobeInward_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Parts Arrived - To be Inwarded</h4>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <select [(ngModel)]="toInwardBin"
+          style="border: 1px solid lightgray; width: 90%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px; background-color: white;"
+          (change)="selectedStatusBin(toInwardBin)">
+          <option [value]="1500">Parts arrived from DC - to be inwarded</option>
+          <option [value]="3000">Parts arrived from RC - to be inwarded</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="tobeInwardSubmit(toInwardBin)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #excalation_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Escalation - {{escalationId}}</h4>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div *ngIf="escalationDetails.length === 0">
+          <c-spinner size="sm" style="margin-left: 0px !important;"></c-spinner>
+        </div>
+        <div *ngIf="this.escalationDetails.errorMsg">
+          <p style="color: red">{{this.escalationDetails.errorMsg}}</p>
+        </div>
+
+        <div *ngIf="escalationDetails.length !== 0">
+          <div class="info_row">
+            <div class="col-md-3">
+              <label>Part Number</label>
+            </div>
+            <div class="col-md-9">
+              <input [(ngModel)]="escalationDetails.number" style="background: transparent; border: 0; width: 100%" class="information" type="text" name="part_no"
+                placeholder="N/A">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-3">
+              <label>Description</label>
+            </div>
+            <div class="col-md-9">
+              <input [(ngModel)]="escalationDetails.description" style="background: transparent; border: 0; width: 100%" class="information" type="text" name="part_no"
+                placeholder="N/A">
+            </div>
+          </div>
+          <div *ngFor="let escDamage of escalationDamage;">
+            <div class="info_row">
+              <div class="col-md-3">
+                <label>Location</label>
+              </div>
+              <div class="col-md-9">
+                <input [(ngModel)]="escDamage.locationDescription" style="background: transparent; border: 0; width: 100%" class="information" type="text" name="part_no"
+                  placeholder="N/A">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-3">
+                <label>Condition</label>
+              </div>
+              <div class="col-md-9">
+                <input [(ngModel)]="escDamage.conditionDescription" style="background: transparent; border: 0; width: 100%" class="information" type="text" name="part_no"
+                  placeholder="N/A">
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-3">
+                <label>Additional Details</label>
+              </div>
+              <div class="col-md-9">
+                <input [(ngModel)]="escDamage.additionalDetails" style="background: transparent; border: 0; width: 100%" class="information" type="text" name="part_no"
+                  placeholder="N/A">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" *ngIf="(escalationDetails.length !== 0) && (clicked === false) " (click)="addRCRequotedPart()">Add Part</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #create_reserve_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Delivery Reservation</h4>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div>
+          <div class="form-group" *ngIf="showProductSelect">
+            <select class="selectTime" #time style="text-align:center; margin: auto; margin-bottom: 1rem; width: 61% !important;" [(ngModel)]="productFamily"
+              (change)="onSelectProduct($event)">
+              <option selected disabled>Select Product Family</option>
+              <option *ngFor="let product of productFamilies; let i = index" [value]="product.value">
+                {{product.name}}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="!showProductSelect">
+            <div class="info_row">
+              <div class="col-md-12" style="margin-bottom: 1rem;">
+                <span style="color: gray; font-weight: bold">{{dlReservationDetails.product_code}}</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="(!showDateAndTime) && (slotError === '') && buttonSpin" style="margin: auto; margin-top: 1rem; margin-bottom: 1rem;">
+            <c-spinner size="sm" style="margin-left: 0px !important;"></c-spinner>
+          </div>
+          <div>
+            <p style="margin-bottom: 1rem; margin-top: 1rem;" *ngIf="slotError !== ''">{{slotError}}</p>
+          </div>
+          <div class="row" *ngIf="showDateAndTime">
+            <div class="col-sm-12">
+              <div class="form-group" style="display:flex !important; width: fit-content !important; margin: auto; overflow: auto !important;">
+                <div *ngFor="let item of aryDayDates; let i=index" (click)="onDateSelected(item.date)" style="text-align: center; margin-right: 1rem !important;">
+                  <label style="display:block !important;">{{item.day}}</label>
+                  <button [ngClass]="{'touched': selectedDate === item.date}" class="dayButton"> {{item.date}}</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6" *ngIf="selectTimeforAppoint" style="margin: auto; margin-top: 1rem; margin-bottom: 1rem;">
+              <div [ngClass]="{'form-group desktop': deviceType === 'desktop', 'form-group mobile' : deviceType === 'mobile' }">
+                <select class="selectTime" #time style="text-align:center; width:100%;" (change)="onTimeSelected(time.value)">
+                  <option disabled selected style="text-align: center;">Select time</option>
+                  <optgroup label="Morning">
+                    <option *ngFor="let slotTime of filterAvailableSlots('10:00 AM', '12:00 PM')"> {{slotTime}} </option>
+                    <option *ngIf="!filterAvailableSlots('10:00 AM', '12:00 PM').length" disabled> {{'No Slots Available'}} </option>
+                  </optgroup>
+                  <optgroup label="Afternoon">
+                    <option *ngFor="let slotTime of filterAvailableSlots('12:00 PM', '4:00 PM')"> {{slotTime}} </option>
+                    <option *ngIf="!filterAvailableSlots('12:00 PM', '4:00 PM').length" disabled> {{'No Slots Available'}} </option>
+                  </optgroup>
+                  <optgroup label="Evening">
+                    <option *ngFor="let slotTime of filterAvailableSlots('4:00 PM', '9:30 PM')"> {{slotTime}} </option>
+                    <option *ngIf="!filterAvailableSlots('4:00 PM', '9:30 PM').length" disabled> {{'No Slots Available'}} </option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div *ngIf="!buttonSpin">
+          <button type="button" class="btn btn-secondary" *ngIf="(showDateAndTime) && (slotError === '') && (reserveType === 'reserve')" (click)="submitCreate()">Create
+            Reservation</button>
+          <button type="button" class="btn btn-secondary" *ngIf="(showDateAndTime) && (slotError === '') && (reserveType === 'reschedule')"
+            (click)="reschedule()">{{!showProductSelect ? 'Re-schedule' : 'Create'}}</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #rmc_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Repair Mark Complete</h4>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <select [(ngModel)]="dcallCloseStatus"
+          style="border: 1px solid lightgray; width: 90%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px; background-color: white;">
+          <option>Select the Status</option>
+          <option value="CRCN">Closed - Repair completed with No Parts Used</option>
+          <option value="CRCP">Closed - Repair Completed with Parts Used</option>
+          <option value="CRDE">Closed - Repair Declined by customer</option>
+        </select>
+
+        <div style="width: 90%; margin: auto; margin-top: 1rem; text-align: left;">
+          <div class="info_row">
+            <div class="col-md-5">
+              <label>Part Received Date</label>
+            </div>
+            <div class="col-md-7" style="text-align: right">
+              <input type="datetime-local" id="datePicker" name="datePicker" placeholder="dd/mm/yyyy" [(ngModel)]="partReceivedDate" style="width: 90%;">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-5">
+              <label>Repair Completed Date</label>
+            </div>
+            <div class="col-md-7" style="text-align: right">
+              <input type="datetime-local" id="datePicker" name="datePicker" placeholder="dd/mm/yyyy" [(ngModel)]="repairCompleteDate" style="width: 90%;">
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem; display: flex">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Please fill all the fields
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="dCallRepairClose()">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #select_delivery_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Delivery Type</h4>
+      </div>
+      <div class="modal-body deliveryTemp" style="text-align: center;">
+        <input type="radio" [(ngModel)]="deliveryType" value="RFPU"><label>Customer visits Service Centre</label>
+        <input type="radio" [(ngModel)]="deliveryType" value="PendingDelivery"><label>Home Delivery</label>
+        <label style="display: block; color: red; font-weight: bold; margin-top: 1rem;">This cannot be changed. Please verify with customer before selection.</label>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" [disabled]="deliveryType === ''" class="btn btn-secondary" (click)="preCallQC(kbbVerify_temp, address_temp)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #select_app_delivery_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Delivery Type</h4>
+      </div>
+      <div class="modal-body deliveryTemp" style="text-align: center;">
+        <input type="radio" [(ngModel)]="deliveryType" value="CreateAppoint"><label>Create Appointment</label>
+        <input type="radio" [(ngModel)]="deliveryType" value="PendingDelivery"><label>Home Delivery</label>
+        <label style="display: block; color: red; font-weight: bold; margin-top: 1rem;">This cannot be changed. Please verify with customer before selection.</label>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" [disabled]="deliveryType === ''" class="btn btn-secondary" (click)="preCallAppQC(kbbVerify_temp, create_reserve_temp, address_temp)">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #inbox_letter_temp>
+  <div class="modal-xlg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">RC Inbox Letter</h4>
+      </div>
+      <div class="modal-body deliveryTemp">
+        <div [innerHtml]="letterHtml"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #payment_decline_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Customer Declined Payment</h4>
+      </div>
+      <div class="modal-body">
+        <label style="margin-bottom: 0.5rem;">Reason for Payment Decline<sup style="color: red">*</sup></label>
+        <textarea [(ngModel)]="paymentDeclinedReason" placeholder="Enter the Reason" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-top: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Enter the Reason
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="CustomerDeclined()">Done</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #date_update_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Date Update</h4>
+      </div>
+      <div class="modal-body deliveryTemp">
+        <div style="display: grid;">
+          <label>Arrival Date</label><input type="datetime-local" [(ngModel)]="dCallArrivalDate">
+          <label style="margin-top: 15px">Completion Date</label><input type="datetime-local" [(ngModel)]="dCallCompletionDate">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="updateDate()" *ngIf="dCallArrivalDate !== '' && dCallCompletionDate !== ''">Update</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #dcall_close_reason_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Close Reason</h4>
+      </div>
+      <div class="modal-body deliveryTemp">
+        <div>
+          <select
+            style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px; background-color: white;"
+            [(ngModel)]="dCallCloseReason">
+            <option value="" selected>Send for QC Approval</option>
+            <option *ngFor="let reason of dCallCloseReasons" [value]="reason.value">
+              {{reason.label}}
+            </option>
+          </select>
+        </div>
+        <div style="display: grid; margin-top: 3%">
+          <label>Arrival Date</label><input type="datetime-local" [(ngModel)]="dCallArrivalDate">
+          <label style="margin-top: 15px">Completion Date</label><input type="datetime-local" [(ngModel)]="dCallCompletionDate">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <!-- <button type="button" class="btn btn-secondary" *ngIf="dCallArrivalDate !== '' && dCallCompletionDate !== ''" (click)="sendDcallQcApproval(simple_alert_temp)">Submit</button> -->
+          <button type="button" class="btn btn-secondary" *ngIf="dCallArrivalDate !== '' && dCallCompletionDate !== ''" (click)="sendQCCheck(simple_alert_temp)">Submit</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #exception_modal>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Exception Approval</h4>
+      </div>
+      <div class="modal-body deliveryTemp">
+        <div>
+          <select
+            style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px; background-color: white;"
+            [(ngModel)]="exceptionApprover">
+            <option value="" selected>Select the Approver</option>
+            <option *ngFor="let approver of exceptionApprovers" [value]="approver.user_id">
+              {{approver.user_name}}
+            </option>
+          </select>
+        </div>
+        <div style="display: grid; margin-top: 3%">
+          <input class="form-control" *ngIf="showValidateOTP" [(ngModel)]="exceptionOtpEntered" type="text" placeholder="Enter the OTP"
+          style="margin: auto; width: 45% !important; text-align: center;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <!-- <button type="button" class="btn btn-secondary" *ngIf="dCallArrivalDate !== '' && dCallCompletionDate !== ''" (click)="sendDcallQcApproval(simple_alert_temp)">Submit</button> -->
+          <button type="button" class="btn btn-secondary" *ngIf="exceptionApprover != '' && !showValidateOTP" (click)="sendExceptionOTP()">Send OTP</button>
+          <button type="button" class="btn btn-secondary" *ngIf="showValidateOTP" (click)="validateExceptionOTP()">Validate OTP</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #qcModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Final Disposition</h5>
+  </div>
+
+  <div class="modal-body">
+    <select class="form-control" [(ngModel)]="selectedOption">
+      <option value="" disabled>Select</option>
+      <option value="Replaced">Replaced</option>
+      <option value="CCN for Upgrade">CCN for Upgrade</option>
+      <option value="CCN for Refund">CCN for Refund</option>
+      <option value="In-eligible for replacement">In-eligible for replacement</option>
+    </select>
+  </div>
+<div class="modal-footer">
+  <button *ngIf="repairType !== 'CIN'" class="btn btn-secondary"
+    (click)="sendForQC(this.ticketId, selectedOption); modal.close();">
+    Send for Approval
+  </button>
+
+  <button *ngIf="repairType === 'CIN'" class="btn btn-secondary"
+    (click)="sendForQC(this.ticketId, selectedOption); modal.close();">
+    Send for QC approval
+  </button>
+  <button type="button" class="btn btn-secondary" (click)="hideQuoteModel()">Cancel</button>
+
+</div>
+</ng-template>

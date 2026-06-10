@@ -1,0 +1,207 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div *ngIf="userRole === '3'" class="card">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="date" id="date-input" type="date" name="date-input"
+            placeholder="dd-mm-yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display: block !important">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+  <div class="info_row">
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card" style="margin-top: 1rem !important;">
+        <div class="card-header">
+          <strong>2Hrs Promise Dashboard - {{this.preday}}</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr>
+                <td rowspan="2" class="def">
+                  CITY
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  LOCATION
+                </td>
+                <td colspan="5" class="iphone">iPhone</td>
+                <td rowspan="2" class="iphone">%</td>
+                <td colspan="5" class="ipad">iPad, Watch, iPod, Apple TV</td>
+                <td rowspan="2" class="ipad">%</td>
+                <td colspan="5" class="accy">Accy</td>
+                <td rowspan="2" class="accy">%</td>
+                <td colspan="5" class="mac">Mac</td>
+                <td rowspan="2" class="mac">%</td>
+                <td rowspan="2" class="def">
+                  TOTAL RAF
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  OVERALL %
+                </td>
+              </tr>
+              <tr>
+                <td class="iphone">RAF</td>
+                <td class="iphone">Eligible RAF</td>
+                <td class="iphone">0-2Hrs</td>
+                <td class="iphone">2-4Hrs</td>
+                <td class="iphone">>4Hrs</td>
+                <td class="ipad">RAF</td>
+                <td class="ipad">Eligible RAF</td>
+                <td class="ipad">0-2Hrs</td>
+                <td class="ipad">2-4Hrs</td>
+                <td class="ipad">>4Hrs</td>
+                <td class="accy">RAF</td>
+                <td class="accy">Eligible RAF</td>
+                <td class="accy">0-2Hrs</td>
+                <td class="accy">2-4Hrs</td>
+                <td class="accy">>4Hrs</td>
+                <td class="mac">RAF</td>
+                <td class="mac">Eligible RAF</td>
+                <td class="mac">0-2Hrs</td>
+                <td class="mac">2-4Hrs</td>
+                <td class="mac">>4Hrs</td>
+              </tr>
+            </thead>
+            <tbody *ngFor="let eligibleData of eligibleDatas">
+              <tr style="display: contents;">
+                <td [attr.rowspan]="eligibleData.rowspancount-1" style="font-weight: bold;">{{eligibleData.cityName}}
+                </td>
+              </tr>
+              <tr *ngFor="let promiseData of eligibleData.branchData.data">
+                <td class="loc-light">{{promiseData.branch_code}}</td>
+                <td>{{promiseData.iphone_raf_count}}</td>
+                <td>{{promiseData.iphone_eligible_raf_count}}</td>
+                <td>{{promiseData.iphone_0_2hrs_count}}</td>
+                <td>{{promiseData.iphone_2_4hrs_count}}</td>
+                <td>{{promiseData.iphone_above_4hrs_count}}</td>
+                <td class="iphone-light">{{promiseData.iphone_percent}}%</td>
+                <td>{{promiseData.other_raf_count}}</td>
+                <td>{{promiseData.other_eligible_raf_count}}</td>
+                <td>{{promiseData.other_0_2hrs_count}}</td>
+                <td>{{promiseData.other_2_4hrs_count}}</td>
+                <td>{{promiseData.other_above_4hrs_count}}</td>
+                <td class="ipad-light">{{promiseData.other_percent}}%</td>
+                <td>{{promiseData.accy_raf_count}}</td>
+                <td>{{promiseData.accy_eligible_raf_count}}</td>
+                <td>{{promiseData.accy_0_2hrs_count}}</td>
+                <td>{{promiseData.accy_2_4hrs_count}}</td>
+                <td>{{promiseData.accy_above_4hrs_count}}</td>
+                <td class="accy-light">{{promiseData.accy_percent}}%</td>
+                <td>{{promiseData.mac_raf_count}}</td>
+                <td>{{promiseData.mac_eligible_raf_count}}</td>
+                <td>{{promiseData.mac_0_2hrs_count}}</td>
+                <td>{{promiseData.mac_2_4hrs_count}}</td>
+                <td>{{promiseData.mac_above_4hrs_count}}</td>
+                <td class="mac-light">{{promiseData.mac_percent}}%</td>
+                <td>{{promiseData.total_raf}}</td>
+                <td class="loc-light">{{promiseData.overall_percent}}%</td>
+              </tr>
+              <tr *ngFor="let promiseTotal of eligibleData.branchData.total">
+                <td class="def"></td>
+                <td class="loc-tot">TOTAL</td>
+                <td class="iphone-light">{{promiseTotal.iphone_raf_total}}</td>
+                <td class="iphone-light">{{promiseTotal.iphone_eligible_raf_total}}</td>
+                <td class="iphone-light">{{promiseTotal.iphone_0_2hrs_total}}</td>
+                <td class="iphone-light">{{promiseTotal.iphone_2_4hrs_total}}</td>
+                <td class="iphone-light">{{promiseTotal.iphone_above_4hrs_total}}</td>
+                <td class="loc-tot" *ngIf="promiseTotal.iphone_eligible_raf_total > 0">
+                  {{(promiseTotal.iphone_0_2hrs_total/promiseTotal.iphone_eligible_raf_total)*100 | number: '1.0-0'}}%
+                </td>
+                <td class="loc-tot" *ngIf="promiseTotal.iphone_eligible_raf_total <= 0">0%</td>
+                <td class="ipad-light">{{promiseTotal.other_raf_total}}</td>
+                <td class="ipad-light">{{promiseTotal.other_eligible_raf_total}}</td>
+                <td class="ipad-light">{{promiseTotal.other_0_2hrs_total}}</td>
+                <td class="ipad-light">{{promiseTotal.other_2_4hrs_total}}</td>
+                <td class="ipad-light">{{promiseTotal.other_above_4hrs_total}}</td>
+                <td class="loc-tot" *ngIf="promiseTotal.other_eligible_raf_total > 0">
+                  {{(promiseTotal.other_0_2hrs_total/promiseTotal.other_eligible_raf_total)*100 | number: '1.0-0'}}%
+                </td>
+                <td class="loc-tot" *ngIf="promiseTotal.other_eligible_raf_total <= 0">0%</td>
+                <td class="accy-light">{{promiseTotal.accy_raf_total}}</td>
+                <td class="accy-light">{{promiseTotal.accy_eligible_raf_total}}</td>
+                <td class="accy-light">{{promiseTotal.accy_0_2hrs_total}}</td>
+                <td class="accy-light">{{promiseTotal.accy_2_4hrs_total}}</td>
+                <td class="accy-light">{{promiseTotal.accy_above_4hrs_total}}</td>
+                <td class="loc-tot" *ngIf="promiseTotal.accy_eligible_raf_total > 0">
+                  {{(promiseTotal.accy_0_2hrs_total/promiseTotal.accy_eligible_raf_total)*100 | number: '1.0-0'}}%</td>
+                <td class="loc-tot" *ngIf="promiseTotal.accy_eligible_raf_total <= 0">0%</td>
+                <td class="mac-light">{{promiseTotal.mac_raf_total}}</td>
+                <td class="mac-light">{{promiseTotal.mac_eligible_raf_total}}</td>
+                <td class="mac-light">{{promiseTotal.mac_0_2hrs_total}}</td>
+                <td class="mac-light">{{promiseTotal.mac_2_4hrs_total}}</td>
+                <td class="mac-light">{{promiseTotal.mac_above_4hrs_total}}</td>
+                <td class="loc-tot" *ngIf="promiseTotal.mac_eligible_raf_total > 0">
+                  {{(promiseTotal.mac_0_2hrs_total/promiseTotal.mac_eligible_raf_total)*100 | number: '1.0-0'}}%</td>
+                <td class="loc-tot" *ngIf="promiseTotal.mac_eligible_raf_total <= 0">0%</td>
+                <td class="def">{{promiseTotal.grand_total_raf}}</td>
+                <td class="loc-tot">{{promiseTotal.iphone_raf_total}}%</td>
+              </tr>
+            </tbody>
+            <tr *ngFor="let grandTotal of grandTotals">
+              <td class="loc-tot" colspan="2">Grand Total</td>
+              <td class="iphone-light">{{grandTotal.iphone_raf_total}}</td>
+              <td class="iphone-light">{{grandTotal.iphone_eligible_raf_total}}</td>
+              <td class="iphone-light">{{grandTotal.iphone_0_2hrs_total}}</td>
+              <td class="iphone-light">{{grandTotal.iphone_2_4hrs_total}}</td>
+              <td class="iphone-light">{{grandTotal.iphone_above_4hrs_total}}</td>
+              <td class="loc-tot" *ngIf="grandTotal.iphone_eligible_raf_total > 0">
+                {{(grandTotal.iphone_0_2hrs_total/grandTotal.iphone_eligible_raf_total)*100 | number: '1.0-0'}}%</td>
+              <td class="loc-tot" *ngIf="grandTotal.iphone_eligible_raf_total <= 0">0%</td>
+              <td class="ipad-light">{{grandTotal.other_raf_total}}</td>
+              <td class="ipad-light">{{grandTotal.other_eligible_raf_total}}</td>
+              <td class="ipad-light">{{grandTotal.other_0_2hrs_total}}</td>
+              <td class="ipad-light">{{grandTotal.other_2_4hrs_total}}</td>
+              <td class="ipad-light">{{grandTotal.other_above_4hrs_total}}</td>
+              <td class="loc-tot" *ngIf="grandTotal.other_eligible_raf_total > 0">
+                {{(grandTotal.other_0_2hrs_total/grandTotal.other_eligible_raf_total)*100 | number: '1.0-0'}}%</td>
+              <td class="loc-tot" *ngIf="grandTotal.other_eligible_raf_total <= 0">0%</td>
+              <td class="accy-light">{{grandTotal.accy_raf_total}}</td>
+              <td class="accy-light">{{grandTotal.accy_eligible_raf_total}}</td>
+              <td class="accy-light">{{grandTotal.accy_0_2hrs_total}}</td>
+              <td class="accy-light">{{grandTotal.accy_2_4hrs_total}}</td>
+              <td class="accy-light">{{grandTotal.accy_above_4hrs_total}}</td>
+              <td class="loc-tot" *ngIf="grandTotal.accy_eligible_raf_total > 0">
+                {{(grandTotal.accy_0_2hrs_total/grandTotal.accy_eligible_raf_total)*100 | number: '1.0-0'}}%</td>
+              <td class="loc-tot" *ngIf="grandTotal.accy_eligible_raf_total <= 0">0%</td>
+              <td class="mac-light">{{grandTotal.mac_raf_total}}</td>
+              <td class="mac-light">{{grandTotal.mac_eligible_raf_total}}</td>
+              <td class="mac-light">{{grandTotal.mac_0_2hrs_total}}</td>
+              <td class="mac-light">{{grandTotal.mac_2_4hrs_total}}</td>
+              <td class="mac-light">{{grandTotal.mac_above_4hrs_total}}</td>
+              <td class="loc-tot" *ngIf="grandTotal.mac_eligible_raf_total > 0">
+                {{(grandTotal.mac_0_2hrs_total/grandTotal.mac_eligible_raf_total)*100 | number: '1.0-0'}}%</td>
+              <td class="loc-tot" *ngIf="grandTotal.mac_eligible_raf_total <= 0">0%</td>
+              <td class="def">{{grandTotal.grand_total_raf}}</td>
+              <td class="loc-tot">{{((+grandTotal.iphone_0_2hrs_total + +grandTotal.other_0_2hrs_total +
+                +grandTotal.accy_0_2hrs_total + +grandTotal.mac_0_2hrs_total)/(+grandTotal.iphone_eligible_raf_total +
+                +grandTotal.other_eligible_raf_total + +grandTotal.accy_eligible_raf_total +
+                +grandTotal.mac_eligible_raf_total))*100 | number: '1.0-0'}}%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

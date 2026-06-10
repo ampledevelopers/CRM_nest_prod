@@ -1,0 +1,217 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+<div *ngIf="loading === false">
+    <div class="headerCenter">
+        <p>Location - <b>{{toBranchCode}}</b></p>
+    </div>
+    <div class="headerCenter" style="margin-bottom: 2rem;">
+        <input type="radio" id="yes" name="selectType" value="consignment" style="margin-right: 0.2rem;"
+          [(ngModel)]="selectType" (change)="onChange()">
+        <label for="yes" style="margin-right: 0.7rem;">Consignment </label>
+        <input type="radio" id="yes" name="selectType" value="adhesive" style="margin-right: 0.2rem;"
+          [(ngModel)]="selectType" (change)="onChange()">
+        <label for="css">Adhesive </label>
+      </div>
+    <div class="count" *ngIf="stockTransCount !== 0" >
+        <p style="color:grey;margin-right: 0.2rem;">Ack Pending:</p>{{stockTransCount}}
+    </div>
+    <div *ngIf="selectType !== '' && stockTransCount === 0" style="text-align:center;">No data available for acknowledge</div>
+    <div class="card-body" *ngIf="stockTransCount !== 0" style="margin-bottom: 2rem;">
+        <table class="table table-bordered table-striped table-sm">
+            <thead>
+                <tr style="text-align: center; font-weight: normal;">
+                    <th>
+                        DC No
+                    </th>
+                    <th>
+                        From
+                    </th>
+                    <th>
+                        To
+                    </th>
+                    <th  *ngIf="selectType === 'consignment'">
+                        ASN No
+                    </th>
+                    <th  *ngIf="selectType === 'consignment'">
+                        Part No
+                    </th>
+                    <th  *ngIf="selectType === 'consignment'">
+                        Part Desc
+                    </th>
+                    <th  *ngIf="selectType === 'consignment'">
+                        Serial No
+                    </th>
+                    <th>
+                        Transfer Date
+                    </th>
+                    <th>
+                      View
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="grid-container" *ngFor="let item of stockTransfer;"
+                    style="height: auto !important;text-align: center;">
+                    <td>
+                        {{item.dc_no}}
+                    </td>
+                    <td>
+                        {{item.from_branch_code}}
+                    </td>
+                    <td>
+                        {{item.to_branch_code}}
+                    </td>
+                    <td  *ngIf="selectType === 'consignment'">
+                        {{item.asn_no}}
+                    </td>
+                    <td  *ngIf="selectType === 'consignment'">
+                        {{item.part_no}}
+                    </td>
+                    <td  *ngIf="selectType === 'consignment'">
+                        {{item.description}}
+                    </td>
+                    <td  *ngIf="selectType === 'consignment'">
+                        {{item.serial_no}}
+                    </td>
+                    <td>
+                        {{item.transfer_date}}
+                    </td>
+                    <td *ngIf="selectType === 'consignment'" style="text-align: center;">
+                        <a class="transc" (click)="getDC(item.dc_no)"><i class="material-icons" alt="View"
+                            style="font-size: 1.6em !important;">remove_red_eye</i></a>
+                    </td>
+                    <td *ngIf="selectType === 'adhesive'" style="text-align: center;">
+                        <a class="transc" (click)="getAdhesiveDC(item.dc_no)"><i class="material-icons" alt="View"
+                            style="font-size: 1.6em !important;">remove_red_eye</i></a>
+                    </td>
+                    <td>
+                        <a class="transc" (click)="stockAckModel(stock_ack_temp,item.asn_no,item.dc_no,item.from_branch_code,item.to_branch_code)">Acknowledge</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="selectType === 'consignment' || selectType === 'adhesive'"  class="transc">
+        <a (click)="stockTransHis()">STI Transactions History</a>
+    </div>
+    <div class="count" *ngIf="transcStiHis=== true" >
+        <p style="margin-bottom: 0.2rem;color:grey;font-weight: bold;margin-right: 0.2rem;">Acknowledged:</p> {{historyCount}}
+    </div>
+
+    <div class="card" *ngIf="transcStiHis=== true" style="margin-top: 2rem;margin-bottom: 2rem;">
+        <div class="card-header" style="float: left;">
+            STI Transaction Details
+        </div>
+        <div class="card-body" style="overflow-x: auto;">
+
+            <table class="table table-bordered table-striped table-sm" datatable>
+                <thead>
+                    <tr style="text-align: center; font-weight: normal;margin-top:1px solid">
+                        <th>
+                            DC No
+                        </th>
+                        <th>
+                            From
+                        </th>
+                        <th>
+                            To
+                        </th>
+                        <th  *ngIf="selectType === 'consignment'">
+                            ASN No
+                        </th>
+                        <th  *ngIf="selectType === 'consignment'">
+                            Part No
+                        </th>
+                        <th  *ngIf="selectType === 'consignment'">
+                            Part Desc
+                        </th>
+                        <th  *ngIf="selectType === 'consignment'">
+                            Serial No
+                        </th>
+                        <th>
+                            Transfer Date
+                        </th>
+                        <th>
+                            Ack Date
+                        </th>
+                        <th>
+                            View
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="grid-container" *ngFor="let item of stockTransferHis;" style="height: auto !important;">
+                        <td>
+                            {{item.dc_no}}
+                        </td>
+                        <td>
+                            {{item.from_branch_code}}
+                        </td>
+                        <td>
+                            {{item.to_branch_code}}
+                        </td>
+                        <td  *ngIf="selectType === 'consignment'">
+                            {{item.asn_no}}
+                        </td>
+                        <td  *ngIf="selectType === 'consignment'">
+                            {{item.part_no}}
+                        </td>
+                        <td  *ngIf="selectType === 'consignment'">
+                            {{item.description}}
+                        </td>
+                        <td  *ngIf="selectType === 'consignment'">
+                            {{item.serial_no}}
+                        </td>
+                        <td>
+                            {{item.transfer_date}}
+                        </td>
+                        <td>
+                            {{item.acknowledge_date}}
+                        </td>
+                        <td *ngIf="selectType === 'consignment'" style="text-align: center;">
+                            <a class="transc" (click)="getDC(item.dc_no)"><i class="material-icons" alt="View"
+                                style="font-size: 1.6em !important;">remove_red_eye</i></a>
+                        </td>
+                        <td *ngIf="selectType === 'adhesive'" style="text-align: center;">
+                            <a class="transc" (click)="getAdhesiveDC(item.dc_no)"><i class="material-icons" alt="View"
+                                style="font-size: 1.6em !important;">remove_red_eye</i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<ng-template class="modal fade" #stock_ack_temp>
+    <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+            <h4 class="modal-title" style="line-height: 1.2;font-size: medium;">Confirm the Receipt of Product</h4>
+            <i class="material-icons" (click)="cancel()"
+                style="color: lightgray; cursor: pointer; margin-top: 0.4rem !important;margin-left:auto">close</i>
+        </div>
+        <div  *ngIf="selectType === 'consignment'" class="modal-body" style="padding: 2%;height: 75px;">
+            <div style="text-align: center;font-size: larger;font-weight: bold;margin-left: 0.5rem;">
+                <label>{{fromBranch + asnNo}} -></label>{{toBranch + asnNo}}
+            </div>
+        </div>
+        <div  *ngIf="selectType !== 'consignment'" class="modal-body" style="padding: 2%;height: 75px;">
+            <div style="text-align: center;font-size: larger;font-weight: bold;margin-left: 0.5rem;">
+                <label>{{fromBranch + dcNo}} -></label>{{toBranch + dcNo}}
+            </div>
+        </div>
+        <div *ngIf="selectType === 'consignment'" class="foot">
+            <button class="btn btn-block btn-outline-primary" style="margin-top: 0.5rem;" (click)="consignmentAck()">Accept</button>
+        </div>
+        <div  *ngIf="selectType === 'adhesive'" class="foot">
+            <button class="btn btn-block btn-outline-primary" style="margin-top: 0.5rem;" (click)="adhesivesAck()">Accept</button>
+        </div>
+    </div>
+</ng-template>

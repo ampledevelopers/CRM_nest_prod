@@ -1,0 +1,227 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <div class="sk-chasing-dots">
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="((loading === false))" style="margin-top: 3%;">
+  <div class="info_row">
+    <div class="col-sm-12">
+        <div style="display: flex;">
+          <div class="header_left" style="width: 50% !important;">
+              <div class="info_row">
+                <div class="col-md-5" style="margin-right: .5rem;">
+                  <fieldset class="form-group">
+                    <ng-select
+                    class="bootstrap"
+                    placeholder="Select Call Type"
+                    [items]="callTypes"
+                    bindLabel="label"
+                    bindValue="value"
+                    [multiple]="false" (change)="selectCallType($event)" [clearable]="false"></ng-select>
+                  </fieldset>
+                </div>
+                <div class="col-md-5">
+                    <!-- <span>Select Issue<sup style="color: red">*</sup></span> -->
+                    <fieldset class="form-group">
+                        <ng-select [disabled]="flagType"
+                        class="bootstrap"
+                        placeholder="Select Type"
+                        [items]="subTypes"
+                        bindLabel="label"
+                        bindValue="value"
+                        [multiple]="false" (change)="selectType($event)" [clearable]="false"></ng-select>
+                    </fieldset>
+                </div>
+                <div class="col-md-2" style="width: 50%; margin: auto;">
+                  <button *ngIf="buttonSpin === false" class="btn btn-block btn-outline-primary" style="height: 32px;padding: 0px !important; margin-top: 1rem; width: 70%;" (click)="goNext()">Next</button>
+                </div>
+              </div>
+          </div>
+     </div>
+    </div>
+  </div>
+
+  <div class="info_row" >
+    <div style="display: flex;" style="width: 100%;">
+      <div class="header_left" style="width: 100%;">
+          <div class="col-md-12" *ngIf="conError !== ''" style="text-align: center; color: red; display: flex; width: 20%; margin: auto;">
+              <i class="material-icons">info</i>&nbsp; {{conError}}
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12">
+      <table class="table table-striped table-sm" style="border: 1px double #B5DAFF;" *ngIf="(showEnquiry) || (showSales)">
+          <thead style="background-color: #E6F0FA;">
+            <tr style="text-align: center">
+              <td colspan="4">
+                <b>Customer Information</b>
+              </td>
+            </tr>
+          </thead>
+          <tbody class="cc-info">
+            <tr *ngIf="(this.subType === 'E') || (this.subType === 'U')">
+              <td class="tLeft" colspan="2">
+                <label style="text-align: right; width: 98%;">Ticket Id<sup style="color: red">*</sup></label>
+              </td>
+              <td class="tRight" colspan="2">
+                <input [(ngModel)]="ticketId" type="text" class="form-control" id="to" placeholder="Ticket Id" style="width: 40%; margin-bottom: 0px !important;" (keydown)="getdata($event)">
+              </td>
+            </tr>
+            <tr>
+              <td class="tLeft">
+                <label>First Name<sup style="color: red">*</sup></label>
+              </td>
+              <td class="tRight">
+                <input [(ngModel)]="customerInfo.first_name" type="text" class="form-control" id="to" placeholder="First Name">
+              </td>
+              <td class="tLeft">
+                <label>Last Name</label>
+              </td>
+              <td class="tRight">
+                  <input [(ngModel)]="customerInfo.last_name" type="text" class="form-control" id="to" placeholder="Last Name">
+              </td>
+            </tr>
+            <tr>
+              <td class="tLeft">
+                <label>Primary Mobile Number<sup style="color: red">*</sup></label>
+              </td>
+              <td class="tRight">
+                <input [(ngModel)]="customerInfo.phone" maxlength="10" type="text" class="form-control" id="to" placeholder="Mobile Number">
+              </td>
+              <td class="tLeft">
+                <label>Alternate Mobile Number</label>
+              </td>
+              <td class="tRight">
+                  <input [(ngModel)]="customerInfo.phone2" maxlength="10" type="text" class="form-control" id="to" placeholder="Mobile Number">
+              </td>
+            </tr>
+            <tr>
+              <td class="tLeft">
+                <label>Email Id<sup style="color: red">*</sup></label>
+              </td>
+              <td class="tRight">
+                <input [(ngModel)]="customerInfo.email" type="email" class="form-control" id="to" placeholder="Email Id">
+              </td>
+              <td class="tLeft">
+                <label></label>
+              </td>
+              <td class="tRight">
+              </td>
+            </tr>
+            <tr>
+              <td class="tLeft">
+                <label>Address Line 1</label>
+              </td>
+              <td class="tRight">
+                <input [(ngModel)]="customerInfo.address1" type="text" class="form-control" id="to" placeholder="Address Line 1">
+              </td>
+              <td class="tLeft">
+                <label>Address Line 2</label>
+              </td>
+              <td class="tRight">
+                <input [(ngModel)]="customerInfo.address2" type="text" class="form-control" id="to" placeholder="Address Line 2">
+              </td>
+            </tr>
+            <tr>
+              <td class="tLeft">
+                <label>City</label>
+              </td>
+              <td class="tRight">
+                <input [(ngModel)]="customerInfo.city" type="text" class="form-control" id="to" placeholder="City">
+              </td>
+              <td class="tLeft">
+                <label>Pin Code</label>
+              </td>
+              <td class="tRight">
+                  <input [(ngModel)]="customerInfo.pin" type="text" class="form-control" id="to" placeholder="Pin Code">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="col-sm-12" *ngIf="showEnquiry" style="padding: 0px;">
+          <div class="col-sm-6" style="float: left; padding-right: 0.5rem;">
+            <label style="font-weight: bold;">Customer's Query<sup style="color: red">*</sup></label>
+            <textarea [(ngModel)]="customerQuery" class="information" rows="4" name="customerQuery" placeholder="Enter Customer query"></textarea>
+          </div>
+          <div class="col-sm-6"  style="float: right; padding-left: 0.5rem;">
+              <label style="font-weight: bold;">Agent Update<sup style="color: red">*</sup></label>
+              <textarea [(ngModel)]="agentUpdate" class="information" rows="4" name="agentUpdate" placeholder="Enter Agent update"></textarea>
+          </div>
+        </div>
+
+        <table class="table table-striped table-sm" style="border: 1px double #B5DAFF;" *ngIf="(showSales)">
+          <thead style="text-align: center">
+              <tr style="background-color: #E6F0FA">
+                <th colspan="4" style="border-bottom: 0px">Product Information</th>
+              </tr>
+              <tr style="text-align: center">
+                  <td><b>Part Id</b></td>
+                  <td><b>Part No</b></td>
+                  <td><b>Serial No</b></td>
+                  <td><b>Price</b></td>
+              </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sPart of sPartDetails; let indx = index">
+                <td>{{sPart.part_id}}</td>
+                <td>{{sPart.part_no}}</td>
+                <td>{{sPart.serial_no}}</td>
+                <td><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sPart.price}}</p>
+                  <div class="docBtn" style="float: right; margin: auto; display: block">
+                      <a (click)="deleterow(indx)"><i class="fa fa-trash fa-lg mt-4" alt="Delete"></i></a>
+                  </div>
+                </td>
+            </tr>
+            <tr>
+              <td><input [(ngModel)]="partId" class="information" type="text" placeholder="Part Id" style="padding-left: 0.5rem;"></td>
+              <td><input [(ngModel)]="partNo" class="information" type="text" placeholder="Part No" style="padding-left: 0.5rem;"></td>
+              <td><input [(ngModel)]="serialNo" class="information" type="text" placeholder="Serial No" style="padding-left: 0.5rem;"></td>
+              <td><input [(ngModel)]="price" class="information" type="number" placeholder="Price" style="padding-left: 0.5rem;"></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                  <button class="smbtn" style="margin: 1rem auto 1rem auto" (click)="addServicePart()">Add</button>
+                </td>
+            </tr>
+          </tbody>
+      </table>
+    </div>
+      <div style="display: flex; padding-bottom: 1rem; padding-top: 1rem; width: 100%;" *ngIf="(showEnquiry) || (showSales)">
+        <div class="header_left" style="display:flex !important;">
+            <div class="acceptbtns" style="float: left;  margin-right: 0.5rem">
+                <button *ngIf="buttonSpin === false" style="color: #20a8d8; background-color: transparent; border: 0;" (click)="saveEnquiry()">Save</button>
+            </div>
+            <div class="acceptbtns" style="float: left; margin-left: 0.5rem">
+                <button *ngIf="(buttonSpin === false)" style="color: #20a8d8; background-color: transparent; border: 0;" (click)="reset()">Reset</button>
+            </div>
+            <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+

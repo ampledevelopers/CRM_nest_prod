@@ -1,0 +1,200 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 20%; text-align: center;">
+  <c-spinner size="sm" style="margin-left: 0rem !important;"></c-spinner>
+</div>
+
+<div *ngIf="loading === false">
+  <div class="Header">
+    <div class="leftSide">
+      <i class="material-icons" style="margin-right:0.2rem !important ;">person</i>
+      <a (click)="openProfile(profile_temp)" style="cursor: pointer; margin-top: .25rem" ngbTooltip="View Profile"><span class="userName">{{userName}}</span><span>- {{branchCode}}</span></a>
+    </div>
+    <div class="rightBtn">
+      <button class="btn btn-block btn-outline-primary" style="padding: 0.5rem 0.6rem 0.1rem 0.6rem; margin-right: 0.8rem; color: red; border: 1px solid;" ngbTooltip="Signout">
+        <i class="material-icons" (click)="signOut()"
+        style="font-size:large; transform: rotate(180deg) !important;">logout</i>
+      </button>
+      <button class="btn btn-block btn-outline-primary" (click)="openModal(call_alert_temp)" style="padding: 0.5rem 0.6rem 0.1rem 0.6rem; margin-right: 0.8rem; color: #0fca0f; border: 1px solid;" ngbTooltip="Call LIC">
+        <i class="material-icons" (click)="makeCall(call_alert_temp)"
+        style="font-size:large;">call</i>
+      </button>
+      <button class="btn btn-block btn-outline-primary" style="padding: 0.5rem 0.6rem 0.1rem 0.6rem; margin-right: 0.8rem; color: #20a8d8; border: 1px solid;" ngbTooltip="Fetch Records">
+        <i *ngIf="!reservationDataLoading" class="material-icons" style="font-size: large;" (click)="getReservationSummary()">refresh</i>
+        <span *ngIf="reservationDataLoading"  class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="--cui-spinner-width: 1.1rem !important; --cui-spinner-height: 1.1rem !important; --cui-spinner-border-width: 0.16em !important; margin-right: 0.2rem !important; color: #20a8d8;"></span>
+      </button>
+      <button class="btn btn-block btn-outline-primary" (click)="openModal(apponitment_login_temp)">Quick Appointment</button>
+    </div>
+  </div>
+
+<!--   <div *ngIf="reservationsData === undefined">
+    <p>No Data Available</p>
+  </div> -->
+</div>
+
+<div [ngClass]="{'reservationListNoData': reservationsData === undefined || reservationsData.length === 0, 'reservationList' : reservationsData !== undefined && reservationsData.length > 0 }"  *ngIf="loading === false">
+  <table datatable class="table table-bordered table-striped table-sm" style="padding-top: 1rem;" [dtOptions]="dtOptions">
+    <thead style="text-align: center;">
+      <tr style="text-align: center !important; font-weight: bold;">
+        <td>Reservation Id</td>
+        <td>Customer Name</td>
+        <td>Status</td>
+        <td>Date</td>
+        <td>Product</td>
+        <td>Serial Number</td>
+        <td>Issue</td>
+        <td>Action</td>
+      </tr>
+    </thead>
+    <tbody style="padding-left: 1rem;">
+      <tr *ngFor="let appoints of reservationsData; let i = index ">
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.reservation_id}}</td>
+        <!-- <td *ngIf="appoints.current_status === 'RESCHEDULED' || appoints.rescheduled_to !== ''"> {{appoints.rescheduled_to}}</td> -->
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.customer_firstname +' '+ appoints.customer_lastlame}}</td>
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.current_status}}</td>
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''" style="color: #0785b7;">{{appoints.reservation_date | date:'dd/MM/yyyy h:mm a' || 'NA'}}</td>
+        <!-- <td *ngIf="appoints.current_status === 'RESCHEDULED' || appoints.rescheduled_to !== ''" style="color: #0785b7;">{{appoints.rescheduled_date | date:'dd/MM/yyyy h:mm a' || 'NA'}}</td> -->
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.product_code|| 'NA'}}</td>
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.product_serial_number || 'NA'}}</td>
+        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.product_issue_reported || 'NA'}}</td>
+        <td *ngIf="(appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === '')">
+          <button [disabled]="acceptanceLoading" *ngIf="appoints.customer_status === '' && appoints.current_status !== 'CANCELLED'" class="btn btn-block btn-outline-primary" (click)="customerArrived(confirm_temp,appoints.reservation_id, appoints.customer_firstname +' '+ appoints.customer_lastlame, (appoints.current_status === 'RESCHEDULED'? appoints.rescheduled_date : appoints.reservation_date),appoints.customer_phone_number)">Arrived</button>
+          <span *ngIf="appoints.customer_status !== '' || appoints.current_status === 'CANCELLED'">{{appoints.customer_status || 'NA'}}</span>
+        </td>
+        <!-- <td>
+        <span *ngIf="appoints.reservation_type === 'PUD' && (appoints.ticket_id === '0' || appoints.ticket_id === null)">
+        <button class="btn btn-block btn-outline-primary" (click)="showModel(PUD_Confirmation, appoints.id)" >Convert To PUD</button>
+        </span>
+        <span *ngIf="appoints.ticket_id != '0' && appoints.ticket_id != null ">
+          <button style="width: 100%" class="btn btn-block btn-outline-primary" (click)="openTicket(appoints.ticket_id)">{{appoints.ticket_id}}</button>
+        </span></td> -->
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="loading === false && (reservationsData === undefined || reservationsData.length === 0)">
+  <p>No Reservation Available</p>
+</div>
+
+<ng-template class="modal fade" #call_alert_temp>
+  <div class="modal-dialog" role="document" style="width: 100%; margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Call to Location In-Charge</h4>
+      </div>
+      <div class="modal-body">
+        <p>Calling to LIC...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #apponitment_login_temp>
+  <div class="modal-dialog" role="document" style="width: 100%; margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Quick Appointment</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="serviceType === ''">
+          <input class="radioBtn" type="radio" value="SERVICE" id="type" [(ngModel)]="serviceType">
+          <label style="margin-right: 2rem;" > Service </label>
+          <input class="radioBtn"  type="radio" value="DELIVERY" id="type" [(ngModel)]="serviceType">
+          <label> Delivery </label>
+        </div>
+        <div *ngIf="serviceType === 'SERVICE'">
+        <div class="col-md-12" style="margin: auto; margin-top: 0.5rem;" *ngIf="!otpSent">
+          <input class="form-control" [(ngModel)]="customerPhone" type="text" maxlength="10" placeholder="Enter the Customer Mobile No" style="text-align: center;">
+        </div>
+        <div class="col-md-12" style="margin: auto; margin-top: 0.5rem;" *ngIf="otpSent">
+          <input class="form-control" [(ngModel)]="enteredOTP" type="text" maxlength="10" placeholder="Enter the Customer OTP" style="text-align: center;">
+        </div>
+        <a (click)="sendOTP()" *ngIf="otpSent && !otpLoading">Resend OTP</a>
+        <a *ngIf="otpLoading">...</a>
+        <button style="margin-top: 1rem; width: 30%" class="btn btn-block btn-outline-primary"
+                    (click)="sendOTP()" *ngIf="!otpSent">Send OTP</button>
+        <button style="margin-top: 1rem; width: 30%" class="btn btn-block btn-outline-primary"
+                    (click)="verifyOTP()" *ngIf="otpSent">Verify</button>
+      </div>
+      <div class="col-md-12" style="margin: auto; margin-top: 0.5rem;"  *ngIf="serviceType === 'DELIVERY'">
+        <h6 *ngIf="notDeliveryMessage !== ''" class="notDelivery" style="color: #f78d05 !important;">{{tryAgainMessage}}</h6>
+          <input *ngIf="notDeliveryMessage === ''" class="form-control" [(ngModel)]="ticketId" type="text" maxlength="10" placeholder="Enter the Ticket id" style="text-align: center;">
+          <input *ngIf="notDeliveryMessage !== ''" class="form-control" type="text" maxlength="14" placeholder="Enter the Reservation id" style="text-align: center;" [(ngModel)]="appointmentId">
+          <button style="margin-top: 1rem; width: 30%" class="btn btn-block btn-outline-primary"
+                    (click)="verifyTicketId(ticketId)"  *ngIf="nameDelivery === '' && phoneDelivery === '' && notDeliveryMessage === '' && !veryfying">Verify</button>
+          <button style="margin-top: 1rem; width: 30%" class="btn btn-block btn-outline-primary"
+                    (click)="getReservationDetails()"  *ngIf="nameDelivery === '' && phoneDelivery === '' && notDeliveryMessage !== '' && !veryfying">Verify</button>
+          <button style="margin-top: 1rem; width: 30%" class="btn btn-block btn-outline-primary" type="button" disabled="" *ngIf="veryfying === true"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right: 0.2rem !important;"></span> Veryfying...</button>
+          <h6 *ngIf="notDeliveryMessage !== ''" class="notDelivery">{{notDeliveryMessage}}</h6>
+          <div *ngIf="nameDelivery !== '' && phoneDelivery !== ''" class="col-md-12 details">
+            <div class="col-md-6 label">
+              <label>Name : </label> <br>
+              <label>Phone : </label>
+            </div>
+            <div class="col-md-6 value">
+              <label>{{nameDelivery}}</label><br>
+              <label>{{phoneDelivery}}</label>
+            </div>
+          </div>
+      </div>
+    </div>
+      <div class="modal-footer">
+        <button *ngIf="showDlvryReschedule" type="button" class="btn btn-secondary" (click)="rescheduleDelivery()">Reschedule</button>
+        <button *ngIf="showDlvryReservation" type="button" class="btn btn-secondary" (click)="reservationDelivery()">Next</button>
+        <button type="button" class="btn btn-secondary" (click)="dlvryCancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #profile_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px; min-width: 80%;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 45px;">
+        <h4 class="modal-title" style="line-height: 1.2">Profile</h4>
+        <i class="material-icons" (click)="cancel()"
+          style="color: grey; cursor: pointer; margin-top: 0.4rem !important;margin-left: auto;">close</i>
+      </div>
+      <div class="modal-body" style="overflow: auto; padding: 0px;">
+        <div class="profile-modal-wrapper">
+          <app-profile></app-profile>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template class="modal fade" #confirm_temp >
+  <div class="modal-dialog" role="document" style="margin: 0px; min-width: 80%;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 45px;">
+        <h5 class="modal-title" style="line-height: 1.2">Confirmation</h5>
+        <i class="material-icons" (click)="cancel()"
+          style="color: grey; cursor: pointer; margin-top: 0.4rem !important;margin-left:auto ;">close</i>
+      </div>
+      <div class="modal-body" style="overflow: auto; padding: 0px;">
+        <h6 *ngIf="deliveryMessage !== ''" style="color: green; font-style: bold; margin-top: 1rem; font-size: 1.5rem !important;">{{deliveryMessage}}</h6>
+        <p>Please Confirm the Name and Phone Number</p>
+        <div class="textField">
+        <label>Name : </label>
+        <input class="form-control" [(ngModel)]="custName" type="text" maxlength="10" placeholder="Enter the Customer Name" style="text-align: center;" readonly>
+      </div>
+      <div class="textField">
+        <label>Phone : </label>
+        <input class="form-control" [(ngModel)]="custPhone" type="text" maxlength="10" placeholder="Enter the Mobile No" style="text-align: center;" [readOnly]="deliveryMessage !== ''">
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="confirm()">Confirm</button>
+        <!-- <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button> -->
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+

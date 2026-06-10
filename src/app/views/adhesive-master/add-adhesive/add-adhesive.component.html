@@ -1,0 +1,205 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+    <div *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')" style="text-align: center;">
+      <p>Location - <b>{{branch}}</b></p>
+    </div>
+   <!--  <div class="card" *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '18')" style="margin-bottom: 2rem !important;">
+        <div class="card-header">
+          Add Adhesive
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-sm" style="margin-bottom: 0; border: 0px;">
+                <tbody class="addNew">
+                  <tr style="font-weight: normal; border: 0px;">
+                    <td style="width: 15% !important;">
+                      Stock Type<sup style="color: red;">*</sup>
+                      <ng-select
+                      class="bootstrap"
+                      placeholder="Select Stock Type"
+                      [items]="stockTypes"
+                      [(ngModel)]="stockType"
+                      bindLabel="label"
+                      bindValue="value"
+                      [multiple]="false" (change)="selectStock($event)" [clearable]="false"></ng-select>
+                    </td>
+                    <td>
+                      Part No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="partNo" class="information" style="border: 1px solid gray;" type="text" placeholder="Part Number">
+                    </td>
+                    <td>
+                      Part Description<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="partDescription" class="information" style="border: 1px solid gray;" type="text" placeholder="Part Description">
+                    </td>
+                    <td *ngIf="stockType === 'Ample'">
+                      ERP ASN <sup style="color: red;">*</sup>
+                      <input [(ngModel)]="asnNo" class="information" style="border: 1px solid gray;" type="text" placeholder="ERP ASN" [disabled]="isSerialised">
+                    </td>
+                    <td>
+                      Product Model<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="productModel" class="information" style="border: 1px solid gray;" type="text" placeholder="Product Model">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td *ngIf="stockType === 'Apple'">
+                      Delivery Date<sup style="color: red;">*</sup>
+                      <input class="form-control" [(ngModel)]="dlDate" id="date-input" type="date" name="date-input" placeholder="yyyy-mm-dd">
+                    </td>
+                    <td *ngIf="stockType === 'Apple'">
+                      PO No<sup style="color: red;">*</sup>
+                      <input [(ngModel)]="poNo" class="information" style="border: 1px solid gray;" type="text" placeholder="PO Number" [disabled]="isApple">
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="display: flex;">
+                <div class="header_left" style="width: 30%; display: flex;">
+                  <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table" class="btn btn-block btn-outline-primary" (click)="saveAcknowledge(simple_alert_temp)">Save</button>
+                  <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table; margin-left: 1rem;" class="btn btn-block btn-outline-primary" (click)="reset()">Reset</button>
+                  <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div> -->
+        <div class="card" *ngIf="((userId === '50120') || (userId === '61'))">
+          <div class="card-header">
+            Add Bulk Adhesive
+          </div>
+          <div class="card-body">
+                <div class="row" style="margin-top: 0.5rem;">
+                  <div class="header_left">
+                    <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput type="file" name="file" class="form-control-file" id="exampleFormControlFile1" (change)="onFileUploadfun($event)">
+                  </div>
+                </div>
+                <div style="display: flex;">
+                  <div class="header_left" style="width: 30%; display: flex;">
+                    <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table" class="btn btn-block btn-outline-primary" (click)="bulkUpload()">Save</button>
+                    <button *ngIf="buttonSpin === false" style="margin-top: 0.5rem !important; width: 50%; margin: auto; display: table; margin-left: 1rem;" class="btn btn-block btn-outline-primary" (click)="cancel()">Cancel</button>
+                    <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+        <div style="display: flex; margin-bottom: 2rem; overflow: auto;">
+          <div class="header_left" style="width: 100%; margin-top: 1rem ">
+              <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0" datatable>
+                  <thead>
+                    <tr style="text-align: center; font-weight: normal;">
+                      <th>
+                        ASN
+                      </th>
+                      <th>
+                        ERP ASN
+                      </th>
+                      <th>
+                        Stock Type
+                      </th>
+                      <th>
+                        Part No
+                      </th>
+                      <th>
+                        Description
+                      </th>
+                      <th>
+                        Blocked Ticket
+                      </th>
+                      <th>
+                        Issued Ticket
+                      </th>
+                      <th>
+                        Delivery Date
+                      </th>
+                      <th>
+                        Product Model
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="grid-container" *ngFor="let item of adhesives.reverse();" style="height: auto !important; text-align: center;">
+                      <td>
+                        {{item.asn_no}}
+                      </td>
+                      <td>{{item.erp_asn}}</td>
+                      <td>
+                        {{item.stock_type}}
+                      </td>
+                      <td>
+                        {{item.part_no}}
+                      </td>
+                      <td>
+                        {{item.description}}
+                      </td>
+                      <td>
+                        {{item.blocked_ticket_id}}
+                      </td>
+                      <td>
+                        {{item.issued_ticket_id}}
+                      </td>
+                      <td>
+                        {{item.delivery_date}}
+                      </td>
+                      <td>
+                        {{item.product_model}}
+                      </td>
+                      <td>
+                        {{item.status}}
+                        <!-- <i class="material-icons" (click)="makeInactive(item.asn_no, confirm_alert_temp)" *ngIf="((userRole === '3') || (userRole === '2')) && (item.status === 'Active')" style="font-size: 1.3rem;">visibility_off</i> -->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+          </div>
+    </div><!--/.row-->
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 50px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #confirm_alert_temp>
+  <div class="modal-dialog" role="document" style="width: 90% !important;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Inactive ASN</h4>
+      </div>
+      <div class="modal-body">
+        <textarea [(ngModel)]="inactiveRemarks" placeholder="Enter the Remarks" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+        <div *ngIf="remarksError !== ''" style="color: red; margin-bottom: 0.5rem; display: flex;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; {{remarksError}}
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="confirm()">Inactive</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

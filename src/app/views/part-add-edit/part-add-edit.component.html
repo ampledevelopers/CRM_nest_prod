@@ -1,0 +1,438 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card" *ngIf="userRole === '3'">
+    <div class="card-header">
+      Add Part
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0">
+        <thead>
+          <tr style="text-align: center; font-weight: normal;">
+            <!-- <th>
+                      City
+                    </th> -->
+            <th>
+              Part No
+            </th>
+            <th>
+              GSX Part No
+            </th>
+            <th>
+              Description
+            </th>
+            <th>
+              Netsuite Internal ID
+            </th>
+            <th>
+              Stock Price (₹)
+            </th>
+            <th>
+              Exchange Price (₹)
+            </th>
+            <th>
+              Battery Price (₹)
+            </th>
+            <th>
+              Display Price (₹)
+            </th>
+            <th>
+              Purchase Stock Price (₹)
+            </th>
+            <th>
+              Purchase Exchange Price (₹)
+            </th>
+            <th>
+              Purchase Battery Only Price (₹)
+            </th>
+            <th>
+              HSN
+            </th>
+            <th>
+              Labour Tier
+            </th>
+            <!-- <th>
+              Purchase Display Price (₹)
+            </th>
+            <th>
+              Insurance Price (₹)
+            </th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="grid-container" style="height: auto !important;">
+            <!-- <td style="width: 20%;">
+                      <select (change)="selectCity($event.target.value)" style="border: 1px solid #d3d3d3; background-color: white; width: 100%; border-radius: 3px; overflow: hidden;">
+                        <option value="">Select City</option>
+                        <option *ngFor="let oCity of cityList; let i = index" [value]="oCity.city2">
+                          {{oCity.city2}}
+                        </option>
+                      </select>
+                    </td> -->
+            <td>
+              <input [(ngModel)]="partNo" class="information" type="text" name="part">
+            </td>
+            <td>
+              <input [(ngModel)]="gsxPartNo" class="information" type="text" name="gsxPart">
+            </td>
+            <td>
+              <input [(ngModel)]="description" class="information" type="text" name="Description">
+            </td>
+            <td>
+              <input [(ngModel)]="netsuiteInternalId" class="information" type="text" name="InternalId">
+            </td>
+            <td>
+              <input [(ngModel)]="stockPrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="exchangePrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="batteryPrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="displayPrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="purchaseStockPrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="purchaseExchangePrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="purchaseBatteryPrice" class="information" type="text" name="MRP">
+            </td>
+             <td>
+              <input [(ngModel)]="hsn" class="information" type="text" name="HSN">
+            </td>
+             <td>
+              <input [(ngModel)]="labourTier" class="information" type="text" name="LabourTier">
+            </td>
+            <!-- <td>
+              <input [(ngModel)]="purchaseDisplayPrice" class="information" type="text" name="MRP">
+            </td>
+            <td>
+              <input [(ngModel)]="insurancePrice" class="information" type="text" name="MRP">
+            </td> -->
+            <!-- <td>
+                      <input [(ngModel)]="priceType" class="information" type="text" name="MRP">
+                    </td> -->
+          </tr>
+        </tbody>
+      </table>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left">
+          <div class="acceptbtns" style="float: left">
+            <button *ngIf="saveSpin === false" (click)="addPart(simple_alert_temp)">Save</button>
+            <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="saveSpin === true">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            </div>
+          </div>
+          <!-- <div style="margin-left: 1rem;float: left;" class="acceptbtns" >
+                    <button  (click)="exportAsXLSX()">Export</button>
+                  </div>
+                  <div style="margin-left: 1rem;" class="acceptbtns">
+                    <button  (click)="clear()">Clear</button>
+                  </div> -->
+        </div>
+      </div>
+    </div><!--/.row-->
+  </div><!--/.row-->
+
+
+  <div class="card" style="margin-top:3rem;">
+    <div class="card-header">
+      Part Lookup
+    </div>
+    <div class="card-body">
+      <div style="display: flex;">
+        <div class="header_left" style="width: 60%; margin-top: 0px">
+          <input [(ngModel)]="partIdInput" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" type="text"
+            class="form-control-file" placeholder="Enter Part No"
+            style="width: 50%; margin: auto; height: 30px; text-align: center;" (keydown)="searchPart($event)">
+          <button *ngIf="buttonSpin === false" style="margin-top: 1rem !important; width: 32%; margin: auto;"
+            class="btn btn-block btn-outline-primary" (click)="searchPart($event)">Search</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem !important;" *ngIf="buttonSpin === true">
+            <c-spinner size="sm" style="margin-left: 0px !important;"></c-spinner>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; overflow: auto;">
+        <div class="header_left" style="width: 100%; margin-top: 1rem">
+          <div class="col-md-12" *ngIf="pError !== ''" style="text-align: center; color: red">
+            <i class="material-icons">info</i>&nbsp; {{pError}}
+          </div>
+
+
+          <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0"
+            *ngIf="isPart && pError === ''">
+            <thead>
+              <tr style="text-align: center; font-weight: normal;">
+                <th>Id</th>
+                <th>Part No</th>
+                <th>GSX Part No</th>
+                <th>Netsuite Internal ID</th>
+                <th>Description</th>
+                <th>Stock Price (₹)</th>
+                <th>Exchange Price (₹)</th>
+                <th>Battery Price (₹)</th>
+                <th>Display Price (₹)</th>
+                <th *ngIf="userRole !== '4'">Purchase Stock Price (₹)</th>
+                <th *ngIf="userRole !== '4'">Purchase Exchange Price (₹)</th>
+                <th *ngIf="userRole !== '4'">Purchase Battery Price (₹)</th>
+                <th *ngIf="userRole === '3'">HSN</th>
+                <th *ngIf="userRole === '3'">Labour Tier</th>
+
+                <th *ngIf="userRole === '3'"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="grid-container" *ngFor="let item of partDetails; let idx = index"
+                style="height: auto !important;">
+                <td>{{ item.id }}</td>
+                <td>{{ item.part_no }}</td>
+                <td>{{ item.gsx_part_no }}</td>
+                <td>{{ item.netsuite_internal_id }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.stock_price }}</td>
+                <td>{{ item.exchange_price }}</td>
+                <td>{{ item.battery_only_price }}</td>
+                <td>{{ item.display_only_price }}</td>
+                <td *ngIf="userRole !== '4'">{{ item.purchase_stock_price }}</td>
+                <td *ngIf="userRole !== '4'">{{ item.purchase_exchange_price }}</td>
+                <td *ngIf="userRole !== '4'">{{ item.purchase_battery_only_price }}</td>
+                <td *ngIf="userRole === '3'">{{ item.hsn }}</td>
+                <td *ngIf="userRole === '3'">{{ item.labour_tier }}</td>
+                <td style="vertical-align: middle;" *ngIf="userRole === '3'">
+
+                  <button *ngIf="buttonSpin === false" (click)="updatePart(item, update_part_temp)">Update</button>
+                  <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+                    <c-spinner size="sm" style="margin-left: 0px !important;"></c-spinner>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="(userRole === '3') || (loggedInUser === '50120') || (loggedInUser === '5145')" style="margin-top: 3rem; margin-bottom: 2rem;">
+    <div class="card-header">
+      KBB Serial Number Exception
+    </div>
+    <div class="card-body">
+      <div style=" margin: auto !important;">
+        <div class="header_left" style="width: 80%; margin: auto !important; display: block !important; float : none;">
+          <input [(ngModel)]="wuPartNo" type="text" class="form-control-file" id="exampleFormControlFile1"
+            placeholder="Enter Part No" (keydown)="searchKBBPart($event)"
+            style="width: 35%; margin-left: 2rem !important; margin: auto; height: 30px; text-align: center; margin-right: 1rem;">
+          <input [(ngModel)]="wuDescription" type="text" class="form-control-file" id="exampleFormControlFile1"
+            placeholder="Enter Part Description" style="width: 55%; margin: auto; height: 30px; text-align: center;" disabled>
+          <button *ngIf="buttonSpin === false"
+            style="margin-top: 1rem !important; width: 32%; display: block !important; margin :auto"
+            class="btn btn-block btn-outline-primary" (click)="addKbbExPart()">Add Part</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem !important;" *ngIf="buttonSpin === true">
+            <c-spinner size="sm" style="margin-left: 0px !important;"></c-spinner>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 80px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #update_part_temp>
+  <div class="modal-dialog" role="document" style="margin:0px;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">GSX Part Update - {{selectedPartEdit.id}}</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          <!-- <div class="info_row" >
+                <div class="col-md-6">
+                    <label>City</label>
+                </div>
+                <div class="col-md-6">
+                  <select [(ngModel)]="selectedPartCity" style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px; margin-left: 5px;" (change)="cityChange($event.target.value)">
+                    <option value="">Select City</option>
+                    <option *ngFor="let oCity of cityList" [value]="oCity.city2">
+                      {{oCity.city2}}
+                    </option>
+                </select>
+                </div>
+              </div> -->
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Part Number</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.part_no" class="information" type="text"
+                placeholder="Enter Part Number">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>GSX Part Number</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.gsx_part_no" class="information" type="text"
+                placeholder="Enter GSX Part Number">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Netsuite Internal Id</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.netsuite_internal_id" class="information" type="text"
+                placeholder="Netsuite Internal Id">
+            </div>
+          </div>
+
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Description</label>
+            </div>
+            <div class="col-md-6">
+              <textarea required [(ngModel)]="selectedPartEdit.description" placeholder="Remarks" class="information"
+                rows="3" style="border: 1px solid lightgrey; margin-top: .5rem;" required></textarea>
+            </div>
+          </div>
+
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Stock Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.stock_price" class="information" type="text"
+                placeholder="Enter Stock Price">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Exchange Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.exchange_price" class="information" type="text"
+                placeholder="Enter Exchange Price">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Battery Only Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.battery_only_price" class="information" type="text"
+                placeholder="Enter Battery Only Price">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Display Only Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.display_only_price" class="information" type="text"
+                placeholder="Enter Display Only Price">
+            </div>
+          </div>
+
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Purchase Stock Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.purchase_stock_price" class="information" type="text"
+                placeholder="Enter Purchase Stock Price">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Purchase Exchange Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.purchase_exchange_price" class="information" type="text"
+                placeholder="Enter Purchase Exchange Price">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Purchase  Battery Only Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.purchase_battery_only_price" class="information" type="text"
+                placeholder="Enter Purchase Battery Only Price">
+            </div>
+          </div>
+         <!--  <div class="info_row">
+            <div class="col-md-6">
+              <label>Purchase Display Only Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.purchase_display_only_price" class="information" type="text"
+                placeholder="Enter Display Only Price">
+            </div>
+          </div> -->
+
+
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Insurance Price (₹)</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.insurance_price" class="information" type="text"
+                placeholder="Enter Price Type">
+            </div>
+          </div>
+           <div class="info_row">
+            <div class="col-md-6">
+              <label>HSN</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.hsn" class="information" type="text"
+                placeholder="Enter HSN">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-6">
+              <label>Labour Tier</label>
+            </div>
+            <div class="col-md-6">
+              <input required [(ngModel)]="selectedPartEdit.labour_tier" class="information" type="text"
+                placeholder="Enter Labour Tier">
+            </div>
+        </div>
+        </div>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Fill all mandatory fields
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 80px">
+        <button type="button" class="btn btn-secondary" (click)="saveupdatedPart(simple_alert_temp)">Save</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

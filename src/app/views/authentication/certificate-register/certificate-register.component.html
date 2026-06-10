@@ -1,0 +1,54 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header" style="display: flex;">
+          <i class="material-icons" style="margin-right: 0.3rem !important;">brightness_high</i> Certification Register
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12" style="display: flex;">
+                <div class="col-md-4" style="float: left; padding-left: 0px; width: 30% !important; margin-right: 1rem; margin-left: 2rem;">
+                  <fieldset class="form-group">
+                    <ng-select
+                    class="bootstrap"
+                    placeholder="Select Certificate Group"
+                    [items]="certificationGroups"
+                    [clearable]="false"
+                    [multiple]="false" (change)="selectCertificateGroup($event.value)" [(ngModel)]="certificationGroup"></ng-select>
+                  </fieldset>
+                </div>
+                <div class="col-md-4" style="width: 30% !important; margin-right: 1rem !important; ">
+                  <fieldset class="form-group">
+                    <ng-select [disabled]="certificateFlag"
+                    class="bootstrap"
+                    placeholder="Select Certificate Name"
+                    [items]="certificateList"
+                    [multiple]="false" [(ngModel)]="certificationId" [clearable]="false"></ng-select>
+                  </fieldset>
+                </div>
+                <div class="col-md-4" style="float: left; padding-left: 0px; width: 30% !important">
+                  <input class="information" [(ngModel)]="certificateComplitionDate" style="background: transparent; border: 1px solid lightgray; width: 100%; height: 33px; padding-left: 0.5rem;" type="text" placeholder="DD/MM/YYYY">
+                </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 0.5rem;">
+            <div class="header_left" style="display: flex; margin-left: 40%; margin-top: 1rem;">
+              <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #certificateInput type="file" name="file" class="form-control-file" id="exampleFormControlFile1" (change)="onFileUploadfun($event)">
+            </div>
+          </div>
+          <div class="row" style="margin-top: 2rem;">
+            <div class="header_left">
+              <button class="btn btn-primary mr-1" type="submit" (click)="onSubmit()" *ngIf="buttonSpin === false" style="margin-left: 45%; background-color: #20a8d8;">Submit</button>
+              <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

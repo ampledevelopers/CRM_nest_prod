@@ -1,0 +1,92 @@
+
+<div class="app-body">
+    <main class="main d-flex align-items-center">
+        <div class="container" style="margin-top: 6rem !important;">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card-group" style="margin:auto; margin-top:8rem !important; width:45rem !important;">
+                        <div class="card p-4">
+                            <div class="card-body">
+                                <form [formGroup]="loginForm"  (ngSubmit)="OnSubmit(userName.value,password.value)" class="needs-validation" novalidate>
+                                    <h1 style="font-size:2.1875rem !important;">Login</h1>
+                                    <p class="text-muted">Sign In to your account</p>
+                                    <div class="input-group mb-3" >
+                                         <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="material-icons">person</i> </span>
+                                        </div>
+                                        <input [ngClass]="{'has-error': formErrors.userName}" type="text" #userName class="form-control"  formControlName="userName" (blur)="logValidationErrors()" placeholder="Mobile Number" autocomplete="username" required  style="background-color: white !important;">
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <span  *ngIf="formErrors.userName" style="-moz-osx-font-smoothing: grayscale !important;">
+                                            {{formErrors.userName}}
+                                        </span>
+                                    </div>
+                                     <div class="input-group mb-3" >
+                                         <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="material-icons">vpn_key</i></span>
+                                        </div>
+                                        <input [ngClass]="{'has-error': formErrors.password}" type="password" #password class="form-control"
+                                            formControlName="password" (blur)="logValidationErrors()" placeholder="Password" autocomplete="password" required>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <span  *ngIf="formErrors.password" style="-moz-osx-font-smoothing: grayscale !important;">
+                                            {{formErrors.password}}
+                                        </span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                        </div>
+                                        <div class="col-6 text-right" style="display: inline-grid !important;">
+                                            <button type="button" [disabled]="!loginForm.valid" class="btn btn-primary px-4" type="submit" *ngIf="loading === false" style="background-color: #20a8d8 !important;">Login</button>
+                                            <button class="btn btn-primary" type="button" disabled="" *ngIf="loading === true" style="background-color: #20a8d8 !important;"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right: 0.2rem !important;"></span> Logging in...</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card text-white bg-primary py-5 d-md-down-none" style="background-color: #20a8d8 !important;">
+                            <div class="card-body text-center">
+                                <div class="loginText" style="margin-top: 5rem !important;">
+                                    <h2>CRM 3.1</h2>
+                                    <p>Integrated with GSX2 API</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+          'use strict';
+          window.addEventListener('load', function () {
+              // Fetch all the forms we want to apply custom Bootstrap validation styles to
+              var forms = document.getElementsByClassName('needs-validation');
+              // Loop over them and prevent submission
+              var validation = Array.prototype.filter.call(forms, function (form) {
+                  form.addEventListener('submit', function (event) {
+                      if (form.checkValidity() === false) {
+                          event.preventDefault();
+                          event.stopPropagation();
+                      }
+                      form.classList.add('was-validated');
+                  }, false);
+              });
+          }, false);
+      })();
+  </script>
+  <style>
+     .has-error {
+   border: 1px solid red;
+}
+
+.has-success {
+    color: black;
+    background-color: green;
+}
+
+</style>

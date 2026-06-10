@@ -1,0 +1,20 @@
+<div class="div1">
+  <label >Select Report Type</label>
+        <fieldset>
+            <ng-select ng-multiple="false"
+            class="bootstrap"
+            placeholder="any"
+            bindLabel="label"
+            bindValue="value"
+            [items]="reports"
+            [multiple]="false"
+            [(ngModel)]="reportType" (change)="onReportSelect()"></ng-select>
+          </fieldset>
+</div>
+
+<div *ngIf="inventory">
+  <app-inventoryreport></app-inventoryreport>
+</div>
+<div *ngIf="consignment">
+  <app-consignmentstockstatusreport></app-consignmentstockstatusreport>
+</div>

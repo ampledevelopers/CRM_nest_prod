@@ -1,0 +1,192 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false)">
+  <div style="display: flex; margin-top: 1rem;" *ngIf="dropLocationFlag != 1 && siteType === '2'">
+    <div class="header_left" style="width: 80%; margin-top: 0px">
+      <div style="display: flex;">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <label style="font-weight: bold; margin-bottom: 0.5rem; width: 100%; text-align: center;">Select Organization Name<sup style="color: red;">*</sup></label>
+          <fieldset class="form-group" style="margin-bottom: 0px">
+            <ng-select [multiple]="false"
+            class="bootstrap"
+            placeholder="Select Organization Name"
+            [items]="companies"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="organization"></ng-select>
+          </fieldset>
+        </div>
+        <!-- <div class="col-md-4" style="text-align: center;">
+            <label style="font-weight: bold;">Repair Created To Date<sup style="color: red;">*</sup></label>
+            <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input" placeholder="dd/mm/yyyy">
+        </div> -->
+        <div class="col-md-3"></div>
+      </div>
+        <div style="width: 32%; margin: auto;">
+          <button *ngIf="buttonSpin === false" style="margin-top: 1rem !important; margin: auto; width: 100%;" class="btn btn-block btn-outline-primary" (click)="getTicketDetails()">Search</button>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;" *ngIf="showList">
+    <div class="card" style="width: 100%;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+            <tr>
+              <th>Select</th>
+              <th>Ticket Id</th>
+              <th>Serial No</th>
+              <th>Part No</th>
+              <th>Part Description</th>
+              <th>Return Order</th>
+              <th>Repair No</th>
+              <th>Repair Type</th>
+              <th>Return Status</th>
+              <th>Value</th>
+              <th>PO Number</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sPart of partList; let indx = index" class="exPartList">
+            <td>
+              <div class="docBtn" style="float: right; margin: auto; display: block; width: 100%;">
+                <input type="checkbox" [(ngModel)]="sPart.isSelectPart" (change)="partSelect($event.target.checked, sPart, indx)">
+              </div>
+            </td>
+            <td>{{sPart.ticket_no}}</td>
+            <td>{{sPart.serial_no}}</td>
+            <td>{{sPart.part_no}}</td>
+            <td><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sPart.part_description}}</p>
+            <td>{{sPart.return_order}}</td>
+            <td>{{sPart.repair_no}}</td>
+            <td>{{sPart.repair_type}}</td>
+            <td>{{sPart.return_status}}</td>
+            <td>{{sPart.value}}</td>
+            <td>{{sPart.po_number}}</td>
+          </tr>
+          <tr>
+              <td colspan="11" style="text-align: center;">
+                <button class="smbtn" (click)="addPart()">Add</button>
+                <button class="smbtn" (click)="prevPage()" style="margin-left: 1rem;" *ngIf="pageNo > 1">&lt;&lt;Prev</button>
+                <button class="smbtn" (click)="nextPage()" style="margin-left: 1rem;">Next&gt;&gt;</button>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;" *ngIf="partList.length > 0 && dropLocationFlag != 1">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem;">Selected Ticket List</p>
+    <div class="card" style="width: 100%;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+            <tr>
+              <th></th>
+              <th>Ticket Id</th>
+              <th>Serial No</th>
+              <th>Customer Name</th>
+              <th>GSX Repair Id</th>
+              <th>Part Number</th>
+              <th>Description</th>
+              <th>Is Additional Part?</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of partList; let indx = index" class="exPartList">
+            <td>
+              <div class="docBtn" style="float: right; margin: auto; display: block; width: 100%;">
+                <input type="checkbox" [(ngModel)]="item.isSelectPart" (change)="ticketSelect($event.target.checked, item)">
+              </div>
+            </td>
+            <td>{{item.ticket_id}}</td>
+            <td>{{item.serial_no}}</td>
+            <td>{{item.customer_name}}</td>
+            <td>{{item.g_number}}</td>
+            <td>{{item.part_number}}</td>
+            <td>{{item.description}}</td>
+            <td>{{item.additional_part === '1'? 'Yes' : 'No' }}</td>
+            <!-- <td>{{item. }}</td> -->
+          </tr>
+          <tr>
+              <td colspan="10" style="text-align: center;"><button class="smbtn" (click)="goToForm()">Next</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+  <!-- ******************************************************* DL ********************************************** -->
+  <div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div *ngIf="loading === false && results.length === 0 && (dropLocationFlag === '1' || siteType !== '2')">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem;"><b>No Tickets available to Create DC</b></p>
+  </div>
+
+<div *ngIf="loading === false && (dropLocationFlag === '1'|| siteType !== '2') && results.length > 0" class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;">
+  <div class="childSelect" *ngIf="dropLocationFlag !== '1' && childBranches.length > 0">
+    <label style="margin-right:.5rem;">Select the Drop Location</label>
+    <select (change)="childLocationSelected($event.target.value)" [(ngModel)]="childBranch">
+      <option selected disabled>Select</option>
+      <option *ngFor="let child of childBranches">{{child.branch_code}}</option>
+    </select>
+  </div>
+  <p *ngIf="(dropLocationFlag !== '1' && childBranches.length > 0) || dropLocationFlag === '1'" style="width: 100%; text-align: center; margin-bottom: 0.5rem;">Select Tickets for DC</p>
+  <p *ngIf="(dropLocationFlag !== '1' && childBranches.length == 0)" style="width: 100%; text-align: center; margin-bottom: 0.5rem;">No DC Available</p>
+  <div class="card" style="width: 100%;" *ngIf="(dropLocationFlag !== '1' && childBranches.length > 0) || dropLocationFlag === '1' ">
+    <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+      <thead>
+          <tr>
+            <th></th>
+            <th>Ticket Id</th>
+            <th>Serial Number</th>
+            <th>Customer Name</th>
+            <!-- <th>Product Family</th> -->
+          </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pudTickets; let indx = index" class="exPartList">
+          <td>
+            <div class="docBtn" style="float: right; margin: auto; display: block; width: 100%;">
+              <input type="checkbox" [(ngModel)]="item.isSelectPart" (change)="ticketSelect($event.target.checked, item)">
+            </div>
+          </td>
+          <td>{{item.ticket_id}}</td>
+          <td>{{item.serial_no}}</td>
+          <td>{{item.customer_firstname}}</td>
+          <!-- <td>{{item.product_family}}</td> -->
+        </tr>
+        <tr>
+            <td colspan="10" style="text-align: center;"><button class="smbtn" (click)="goToForm()">Next</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 55px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<router-outlet></router-outlet>

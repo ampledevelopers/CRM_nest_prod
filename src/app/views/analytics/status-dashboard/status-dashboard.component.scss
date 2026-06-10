@@ -1,0 +1,55 @@
+.card-body {
+  padding: 0px;
+}
+
+table {
+  margin-bottom: 0px;
+}
+
+thead {
+  text-align: center;
+}
+
+.count {
+  text-align: center;
+}
+
+.statuses {
+  padding-left: 0.5rem;
+}
+
+a {
+  color: #20a8d8 !important;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 0.5rem;
+}
+
+.col-md-12 {
+  margin-top: 0px !important;
+  padding: 0px;
+}
+
+.popTableBody {
+  display: block;
+  height: 340px;
+  overflow: auto;
+}
+
+.popthead {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+
+.popTableBody tr {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+
+.modal-header span {
+  color: lightgray;
+}

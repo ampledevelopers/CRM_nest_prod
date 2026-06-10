@@ -1,0 +1,57 @@
+.info_row {
+  width: 100% !important;
+  padding-bottom: 0px !important;
+}
+
+thead {
+  text-align: center;
+  background-color: #E6F0FA;
+}
+
+td {
+  text-align: center;
+}
+
+.notes {
+  width: 80%;
+  margin: auto;
+  margin-top: 2rem;
+}
+
+.notes h5 {
+  text-align: center;
+}
+
+.notes h6 {
+  text-align: center;
+  display: block;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.notes ul {
+  color: gray;
+  line-height: 1.5rem;
+  font-weight: bold;
+}
+
+.notes li {
+  padding-left: 0.5rem;
+}
+
+.col-md-3 {
+  float: left;
+  text-align: center;
+}
+
+.col-md-3 img {
+  width: 100%;
+  margin-top: 1.4rem;
+}
+
+.childSelect {
+  margin-bottom: 1rem !important;
+  display: flex;
+  margin: auto;
+  width: 25%
+}

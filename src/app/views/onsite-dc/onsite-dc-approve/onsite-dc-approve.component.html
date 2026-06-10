@@ -1,0 +1,112 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div style="display: flex; margin: 0.5rem;">
+    <div class="header_left" style="float: none; display: flex !important;"></div>
+    <div class="header_right">
+      <div class="actionbtns">
+        <div style="display: flex;">
+          <select (change)="statusChange($event.target.value)" [value]="status">
+            <option value="1">Approved</option>
+            <option value="2">Pending</option>
+          </select>
+          <input type="search" 
+                 class="form-control" 
+                 placeholder="DC No" 
+                 id="namesearch" 
+                 [(ngModel)]="dcSearch" 
+                 (keydown)="searchNrdc($event)">
+          <input type="search" 
+                 class="form-control" 
+                 placeholder="Ticket Id" 
+                 [(ngModel)]="ticketSearch" 
+                 (keydown)="searchTicket($event)" 
+                 style="margin-left: 0.5rem;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!showList && !loading" style="text-align: center; padding-top: 2rem;">
+    <p><b>No data available</b></p>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-bottom: 1rem;" *ngIf="showList">
+    <div class="card" style="width: 100%; padding-top: 1rem;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem; padding-top: 1rem;">
+        <thead>
+          <tr>
+            <th style="width: 15%; cursor: pointer;" (click)="sortByDCNo()" title="Click to sort">
+              DC No {{ dcSortDirection === 'asc' ? '▲' : '▼' }}
+            </th>
+            <th style="width: 15%;">Date</th>
+            <th style="width: 50%;">Company Name</th>
+            <th style="width: 20%;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sPart of data; let indx = index" class="exPartList">
+            <td>{{ sPart.id }}</td>
+            <td>{{ sPart.date }}</td>
+            <td style="text-align: left;">{{ sPart.company_name }}</td>
+            <td style="vertical-align: middle;">
+              <button *ngIf="((buttonSpin === false) && (sPart.approved === 'N') && !isView)" 
+                      (click)="goToForm(sPart.id)" 
+                      class="btn btn-primary btn-sm"
+                      style="margin-right: 0.5rem;">
+                Open
+              </button>
+              <button *ngIf="((buttonSpin === false) && isView || (sPart.approved === 'Y'))" 
+                      (click)="viewKbb(sPart.id, view_alert_temp)"
+                      class="btn btn-secondary btn-sm"
+                      style="margin-right: 0.5rem;">
+                View
+              </button>
+              <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5rem;" *ngIf="buttonSpin === true">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Simple Alert Modal -->
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{ simpleAlert.title }}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{ simpleAlert.msg }}</p>
+      </div>
+      <div class="modal-footer" style="height: 55px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- View Alert Modal -->
+<ng-template class="modal fade" #view_alert_temp>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">DC Print</h4>
+      </div>
+      <div class="modal-body">
+        <p>Kindly verify the Address / Part list / E-Way Bill No before Printing the document.</p>
+      </div>
+      <div class="modal-footer" style="height: 55px">
+        <button type="button" class="btn btn-secondary" (click)="printNrdc()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

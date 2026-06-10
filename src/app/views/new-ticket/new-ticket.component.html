@@ -1,0 +1,513 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          Customer Details
+        </div>
+        <div class="card-body">
+          <div class="row" *ngIf="userBranch !== 'OSH'">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Organization<sup style="color: red">*</sup></label>
+                <fieldset class="form-group" style="margin-bottom: 0px">
+                  <ng-select [multiple]="false" class="bootstrap" placeholder="any" [items]="companies"
+                    bindLabel="label" bindValue="value" [(ngModel)]="organization" [clearable]="false"></ng-select>
+                </fieldset>
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row" *ngIf="!isCompanyAdmin">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Contact Number<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="phoneNo" maxlength="10" type="text" class="form-control"
+                  placeholder="Contact Number" (keydown)="getCustomer($event)">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>First Name<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="customerName" type="text" class="form-control" placeholder="First Name">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Last Name</label>
+                <input [(ngModel)]="customerDetail.last_name" type="text" class="form-control" placeholder="Last Name"
+                  disabled>
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>E-mail<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="emailId" type="text" class="form-control" placeholder="eMail Id">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <!-- <div class="row" *ngIf="isExCustomer">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label>Organization</label>
+                        <input [(ngModel)]="companyDetail.company_name" type="text" class="form-control" placeholder="Organization Name" readonly>
+                      </div>
+                    </div>
+                </div> -->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Address<sup style="color: red">*</sup></label>
+                <a (click)="addressEdit()">{{editCancel}}</a>
+                <input [(ngModel)]="customerDetail.address1" [disabled]="addressEdited" type="text" maxlength="60"
+                  class="form-control" placeholder="Organization Address">
+                <input [(ngModel)]="customerDetail.address2" [disabled]="addressEdited" type="text" maxlength="40"
+                  class="form-control" placeholder="Organization Address" style="margin-top: 0.5rem;">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>City<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="customerDetail.city" [disabled]="addressEdited" type="text" class="form-control"
+                  placeholder="City">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>State<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="customerDetail.state" [disabled]="addressEdited" class="form-control"
+                  style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                  <option value="">Select State</option>
+                  <option *ngFor="let state of indianStates" [value]="state"
+                    [selected]="state === customerDetail.state">
+                    {{ state }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Pin Code<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="customerDetail.pin" [disabled]="addressEdited" type="text" class="form-control"
+                  placeholder="Pin">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>GSTN</label>
+                <input [(ngModel)]="customerDetail.gstn" [disabled]="addressEdited" type="text" class="form-control"
+                  placeholder="GSTN">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row" style="margin-bottom: 1rem" *ngIf="!isCompanyAdmin">
+            <div class="col-md-6">
+              <label>Logged as<sup style="color: red">*</sup></label>
+              <select [(ngModel)]="loggedAs" (change)="logSelect($event.target.value)"
+                style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                <option>Select Type</option>
+                <option *ngFor="let lType of loggedAsList; let i = index" [value]="lType.id">
+                  {{lType.call_log_type}}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label>Type of Call<sup style="color: red">*</sup></label>
+              <select [(ngModel)]="callType" (change)="callSelect($event.target.value)"
+                style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                <option>Select Call</option>
+                <option *ngFor="let cType of callTypes; let i = index" [value]="cType.id">
+                  {{cType.type}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <!-- <div class="row" *ngIf="isCompanyAdmin">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label>Contact Number</label>
+                      <input [(ngModel)]="phoneNo" maxlength="10" type="text" class="form-control" placeholder="Contact 1" (keydown)="getCustomer($event)">
+                    </div>
+                  </div>
+              </div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          Ticket Details
+        </div>
+        <div class="card-body">
+          <div class="row" style="margin-bottom: 1rem !important;" *ngIf="userBranch !== 'OSH'">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Location<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="location" (change)="selectLocation()"
+                  style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                  <option>Select Location</option>
+                  <option *ngFor="let loc of locations; let i = index" [value]="loc.id">
+                    {{loc.value}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Physical Location<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="physicalLocation"
+                  style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                  <option *ngFor="let phyLoc of physicalLocations; let i = index" [value]="phyLoc.name">
+                    {{phyLoc.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div><!--/.row-->
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          Product Details
+        </div>
+        <div class="card-body">
+          <div class="row" *ngIf="siteId !== '3'">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Product Family<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="productFamily"
+                  style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                  <option>Select Product Family</option>
+                  <option *ngFor="let product of productFamilies; let i = index" [value]="product.id">
+                    {{product.value}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div class="row" *ngIf="siteId !== '3'">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Serial No<sup style="color: red">*</sup></label>
+                <input [(ngModel)]="serialNo" type="text" class="form-control" placeholder="Enter Serial No"
+                  (keydown)="getProductDetails($event)">
+              </div>
+            </div>
+          </div><!--/.row-->
+
+          <div class="row" *ngIf="siteId !== '3'">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>IMEI No</label>
+                <input [(ngModel)]="gsxData.device.imei" type="text" class="form-control" placeholder="Enter IMEI No">
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div *ngIf="((isGSXError === true) && (siteId !== '3'))" style="margin-top: 3%;">
+            <p style="text-align: center; display: block;">{{gsxError}}. &nbsp;</p>
+            <div class="info_row">
+              <div class="col-sm-12">
+                <div style="display: flex;">
+                  <div class="header_left">
+                    <button *ngIf="buttonSpin === false"
+                      style="display: block; margin: auto; padding: .2rem .4rem .2rem .4rem;"
+                      class="btn btn-block btn-outline-primary" (click)="getProduct()">Retry</button>
+                    <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sk-three-bounce" *ngIf="spinner" style="display: block; margin: auto;">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+          <div class="card-body" *ngIf="deviceInfo === true" style="border: 1px solid lightgray; border-radius: 5px">
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Serial No</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.device.SerialNo}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Warranty status</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.device.warrantyStatus}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Coverage end date</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.warranty.contractCoverageEndDate}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Days remaining</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.warranty.daysRemaining}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Purchase country</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.device.purchaseCountry}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Estimated purchase date</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.device.purchase}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Product Name</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.device.productDescription}}</span>
+              </div>
+            </div>
+            <div class="info_row">
+              <div class="col-md-4">
+                <label>Product Configuration</label>
+              </div>
+              <div class="col-md-8">
+                <span>{{gsxData.device.configDescription}}</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="((amcProduct === true) && (siteId === '2') && (underAMC === true))" style="margin-top: 0.5rem;">
+            <p style="text-align: center; display: block;color: green;font-size: initial;">{{amcMSg}} &nbsp;</p>
+          </div>
+          <div *ngIf="((amcProduct === true) && (siteId === '2') && (underAMC === false))" style="margin-top: 0.5rem;">
+            <p style="text-align: center; display: block;color: red;font-size: initial;">{{amcMSg}} &nbsp;</p>
+          </div>
+          <!-- </div> --> <!-- deviceInfo close -->
+          <!-- <div *ngIf="deviceInfo === false">
+            <div class="info_row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Warranty status<sup style="color: red">*</sup></label>
+                  <select [(ngModel)]="gsxRequiredData.warrantyStatus"
+                    style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                    <option selected>Select Warranty Status</option>
+                    <option *ngFor="let warrantyopt of gsxWarrantyStatuses; let i = index" [value]="warrantyopt.id">
+                      {{warrantyopt.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <!-- windows -->
+          <div *ngIf="(siteId === '3')">
+            <div class="info_row">
+              <div class="col-md-4">
+                <label style="margin-top: 0.3rem;">Serial No<sup style="color: red">*</sup></label>
+              </div>
+              <div class="col-md-8">
+                <input [(ngModel)]="gsxRequiredData.SerialNo" type="text" class="form-control"
+                  placeholder="Enter Serial No" style="height: 30px">
+              </div>
+            </div>
+            <div class="info_row" style="margin-top: 0.5rem">
+              <div class="col-md-4">
+                <label style="margin-top: 0.3rem;">IMEI No</label>
+              </div>
+              <div class="col-md-8">
+                <input [(ngModel)]="gsxRequiredData.imeiNo" type="text" class="form-control" placeholder="Enter IMEI No"
+                  style="height: 30px">
+              </div>
+            </div>
+
+            <div class="info_row" style="margin-top: 0.5rem">
+              <div class="col-md-4">
+                <label style="margin-top: 0.3rem;">Model Number<sup style="color: red">*</sup></label>
+              </div>
+              <div class="col-md-8">
+                <input [(ngModel)]="modelNumber" type="text" class="form-control" placeholder="Enter Model Number"
+                  style="height: 30px">
+              </div>
+            </div>
+            <div class="info_row" style="margin-top: 0.5rem">
+              <div class="col-md-4">
+                <label style="margin-top: 0.3rem;">Brand<sup style="color: red">*</sup></label>
+              </div>
+              <div class="col-md-8">
+                <select [(ngModel)]="brand"
+                  style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                  <option>Select Brand</option>
+                  <option *ngFor="let brand of brandType; let i = index" [value]="brand.name">
+                    {{brand.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="info_row" style="margin-top: 0.5rem;" *ngIf="brand !== 'Select Brand'">
+              <div class="col-md-4">
+              </div>
+              <div class="col-md-8">
+                <a *ngIf="brand === 'Lenovo'" style="float:left;"
+                  href="https://pcsupport.lenovo.com/in/en/warrantylookup#/" target="_blank">Lenovo Warranty Check</a>
+                <a *ngIf="brand === 'HP'" style="float:left;" href="https://support.hp.com/in-en/check-warranty"
+                  target="_blank">HP
+                  Warranty Check</a>
+                <a *ngIf="brand === 'Dell'" style="float:left;"
+                  href="https://www.dell.com/support/home/en-in?app=warranty" target="_blank">DELL Warranty Check</a>
+              </div>
+            </div>
+            <div class="info_row" style="margin-top: 1.5rem;">
+              <div class="col-md-4">
+                <label style="margin-top: 0.3rem;">Invoice Upload<span style="color:red;">*</span></label>
+              </div>
+              <div class="col-md-8">
+                <div class="header_left" style="display: flex;">
+                  <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput style="width:100%" type="file"
+                    name="file" class="form-control-file" id="exampleFormControlFile1"
+                    (change)="onFileUploadfun($event)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manual Device Info fetch close -->
+
+          <div class="row" style="margin-top: 1rem" *ngIf="(deviceInfo !== null) && (!isCompanyAdmin)">
+            <div class="col-md-6">
+              <label>Warranty Type<sup style="color: red">*</sup></label>
+              <select [(ngModel)]="warranty" (change)="warrantySelect($event.target.value)"
+                style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                <option>Select Warranty</option>
+                <option *ngFor="let warrantyopt of warrantyStatuses; let i = index" [value]="warrantyopt.value">
+                  {{warrantyopt.name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label>Week<sup style="color: red">*</sup></label>
+              <select [(ngModel)]="week"
+                style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                <option *ngFor="let weekopt of weeks; let i = index" [value]="weekopt.name">
+                  {{weekopt.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          Problem Report
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <select [(ngModel)]="eType"
+                style="border: 1px solid lightgray; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
+                <option>Select Type</option>
+                <option *ngFor="let typeoption of eTypes; let i = index" [value]="typeoption.id">
+                  {{typeoption.name}}
+                </option>
+              </select>
+            </div>
+          </div><!--/.row-->
+          <div class="row" style="margin-top: 1rem;">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <textarea [ngClass]="{'bcolor': !bcolor, 'ncolor': bcolor}" [(ngModel)]="problem"
+                  placeholder="Detailed Summary of the problem" class="information" rows="4"></textarea>
+              </div>
+            </div>
+          </div><!--/.row-->
+          <div style="display: flex;">
+            <div class="header_left" style="display: flex !important; margin-top: 0.5rem !important;">
+              <div class="acceptbtns" style="float: left">
+                <button [disabled]="buttonSpin" *ngIf="buttonSpin === false"
+                  (click)="submit(simple_alert_temp); buttonSpin = true;">Submit</button>
+                <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                  <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                </div>
+              </div>
+              <div style="margin-left: 1rem;" class="acceptbtns">
+                <button (click)="resetFields()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="display: contents">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px; font-size: large !important;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="invoiceUploadFail === false">
+          <p>{{simpleAlert.msg}}</p>
+        </div>
+
+        <div *ngIf="invoiceUploadFail === true" style="text-align: center;">
+          <p style="color:red; font-size: medium;margin-right: 3.5rem;">{{simpleAlert.msg}}</p>
+          <div class="info_row" style="margin-top: 1.5rem;">
+            <div style="margin: auto;">
+              <input [ngClass]="{'dcolor': dcolor, 'nocolor': !dcolor}" #fileInput style="width:100%" type="file"
+                name="file" class="form-control-file" id="exampleFormControlFile1" (change)="onFileUploadfun($event)">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="height: 60px">
+        <div *ngIf="invoiceUploadFail === true" class="row" style="display: flex;">
+          <div class="header_left" style="display: table !important;">
+            <button class="btn btn-secondary" type="submit" (click)="upload(ticketId)"
+              *ngIf="buttonSpin === false">Upload</button>
+            <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            </div>
+          </div>
+        </div>
+        <button *ngIf="invoiceUploadFail === false" type="button" class="btn btn-secondary"
+          (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

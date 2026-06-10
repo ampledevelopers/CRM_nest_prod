@@ -1,0 +1,197 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div style="text-align: center; display: flex;" *ngIf="loading === false">
+  <div class="header_div">
+    <p>Location - <b>{{branchCode}}</b></p>
+  </div>
+  <div class="header_div">
+    <a (click)="history()">{{createHistory}}</a>
+  </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="(loading === false) && (createHistory !== 'Create')">
+  <div style="margin-top: 1rem;" *ngIf="ticketList.length === 0">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem; font-weight: bold;">No Pending Tickets Available</p>
+  </div>
+  <div style="margin-top: 1rem;" *ngIf="ticketList.length !== 0">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem; font-weight: bold;">Pending Ticket List</p>
+    <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+      <thead>
+          <tr>
+            <th>Select</th>
+            <th>Location</th>
+            <th>Ticket Id</th>
+            <th>Serial No</th>
+            <th>Description</th>
+            <th>Dispatch Date and Time From DL</th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of ticketList; let indx = index" class="exPartList">
+          <td style="width: 10% !important;">
+            <div class="docBtn" style="float: right; margin: auto; display: block; width: 100%;">
+              <input type="checkbox" [(ngModel)]="ticket.isSelectPart" (change)="ticketSelect($event.target.checked, ticket, indx)">
+            </div>
+          </td>
+          <td>{{ticket.dl_branch_code}}</td>
+          <td>{{ticket.ticket_no}}</td>
+          <td>{{ticket.serial_no}}</td>
+          <td><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{ticket.description}}</p></td>
+          <td>{{ticket.outtime}}</td>
+        </tr>
+        <tr>
+            <td colspan="12" style="text-align: center;">
+              <button class="smbtn" (click)="addTicket()">Add</button>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;" *ngIf="selectedTicketList.length > 0">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem; font-weight: bold;">Selected Ticket List</p>
+    <div class="card" style="width: 100%;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+            <tr>
+              <th>Ticket Id</th>
+              <th>Serial No</th>
+              <th>Description</th>
+              <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sTicket of selectedTicketList; let indx = index" class="exPartList">
+            <td>{{sTicket.ticket_no}}</td>
+            <td>{{sTicket.serial_no}}</td>
+            <td><p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sTicket.description}}</p>
+            <td>
+              <div class="docBtn" style="float: right; margin: auto; display: block">
+                <a (click)="deleterow(indx)"><i class="material-icons" alt="Delete">delete</i></a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+              <td colspan="10" style="text-align: center;"><button class="smbtn" (click)="goToForm()">Next</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="animated fadeIn" *ngIf="(loading === false) && (createHistory !== 'History')">
+  <div class="card" style="width: 100%;" *ngIf="data.length === 0">
+    <p style="width: 100%; text-align: center; margin-bottom: 0.5rem; font-weight: bold;">No NRDCs Available</p>
+  </div>
+  <div class="card" style="width: 100%;" *ngIf="data.length !== 0">
+    <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+      <thead>
+          <tr style="text-align: center;">
+            <th>DC Id</th>
+            <th>Date</th>
+            <th>Return From</th>
+            <th>Return To</th>
+            <th>E-Way-Bill No</th>
+            <th>Airway Bill No</th>
+            <th></th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let indx = index" class="exPartList">
+          <td>{{item.id}}</td>
+          <td>{{item.date}}</td>
+          <td>{{item.return_from}}</td>
+          <td>{{item.return_to}}</td>
+          <td>{{item.eway_bill_no}}</td>
+          <td>{{item.awb_no}}</td>
+          <td style="vertical-align: middle; display: flex;">
+            <button *ngIf="(buttonSpin === false)" (click)="viewKbb(item, view_alert_temp)">View</button>
+            <button *ngIf="(buttonSpin === false)" (click)="getFileDetails(item.id)" style="margin-left:0.5rem !important; height: 30px;">
+              <i class="material-icons" >movie</i>
+            </button>
+            <button *ngIf="((buttonSpin === false) && (item.kbb_confirmed === 'N'))" (click)="kbbShipped(item.id, item.total_value, item.eway_bill_no, item.transportation_carrier, item.otp, shipped_remarks_temp)" style="margin-left: 0.5rem;">KBB Shipped</button>
+            <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template class="modal fade" #view_alert_temp>
+  <div class="modal-dialog" role="document"  style="margin: 0px !important">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">KBB Outward</h4>
+      </div>
+      <div class="modal-body">
+          <p>Kindly verify the Shipping Address DC or RC / AWB No / Total Box / Total Items / Mode of Transport / Tote No,Tag No, Carton Box No/ E-Way Bill No before Printing the document.</p>
+      </div>
+      <div class="modal-footer" style="height: 65px">
+        <button type="button" class="btn btn-secondary" (click)="printNrdc()">NRDC</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #shipped_remarks_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px !important">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Confirm NRDC Shipment</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="(kbbVideoExist) && (carrierMethod === 'Carrier')">
+          <input [(ngModel)]="eWayBillNo" *ngIf="eWaybillRequired" placeholder="Enter the E-Way Bill Number" class="information" style="border: 1px solid lightgrey; text-align: center; margin-bottom: 1rem;" />
+          <textarea [(ngModel)]="shippedNRDCRemarks" placeholder="Enter the remarks" class="information" rows="3" style="border: 1px solid lightgrey;"></textarea>
+          <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem;">
+            <i class="fa fa-info-circle fa-lg mt-4" style="margin-top: 0 !important"></i>&nbsp; Fill mandatory fields
+          </div>
+        </div>
+        <div *ngIf="(kbbVideoExist) && (carrierMethod === 'Runner')">
+          <input [(ngModel)]="otp" placeholder="Enter the OTP" class="information" style="border: 1px solid lightgrey; text-align: center;" />
+          <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem; margin-top: 1rem;">
+            <i class="fa fa-info-circle fa-lg mt-4" style="margin-top: 0 !important"></i>&nbsp; Invalid OTP
+          </div>
+          <div>
+            <button (click)="resendOtp()" [disabled]="isDisabled">Resend OTP</button>
+            <div *ngIf="otpSent" style="color: green; margin-top: 0.5rem;">
+              <i class="fa fa-check-circle fa-lg mt-4"></i>
+              &nbsp; OTP Sent Successfully
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!kbbVideoExist">
+          <p style="color: red;">KBB Packing video is not uploaded. Please upload it.</p>
+          <div class="col-sm-12">
+            <div class="kbbVideo">
+              <input (change)="onImagePicked($event)" placeholder="Upload Packing Video"
+              type="file" accept="video/*"/>
+              <a (click)="onVideoUpload()" *ngIf="(buttonSpin === false)">Upload Video</a>
+              <div class="sk-three-bounce" style="margin: auto; margin-top: 0.5;" *ngIf="buttonSpin === true">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="height: 65px">
+        <div>
+            <button type="button" class="btn btn-secondary" *ngIf="kbbVideoExist" (click)="kbbShippedConfirm(shippedNRDCRemarks)">Shipped</button>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,314 @@
+<head>
+  <!-- Google tag (gtag.js) -->
+ <!--  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MBQY631RGR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-MBQY631RGR');
+  </script>
+  <title>CEO-Dashboard</title>
+  <h1>CEO Dashboard</h1> -->
+</head>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> -->
+
+<div #graph id="divId">
+  <div id="div1">
+    <div class="card" style="border: 1px solid lightgray; margin: 2rem !important; box-shadow: none;">
+      <div class="card-header">
+        <svg cIcon class="me-2" name="cilChartPie"></svg>CEO-Dashboard
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3" style="margin-left: 2% !important;">
+            <label>Report Type<sup style="color: red">*</sup></label>
+            <select [(ngModel)]="reportType" class="form-control" (click)="filterChange()">
+              <!-- <option value="">Select Report Type</option> -->
+              <option value="Overall Revenue">Overall Revenue </option>
+              <option value="Accy Target">Accy Target & Attach</option>
+              <option value="CSAT">CSAT</option>
+              <option value="RAF">Total RAF</option>
+              <option value="Customer Engagement">Customer Engagement</option>
+              <option value="AC+ Revenue">AC+/Protect+ Revenue</option>
+              <option value="All">All</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label>Financial Year<sup style="color: red">*</sup></label>
+            <select id="year" [(ngModel)]="year" name="year" class="form-control" (click)="filterChange()">
+              <!-- <option value="">Please select Year</option> -->
+              <option value="2022">FY 2022-23</option>
+              <option value="2023">FY 2023-24</option>
+              <option value="2024">FY 2024-25</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label>Quarter<sup style="color: red">*</sup></label>
+            <select id="quarter" [(ngModel)]="quarter" name="quarter" class="form-control" (click)="filterChange()">
+              <!-- <option value="">Please select</option> -->
+              <option value="1">Quarter 1(AMJ)</option>
+              <option value="2">Quarter 2(JAS)</option>
+              <option value="3">Quarter 3(OND)</option>
+              <option value="4">Quarter 4(JFM)</option>
+            </select>
+          </div>
+          <div class="col-md-3" style="margin-top: 1.3rem; width: 21% !important; text-align: center; display: flex;">
+            <button [disabled]="!showLoadButton" (click)="load()" class="loadBtn"
+              style="width: 68% !important; margin-right: 25px;">Load</button>
+            <button *ngIf="reportType === 'All' && !pdfLoading" title="Save As PDF" class="loadBtn" (click)="savePdf()"
+              style="width: 15%; padding: 0px !important; padding-top: 6px !important;"><span
+                class="material-icons">download</span></button>
+            <button *ngIf="reportType !== 'All' && !pdfLoading" title="Save As PDF" class="loadBtn"
+              (click)="singlePDF()" style="width: 15%; padding: 0px !important; padding-top: 6px !important;"><span
+                class="material-icons">download</span></button>
+            <div class="sk-three-bounce" *ngIf="pdfLoading">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading === true || count !== 6" class="spinnerDiv">
+      <c-spinner color="secondary" style="margin-left: 0px !important;"></c-spinner>
+    </div>
+
+    <!-- ******************************* Total Revenue ************************************ -->
+
+    <div *ngIf="showRevenueChart && loading === false && count === 6" class="allCharts" style="margin: 2rem;">
+      <h4 *ngIf="!noRevenueData">{{revenueReportTitle}}</h4>
+      <div *ngIf="noRevenueData" [ngClass]="{'errorMsg': isAll === false, 'allError' : isAll === true }">
+        <i class="material-icons" style="margin-right:0.3rem !important; font-size: 1.2rem;">info</i>
+        <h6> Total Revenue data not Available</h6>
+      </div>
+      <div *ngIf="noRevenueData === false">
+        <div class="chartDiv" id="chart">
+          <c-chart [data]="revenueChartData" [options]="options" type="bar" height="350" width="950"
+            style="background-color: white !important;"></c-chart>
+        </div>
+        <div class="tableDiv">
+          <table class="table-bordered">
+            <tr class="head">
+              <td></td>
+              <td *ngFor="let item of revenueLabels">{{item}}</td>
+            </tr>
+            <tr class="head">
+              <td>Target(in Lacs)</td>
+              <td *ngFor="let target of revenueTargetValues">{{target | number : '2.2-2'}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #0eb80e; color: white; font-weight: bold;">Achievements(in Lacs)</td>
+              <td *ngFor="let achvmnt of revenueAchievements" style="color: gray;">{{achvmnt | number : '2.2-2'}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #4888d2; color: white; font-weight: bold;">Due</td>
+              <td *ngFor="let due of revenueDueValues" style="color: gray;">{{due | number : '2.2-2'}}</td>
+            </tr>
+          </table>
+        </div>
+        <!-- <p>Disclaimer: AC+ sold at iCare and billed at Imagine Retail Stores are not accounted on this revenue
+          dashboard.</p> -->
+      </div>
+    </div>
+
+
+    <!-- ******************************* Accy Target ************************************ -->
+
+    <div *ngIf="showAccyChart && loading === false && count === 6" class="allCharts" style="margin: 2rem;">
+      <h4 *ngIf="!noAccyData">{{accyReportTitle}}</h4>
+      <div style="text-align: center;" [ngClass]="{'errorMsg': isAll === false, 'allError' : isAll === true }"
+        *ngIf="noAccyData">
+        <i class="material-icons" style="margin-right:0.3rem !important; font-size: 1.2rem;">info</i>
+        <h6> Accy Target data not Available</h6>
+      </div>
+      <div *ngIf="noAccyData === false">
+        <div class="chartDiv">
+          <c-chart [data]="accyChartData" [options]="accyOptions" type="bar" height="350" width="950"></c-chart>
+        </div>
+        <div class="tableDiv">
+          <table class="table-bordered">
+            <tr class="head">
+              <td></td>
+              <td *ngFor="let item of accyLabels">{{item}}</td>
+            </tr>
+            <tr class="head">
+              <td style="background-color: #4888d2">Target(in Lacs)</td>
+              <td style="background-color: white !important; color: gray;" *ngFor="let target of accyTargetValues">
+                {{target| number : '2.2-2'}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #0eb80e; color: white; font-weight: bold;">Achievements(in Lacs)</td>
+              <td *ngFor="let achvmnt of accyAchievements" style="color: gray;">{{achvmnt| number : '2.2-2'}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: gray; color: white; font-weight: bold;">Due</td>
+              <td *ngFor="let due of accyDueValues" style="color: gray;">{{due| number : '2.2-2'}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #992A6C; color: white; font-weight: bold;">Attach%</td>
+              <td *ngFor="let attach of accyAttach" style="color: gray;">{{attach}}%</td>
+            </tr>
+          </table>
+        </div>
+        <!-- <p>Disclaimer: AC+ sold at iCare and billed at Imagine Retail Stores are not accounted on this revenue
+          dashboard.</p> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ******************************* AC+ ************************************ -->
+
+  <div id="div2">
+    <div *ngIf="showAcPlusChart && loading === false && count === 6" class="allCharts" style="margin: 2rem;">
+      <h4 *ngIf="!acPlusData">{{acPlusTitle}}</h4>
+      <div [ngClass]="{'errorMsg': isAll === false, 'allError' : isAll === true }" *ngIf="noAcPlusData">
+        <i class="material-icons" style="margin-right:0.3rem !important; font-size: 1.2rem;">info</i>
+        <h6> AC+ data not Available</h6>
+      </div>
+      <div *ngIf="noAcPlusData === false">
+        <div class="chartDiv">
+          <c-chart [data]="acPlusChartData" [options]="acPlusOptions" type="bar" height="300" width="1000"></c-chart>
+        </div>
+        <div class="tableDiv">
+          <table class="table-bordered">
+            <tr class="head">
+              <td></td>
+              <td *ngFor="let item of acPlusLabels">{{item}}</td>
+            </tr>
+            <tr class="head">
+              <td style="background-color: #4888d2; color: white; font-weight: bold;">Pre Tax</td>
+              <td *ngFor="let value of acPlusPreTax" style="background-color: white; color: gray;">{{value| number :
+                '1.2-2'}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #992A6C; color: white; font-weight: bold;">Sum Of Quantity
+              </td>
+              <td *ngFor="let value of acPlusQuantity" style="color: gray;">{{value}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ******************************* CSAT ************************************ -->
+
+
+    <div *ngIf="showcSatChart && loading === false && count === 6" class="allCharts" style="margin: 2rem;">
+      <h4 *ngIf="!nocSatData">{{cSatReportTitle}}</h4>
+      <div [ngClass]="{'errorMsg': isAll === false, 'allError' : isAll === true }" *ngIf="nocSatData">
+        <i class="material-icons" style="margin-right:0.3rem !important; font-size: 1.2rem;">info</i>
+        <h6> CSAT data not Available</h6>
+      </div>
+      <div *ngIf="nocSatData === false">
+        <div class="chartDiv">
+          <c-chart [data]="cSatChartData" [options]="csatOptions" type="bar" height="300" width="900"></c-chart>
+        </div>
+        <div class="tableDiv">
+          <table class="table-bordered">
+            <tr class="head">
+              <td></td>
+              <td *ngFor="let item of cSatLabels">{{item}}</td>
+            </tr>
+            <tr class="head">
+              <td>Target %</td>
+              <td *ngFor="let target of cSatTargetValues">{{target}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #3e883e; color: white; font-weight: bold;">Achievements %</td>
+              <td *ngFor="let achvmnt of cSatAchievements" style="color: gray;">{{achvmnt}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #d18905; color: white; font-weight: bold;">Google Rating</td>
+              <td *ngFor="let gRate of cSatGoogleRating" style="color: gray;">{{gRate | number : '1.1-1'}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ******************************* Customer Engagement ************************************ -->
+  <!-- [ngClass]="{'allCharts': isAll === true}" -->
+  <div id="div3">
+    <div *ngIf="showRafChart && loading === false && count === 6" class="allCharts" style="margin: 2rem;">
+      <h4 *ngIf="!noRafData">{{rafReportTitle}}</h4>
+      <div style="text-align: center;" [ngClass]="{'errorMsg': isAll === false, 'allError' : isAll === true }"
+        *ngIf="noRafData">
+        <i class="material-icons" style="margin-right:0.3rem !important; font-size: 1.2rem;">info</i>
+        <h6> Total RAF data not Available</h6>
+      </div>
+      <div *ngIf="noRafData === false">
+        <div class="chartDiv">
+          <c-chart [data]="rafChartData" [options]="totalRAFOptions" type="bar" height="350" width="950"></c-chart>
+        </div>
+        <div class="tableDiv">
+          <table class="table-bordered">
+            <tr class="head">
+              <td></td>
+              <td *ngFor="let item of rafLabels">{{item}}</td>
+            </tr>
+            <tr class="head">
+              <td>RAF</td>
+              <td *ngFor="let total of totalRafList">{{total}}</td>
+            <tr>
+              <td style="background-color: #4888d2; color: white; font-weight: bold;">INW</td>
+              <td *ngFor="let inw of inWarrantyList" style="color: gray;">{{inw}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #0eb80e; color: white; font-weight: bold;">OOW</td>
+              <td *ngFor="let oow of outOfWarrantyList" style="color: gray;">{{oow}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: gray; color: white; font-weight: bold;">Footfall</td>
+              <td *ngFor="let footfall of rafFootFall" style="color: gray;">{{footfall}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #992A6C; color: white; font-weight: bold;">RAF%</td>
+              <td *ngFor="let percentage of rafPercent" style="color: gray;">{{percentage}}%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ******************************* Total RAF ************************************ -->
+    <div *ngIf="showCustEngmntChart && loading === false && count === 6" class="allCharts" style="margin: 2rem;">
+      <h4 *ngIf="!noCustEngmntData">{{custEngmntReportTitle}}</h4>
+      <div [ngClass]="{'errorMsg': isAll === false, 'allError' : isAll === true }" *ngIf="noCustEngmntData">
+        <i class="material-icons" style="margin-right:0.3rem !important; font-size: 1.2rem;">info</i>
+        <h6> Customer Enagagement data not Available</h6>
+      </div>
+      <div *ngIf="noCustEngmntData === false">
+        <div class="chartDiv">
+          <c-chart [data]="custEngmntChartData" [options]="lineOptions" type="bar" height="300" width="1000"></c-chart>
+        </div>
+        <div class="tableDiv">
+          <table class="table-bordered">
+            <tr class="head">
+              <td></td>
+              <td *ngFor="let item of custEngmntLabels">{{item}}</td>
+            </tr>
+            <tr class="head">
+              <td>Permitted Wait Time (in Mins)</td>
+              <td *ngFor="let perWT of custEngmntPermittedWT">{{perWT}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #d18905; color: white; font-weight: bold;">Average Wait Time (in Mins)</td>
+              <td *ngFor="let avgWT of custEngmntAvgWT" style="color: gray;">{{avgWT}}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #3e883e; color: white; font-weight: bold;">Average Handling Time (in Mins)
+              </td>
+              <td *ngFor="let avgHT of custEngmntAvgHT" style="color: gray;">{{avgHT}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

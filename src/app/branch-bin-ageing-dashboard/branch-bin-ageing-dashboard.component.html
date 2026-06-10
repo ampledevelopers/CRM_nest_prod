@@ -1,0 +1,130 @@
+<div style="padding: 15px 20px;">
+  <!-- Header -->
+  <div  style="font-size: 3rem; font-weight: bold; padding-bottom: 10px; text-align: center;">
+   {{ branchName?.branch_name }}
+  </div>
+
+  <div style="display: flex; align-items: center; font-size: 2rem; font-weight: bold; gap: 20px;">
+    <div style="color: green;">Bin Ageing Dashboard</div>
+    <div style="color: #000;">{{ now | date: 'HH:mm:ss' }}</div>
+  </div>
+
+  <!-- Bin Ageing Table -->
+  <div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover dashboard-table">
+    <thead>
+      <tr>
+        <th style="text-align: center;">BIN</th>
+        <th colspan="2">Mac</th>
+        <th colspan="2">Non - Mac</th>
+      </tr>
+        <tr>
+          <th></th>
+          <th>Total</th>
+          <th>Ageing</th>
+          <th>Total</th>
+          <th>Ageing</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let bin of binDashboard?.allTotal; let i = index" [ngClass]="{'row-alt': i % 2 !== 0}">
+          <!-- BIN Name -->
+          <td style="text-align: left; font-weight: bold;">
+            {{ bin.status_name }}
+          </td>
+
+          <!-- Mac Columns -->
+          <td>
+            <a (click)="ageingTicketList('mac', '', bin.status, ticket_list_temp, '1', 0, bin.status_name)"
+               style="cursor: pointer; color: #20a8d8; font-size:25px ">
+              {{ getMacTotal(bin.status_name) }}
+            </a>
+          </td>
+          <td>
+            <a (click)="ageingTicketList('mac', '', bin.status, ticket_list_temp, '2', 0, bin.status_name)"
+               style="cursor: pointer; color: red; font-size:25px">
+              {{ getMacAgeing(bin.status_name) }}
+            </a>
+          </td>
+
+          <!-- iPhone Columns -->
+          <td>
+            <a (click)="ageingTicketList('all', '', bin.status, ticket_list_temp, '1', 0, bin.status_name)"
+               style="cursor: pointer; color: #20a8d8;font-size:25px ">
+              {{ getBinTotal(bin.status_name) }}
+            </a>
+          </td>
+          <td>
+            <a (click)="ageingTicketList('all', 'NSVR', bin.status, ticket_list_temp, '2', 0, bin.status_name)"
+               style="cursor: pointer; color: red; font-size:25px">
+              {{ getBinAgeing(bin.status_name) }}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+
+      <tfoot>
+        <tr style="font-weight: bold; font-size:25px">
+          <td style="text-align: left; ">Total</td>
+          <td>{{ getMacTotalSum() }}</td>
+          <td>{{ getMacAgeingSum() }}</td>
+          <td>{{ getTotalCount() }}</td>
+          <td>{{ getTotalAgeing() }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+<!-- Ticket List Modal -->
+<ng-template #ticket_list_temp>
+  <div class="modal-dialog modal-xl" role="document" style="max-width: 95vw;">
+    <div class="modal-content" style="overflow-x: auto; max-height: 90vh;">
+      
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2; font-size: 1.2rem !important;">
+          Ticket List - {{ selectedStatus }}
+        </h4>
+      </div>
+
+      <div class="modal-body" style="overflow-x: auto; max-height: 75vh;">
+        <div class="col-md-12">
+          <div style="overflow-x: auto;">
+            <table class="dashboard-table table table-bordered table-striped table-md" style="word-wrap: anywhere;">
+              <thead class="popthead" style="border: 1px solid lightgray;">
+                <tr>
+                  <th>Ticket Id</th>
+                  <th>Product</th>
+                  <th>Status Name</th>
+                  <th>RAF Created Date</th>
+                  <th>Ageing Since</th>
+                  <th>Ageing Days</th>
+                </tr>
+              </thead>
+              <tbody class="popTableBody">
+                <tr *ngFor="let ticket of ticketsList">
+                  <td>{{ ticket.ticket_id }}</td>
+                  <td>{{ ticket.product }}</td>
+                  <td>{{ ticket.status_name }}</td>
+                  <td *ngIf="ticket.RAF_created_date === '0000-00-00 00:00:00'">{{ ticket.RAF_created_date }}</td>
+                  <td *ngIf="ticket.RAF_created_date !== '0000-00-00 00:00:00'">
+                    {{ ticket.RAF_created_date | date: 'dd-MM-yyyy hh:mm:ss' }}
+                  </td>
+                  <td *ngIf="ticket.ageing_since === '0000-00-00 00:00:00'">{{ ticket.ageing_since }}</td>
+                  <td *ngIf="ticket.ageing_since !== '0000-00-00 00:00:00'">
+                    {{ ticket.ageing_since | date: 'dd-MM-yyyy hh:mm:ss' }}
+                  </td>
+                  <td>{{ ticket.ageing_days }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="height: 60px">
+        <button type="button" class="btn btn-secondary" (click)="modalService.dismissAll()">Close</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

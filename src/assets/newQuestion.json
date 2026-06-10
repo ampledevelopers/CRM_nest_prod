@@ -1,0 +1,208 @@
+[{
+  "questionDetails": [
+    {
+      "templateId": "T2001254",
+      "trees": [
+        {
+          "questions": [
+            {
+              "optional": false,
+              "questionPhrase": "Which best describes the customer's need for help?",
+              "answerType": "DPD",
+              "questionId": "Q64579",
+              "answers": [
+                {
+                  "answerPhrase": "Accidental Damage Issue",
+                  "questions": [
+                    {
+                      "optional": true,
+                      "questionPhrase": "Which side of the iPad has the bend? (with the Charging port at the bottom and screen facing you)",
+                      "answerType": "DPD",
+                      "questionId": "Q210306",
+                      "answers": [
+                        {
+                          "answerPhrase": "Top",
+                          "answerId": "A20510"
+                        },
+                        {
+                          "answerPhrase": "Bottom",
+                          "answerId": "A20511"
+                        },
+                        {
+                          "answerPhrase": "Left",
+                          "answerId": "A20512"
+                        },
+                        {
+                          "answerPhrase": "Right",
+                          "answerId": "A20513"
+                        }
+                      ]
+                    },
+                    {
+                      "optional": true,
+                      "questionPhrase": "With the iPad glass side up on a flat surface, which way does the bend occur?",
+                      "answerType": "DPD",
+                      "questionId": "Q210321",
+                      "answers": [
+                        {
+                          "answerPhrase": "Bends away from surface (concave)",
+                          "answerId": "A210322"
+                        },
+                        {
+                          "answerPhrase": "Bends towards surface (convex)",
+                          "answerId": "A210323"
+                        }
+                      ]
+                    },
+                    {
+                      "optional": false,
+                      "questionPhrase": "When did the customer first notice the issue?",
+                      "answerType": "DPD",
+                      "questionId": "Q64146",
+                      "answers": [
+                        {
+                          "answerPhrase": "Out of box",
+                          "answerId": "A70460"
+                        },
+                        {
+                          "answerPhrase": "First week of use",
+                          "answerId": "A40661"
+                        },
+                        {
+                          "answerPhrase": "Between 1 week and 2 months",
+                          "answerId": "A101385"
+                        },
+                        {
+                          "answerPhrase": "Greater than 2 months",
+                          "answerId": "A101386"
+                        },
+                        {
+                          "answerPhrase": "Unknown",
+                          "answerId": "A20040"
+                        }
+                      ]
+                    }
+                  ],
+                  "answerId": "A64456"
+                },
+                {
+                  "answerPhrase": "Cosmetic Damage Issue",
+                  "questions": [
+                    {
+                      "optional": true,
+                      "questionPhrase": "Which side of the iPad has the bend? (with the Charging port at the bottom and screen facing you)",
+                      "answerType": "DPD",
+                      "questionId": "Q210306",
+                      "answers": [
+                        {
+                          "answerPhrase": "Top",
+                          "answerId": "A20510"
+                        },
+                        {
+                          "answerPhrase": "Bottom",
+                          "answerId": "A20511"
+                        },
+                        {
+                          "answerPhrase": "Left",
+                          "answerId": "A20512"
+                        },
+                        {
+                          "answerPhrase": "Right",
+                          "answerId": "A20513"
+                        }
+                      ]
+                    },
+                    {
+                      "optional": true,
+                      "questionPhrase": "With the iPad glass side up on a flat surface, which way does the bend occur?",
+                      "answerType": "DPD",
+                      "questionId": "Q210321",
+                      "answers": [
+                        {
+                          "answerPhrase": "Bends away from surface (concave)",
+                          "answerId": "A210322"
+                        },
+                        {
+                          "answerPhrase": "Bends towards surface (convex)",
+                          "answerId": "A210323"
+                        }
+                      ]
+                    },
+                    {
+                      "optional": false,
+                      "questionPhrase": "When did the customer first notice the issue?",
+                      "answerType": "DPD",
+                      "questionId": "Q64146",
+                      "answers": [
+                        {
+                          "answerPhrase": "Out of box",
+                          "answerId": "A70460"
+                        },
+                        {
+                          "answerPhrase": "First week of use",
+                          "answerId": "A40661"
+                        },
+                        {
+                          "answerPhrase": "Between 1 week and 2 months",
+                          "answerId": "A101385"
+                        },
+                        {
+                          "answerPhrase": "Greater than 2 months",
+                          "answerId": "A101386"
+                        },
+                        {
+                          "answerPhrase": "Unknown",
+                          "answerId": "A20040"
+                        }
+                      ]
+                    }
+                  ],
+                  "answerId": "A64433"
+                },
+                {
+                  "answerPhrase": "Usage questions / No HW problem reported",
+                  "answerId": "A64931"
+                },
+                {
+                  "answerPhrase": "Other",
+                  "questions": [
+                    {
+                      "optional": false,
+                      "questionPhrase": "Provide a brief description:",
+                      "answerType": "FFB",
+                      "questionId": "Q63396"
+                    }
+                  ],
+                  "answerId": "A20075"
+                }
+              ]
+            }
+          ],
+          "treeId": "TREE201702"
+        },
+        {
+          "questions": [
+            {
+              "optional": true,
+              "questionPhrase": "Does the device power on?",
+              "answerType": "RAD",
+              "questionId": "Q64881",
+              "answers": [
+                {
+                  "answerPhrase": "Yes",
+                  "answerId": "A20062"
+                },
+                {
+                  "answerPhrase": "No",
+                  "answerId": "A20063"
+                }
+              ]
+            }
+          ],
+          "treeId": "TREE202548"
+        }
+      ]
+    }
+  ]
+}
+]

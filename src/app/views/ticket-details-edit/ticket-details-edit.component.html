@@ -1,0 +1,402 @@
+<div class="animated fadeIn">
+  <div style="display: flex;">
+    <div class="header_left" style="width: 60%; margin-top: 0px">
+      <input type="text" [ngClass]="{'bcolor': bcolor, 'ncolor': !bcolor}" [(ngModel)]="ticketId" name="ticketId"
+        class="form-control" placeholder="Enter Ticket Id" style="width: 50%; margin: auto; text-align: center;"
+        (keydown)="getData($event, simple_alert_temp)">
+      <button *ngIf="buttonSpin === false" style="margin-top: 1rem !important; width: 32%; margin: auto;"
+        class="btn btn-block btn-outline-primary" (click)="getTicketDetails(simple_alert_temp)">Search</button>
+      <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 1rem;" *ngIf="isData === true">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          Customer Details
+        </div>
+        <div class="card-body">
+          <ng-container *ngIf="userRole !== '18'">
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>First Name</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.first_name" name="First Name" class="form-control"
+                placeholder="First Name" [disabled]="managerView">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Last Name</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.last_name" name="Last Name" class="form-control"
+                placeholder="Last Name" [disabled]="managerView && !editLastName">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Email Id</label>
+            </div>
+            <div class="col-md-8">
+              <input type="email" [(ngModel)]="userInfo.email" name="email" class="form-control" placeholder="Email Id"
+                [disabled]="c3Manager">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Mobile</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.phone" name="mobile" class="form-control" placeholder="Mobile"
+                [disabled]="true">
+            </div>
+          </div>
+          </ng-container>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Address 1</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.address1" name="mobile" class="form-control"
+                placeholder="Address 1">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Address 2</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.address2" name="mobile" class="form-control"
+                placeholder="Address 2">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>City</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.city" name="City" class="form-control" placeholder="City">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>State</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.state" name="State" class="form-control" placeholder="State">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Pin</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.pin" name="Pin" class="form-control" placeholder="Pin">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>GST No</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="userInfo.gstn" name="GST No" class="form-control" placeholder="GST No"
+                [readOnly]="!gstnEditable">
+            </div>
+          </div>
+          <div style="display: flex;margin-top: 1rem " *ngIf="data.status_id != '3600' && data.status_id != '5600'">
+            <div class="header_left">
+              <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                <button (click)="updateUser(simple_alert_temp)">Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ********************* Manager/C3 view ********************* -->
+    <div class="col-sm-6" *ngIf="((userRole === '3') || (userRole === '10') || (userRole === '8') || (loggedInUser === '50120'))">
+      <div class="card" style="margin-bottom:1rem !important;">
+        <div class="card-header">
+          Device Details
+        </div>
+        <div class="card-body">
+          <div class="info_row" *ngIf="!isTekne">
+            <div class="col-md-4">
+              <label>G Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="gNumber" name="gnumber" class="form-control" placeholder="G Number">
+            </div>
+          </div>
+          <div style="display: flex; margin-bottom: 2rem" *ngIf="!isTekne && data.status_id != '3600' && data.status_id != '5600'">
+            <div class="header_left">
+              <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                <button (click)="updateRepairInfo(simple_alert_temp)">Update G-Number</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Serial Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="deviceInfo.serialNo" name="First Name" class="form-control"
+                placeholder="Serial Number" [disabled]="managerView">
+            </div>
+          </div>
+          <div class="info_row" *ngIf="!isTekne">
+            <div class="col-md-4">
+              <label>IMEI Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="deviceInfo.imeiNo" name="Last Name" class="form-control"
+                placeholder="IMEI Number" [disabled]="managerView">
+            </div>
+          </div>
+          <div class="info_row" *ngIf="!isTekne">
+            <div class="col-md-4">
+              <label>Unit Received Date</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="unitDate" name="Last Name" class="form-control" placeholder="YYYY/MM/DD"
+                [disabled]="dateTimeEdit">
+            </div>
+          </div>
+          <div class="info_row" *ngIf="!isTekne">
+            <div class="col-md-4">
+              <label>Unit Received Time</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="unitTime" name="Last Name" class="form-control" placeholder="HH:MM:SS"
+                [disabled]="dateTimeEdit">
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Product Name</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="deviceInfo.productName" name="product name" class="form-control"
+                placeholder="Product Name" [disabled]="c3Manager">
+            </div>
+          </div>
+          <div class="info_row" *ngIf="!isTekne">
+            <div class="col-md-4">
+              <label>Product Family</label>
+            </div>
+            <div class="col-md-8">
+              <select [(ngModel)]="deviceInfo.productFamily" style="width: 100%" class="form-control"
+                (change)="selectFamily($event.target.value)" [disabled]="c3Manager">
+                <option>Select Product Family</option>
+                <option *ngFor="let family of options.family; let i = index" [value]="family.value">
+                  {{family.value}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Warranty Status</label>
+            </div>
+            <div class="col-md-8">
+              <select [(ngModel)]="warrantyStatus" style="width: 100%" class="form-control" [disabled]="c3Manager">
+                <option *ngFor="let warranty of warrantyStatuses" [value]="warranty.value">
+                  {{warranty.label}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>Condition of Device</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="deviceInfo.condition"
+                style="width : 100%; border: 1px solid #e4e7ea; border-radius: 4px" rows="3"
+                placeholder="Enter here">{{deviceInfo.condition}}</textarea>
+            </div>
+          </div>
+          <div class="info_row" *ngIf="cusomterQueryEdit">
+            <div class="col-md-4">
+              <label>Customer Query</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="deviceInfo.customerQuery"
+                style="width : 100%; border: 1px solid #e4e7ea; border-radius: 4px" rows="3"
+                placeholder="Enter here">{{deviceInfo.condition}}</textarea>
+            </div>
+          </div>
+          <div class="info_row" *ngIf="techCommentEdit">
+            <div class="col-md-4">
+              <label>Technician Comment</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="deviceInfo.technicianComment"
+                style="width : 100%; border: 1px solid #e4e7ea; border-radius: 4px" rows="3"
+                placeholder="Enter here">{{deviceInfo.condition}}</textarea>
+            </div>
+          </div>
+          <div class="info_row"
+            *ngIf="((loggedInUser === '61') || (loggedInUser === '2293') || (loggedInUser === '1597') || (loggedInUser === '50120') || (userRole === '3')) && (paymentDateTime !== null)"
+            style="padding-bottom: 0px;">
+            <div class="col-md-4" style="margin: auto;">
+              <label>Payment Date and Time</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="paymentDateTime" name="Last Name" class="form-control"
+                placeholder="YYYY-MM-DD HH:MM:SS">
+            </div>
+          </div>
+        </div>
+        <!-- <div class="info_row">
+              <div class="col-md-4">
+                  <label>G Number</label>
+              </div>
+              <div class="col-md-8">
+                  <input type="text" [(ngModel)]="deviceInfo.gNumber" name="gnumber" class="form-control"
+                  placeholder="G Number">
+              </div>
+            </div> -->
+
+        <div style="display: flex; margin-bottom: 2rem" *ngIf="data.status_id != '3600' && data.status_id != '5600'">
+          <div class="header_left">
+            <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+              <button (click)="updateDeviceInfo(simple_alert_temp)">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ********************* Team Leader view ********************* -->
+
+    <div class="col-sm-6" *ngIf="(!lic)">
+      <div class="card" *ngIf="(cusomterQueryEdit || techCommentEdit)" style="margin-bottom:1rem !important;">
+        <div class="card-header">
+          Device Details
+        </div>
+        <div class="card-body">
+          <!--  <div class="info_row" *ngIf="userRole === '6'">
+                <div class="col-md-4">
+                    <label>Unit Received Date</label>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" [(ngModel)]="unitDate" name="Last Name" class="form-control"
+                  placeholder="YYYY/MM/DD" [disabled]="dateTimeEdit">
+                </div>
+              </div>
+              <div class="info_row" *ngIf="userRole === '6'">
+                <div class="col-md-4">
+                    <label>Unit Received Time</label>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" [(ngModel)]="unitTime" name="Last Name" class="form-control"
+                  placeholder="HH:MM:SS" [disabled]="dateTimeEdit">
+                </div>
+              </div> -->
+          <div class="info_row" *ngIf="cusomterQueryEdit">
+            <div class="col-md-4">
+              <label>Customer Query</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="deviceInfo.customerQuery"
+                style="width : 100%; border: 1px solid #e4e7ea; border-radius: 4px" rows="3"
+                placeholder="Enter here">{{deviceInfo.condition}}</textarea>
+            </div>
+          </div>
+          <div class="info_row" *ngIf="techCommentEdit">
+            <div class="col-md-4">
+              <label>Technician Comment</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="deviceInfo.technicianComment"
+                style="width : 100%; border: 1px solid #e4e7ea; border-radius: 4px" rows="3"
+                placeholder="Enter here">{{deviceInfo.condition}}</textarea>
+            </div>
+          </div>
+          <div style="display: flex;margin-top: 1rem " *ngIf="data.status_id != '3600' && data.status_id != '5600'">
+            <div class="header_left">
+              <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                <button (click)="updateDeviceInfo(simple_alert_temp)">Update Device Info</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ********************* GNUMBER Update ********************* -->
+
+      <div class="card" *ngIf="((userRole === '6') || (loggedInUser === '50120')) && !isTekne"> <!-- (userRole === '2') ||  -->
+        <div class="card-header">
+          G Number Update
+        </div>
+        <div class="card-body">
+          <div class="info_row" style="margin-top: 2rem;">
+            <div class="col-md-4">
+              <label>G Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" [(ngModel)]="gNumber" name="gnumber" class="form-control" placeholder="G Number">
+            </div>
+          </div>
+          <div style="display: flex;margin-top: 1rem " *ngIf="data.status_id != '3600' && data.status_id != '5600'">
+            <div class="header_left">
+              <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                <button (click)="updateRepairInfo(simple_alert_temp)">Update G-Number</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1rem;">
+        <div class="card-header">
+          SVC Remarks Update
+        </div>
+        <div class="card-body">
+          <div class="info_row">
+            <div class="col-md-4">
+              <label>SVC Remarks</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="deviceInfo.svcRemarks"
+                style="width : 100%; border: 1px solid #e4e7ea; border-radius: 4px" rows="6"
+                placeholder="Enter here">{{deviceInfo.condition}}</textarea>
+            </div>
+          </div>
+          <div style="display: flex;margin-top: 1rem " *ngIf="data.status_id != '3600' && data.status_id != '5600'">
+            <div class="header_left">
+              <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+                <button (click)="updateSvcRemarks(simple_alert_temp)">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px;">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 80px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

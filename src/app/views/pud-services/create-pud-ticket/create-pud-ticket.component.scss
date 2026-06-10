@@ -1,0 +1,52 @@
+.card {
+  line-height: 2rem ;
+  border: 1px solid #c8ced3;
+}
+
+select {
+  background-color: white !important;
+  border: 1px solid lightgray;
+}
+
+.acceptbtns :hover {
+  color:#20a8d8 !important;
+}
+
+.checkboxDiv {
+  text-align: end;
+  margin-top: 1rem;
+  // margin-bottom: .6rem;
+  input{
+    margin-right: 4px;
+    height: 17px;
+    width: 17px;
+  }
+  label {
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+.checkboxDiv1 {
+  margin-top: 1rem;
+  input{
+    margin-right: 4px;
+    height: 17px;
+    width: 17px;
+  }
+  label {
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+.error {
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+select {
+  cursor: pointer;
+}

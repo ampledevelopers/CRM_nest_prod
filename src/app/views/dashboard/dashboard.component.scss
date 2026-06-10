@@ -1,0 +1,51 @@
+table{
+  border: 1px solid lightgray !important;
+margin-top: 3rem !important;
+}
+
+.card{
+  // float: left !important;
+  // margin-right: 1rem !important;
+  padding: 1rem !important;
+  // width: 100% !important;
+}
+
+a {
+  color: #20a8d8;
+}
+
+
+/* ER/CR – LIGHT PINK */
+td.crer-td {
+  background-color: #ffccfd; /* light pink */
+}
+
+.ngx-pagination {
+  padding-left: 0px !important;
+  display: flex !important;
+}
+
+.ngx-pagination .current,
+.btn-info {
+  background: #17a2b8 !important;
+  border: transparent !important;
+  border-radius: 20px !important;
+}
+
+.ngx-pagination .current:hover {
+  background: #17a2b8 !important;
+  border-radius: 20px !important;
+  border: transparent !important;
+}
+
+select {
+  margin-top: 1rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  height: 30px;
+  width: 8%;
+  text-align: center;
+  background-color: white;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}

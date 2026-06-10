@@ -1,0 +1,66 @@
+<div class="card" style="border: 1px solid lightgray;">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3">
+        <label>Report Type<sup style="color: red">*</sup></label>
+        <select [(ngModel)]="reportType" class="form-control" (click)="filterChange()">
+          <option value="">Select Report Type</option>
+          <option value="Overall Revenue">Overall Revenue </option>
+          <option value="Accy Target">Accy Target & Attach</option>
+          <!-- <option value="CSAT">CSAT</option> -->
+          <!-- <option value="RAF">Total RAF</option> -->
+          <!-- <option value="Customer Engagement">Customer Engagement</option> -->
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Financial Year<sup style="color: red">*</sup></label>
+        <select id="year" [(ngModel)]="year" name="year" class="form-control" (click)="filterChange()">
+          <option value="">Please select Year</option>
+          <option value="2022">FY 2022-23</option>
+          <option value="2023">FY 2023-24</option>
+          <option value="2024">FY 2024-25</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Quarter<sup style="color: red">*</sup></label>
+        <select id="quarter" [(ngModel)]="quarter" name="quarter" class="form-control" (click)="filterChange()">
+          <option value="">Please select</option>
+          <option value="1">Quarter 1(AMJ)</option>
+          <option value="2">Quarter 2(JAS)</option>
+          <option value="3">Quarter 3(OND)</option>
+          <option value="4">Quarter 4(JFM)</option>
+        </select>
+      </div>
+      <div class="col-md-3" style="margin-top: 1.3rem;">
+        <button (click)="load()" class="loadBtn">Load</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading === true" class="spinnerDiv">
+  <c-spinner color="secondary"></c-spinner>
+</div>
+
+<!-- ******************************* Table ************************************ -->
+
+<div *ngIf="loading === false && showTable === true">
+  <h4>{{title}}</h4>
+  <div class="tableDiv">
+    <p>{{subTitle}}</p>
+    <table class="table-bordered">
+      <tr>
+        <td style="font-weight: bold; background-color: lightgray; color: black;" *ngFor="let item of targets">
+          {{item.branch}}</td>
+      </tr>
+      <tr>
+        <td *ngFor="let item of targets">
+          <input placeholder="0.00" [(ngModel)]="item.target" maxlength="5">
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="saveButton">
+    <button class="loadBtn" (click)="submit()">{{submitType}}</button>
+  </div>
+</div>

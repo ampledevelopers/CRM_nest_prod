@@ -1,0 +1,120 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters - Menu Log Report
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Menu Name<sup style="color: red">*</sup></label>
+          <!-- <div class="col-md-9"> -->
+          <select id="reportType" [(ngModel)]="menuName" name="menuName" class="form-control">
+            <option value="">Please select</option>
+            <option value="/analytics/svr-dashboard">SVR Dashboard</option>
+            <option value="/analytics/bin-ageing-dashboard">Bin Ageing Dashboard</option>
+            <option value="/analytics/acse-dashboard">ACSE Dashboard</option>
+            <option value="/analytics/kbb-ageing-dashboard">KBB Ageing Dashboard</option>
+            <option value="/reports/repairdeviationfraudreport">Repair Deviation & Fraud Report</option>
+            <option value="/analytics/inventory-dashboard-bi'">Inventory Dashboard</option>
+          </select>
+          <!-- </div> -->
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" style="margin-top:1rem !important; margin-bottom: 1rem !important;" *ngIf="isReport===true">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Menu Log Details
+      </div>
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <!-- <table class="table table-bordered table-striped table-sm" datatable>
+          <thead>
+            <tr>
+              <th>CRM Module Name</th>
+              <th>Branch Name</th>
+              <th>User Name</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let idx = index">
+              <td>{{item.menu_name}}</td>
+              <td>{{item.branch_code}}</td>
+              <td>{{item.user_name}}</td>
+              <td>{{item.entrytime | date: 'dd-MM-yyyy hh:mm:ss' }}</td>
+            </tr>
+          </tbody>
+        </table> -->
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+                <td [cTableActive]="tableDataCellProps(item, columnName)?.active"
+                    [cTableColor]="tableDataCellProps(item, columnName)?.color"
+                    [cAlign]="tableDataCellProps(item, columnName)?.align"
+                    [ngClass]="tableDataCellClasses(item, columnName)">
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchCase="'entrytime'">
+                    {{(item['entrytime'])| date: 'dd-MM-yyyy hh:mm:ss'}}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{tdContent}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display: flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> Menu Log Details
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

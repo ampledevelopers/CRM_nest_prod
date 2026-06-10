@@ -1,0 +1,122 @@
+<div class="card">
+    <div class="card-header">Filters - Repair Approver Report</div>
+    <div class="card-body">
+        <div class="row">
+            <!-- <div class="col-md-4">
+                <label>Year<sup style="color: red">*</sup></label>
+                <select id="year" [(ngModel)]="year" name="year" class="form-control">
+                    <option value="">Select Year</option>
+                    <option value="2022">FY2022</option>
+                    <option value="2023">FY2023</option>
+                    <option value="2024">FY2024</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Month<sup style="color: red">*</sup></label>
+                <select id="month" [(ngModel)]="month" name="month" class="form-control">
+                    <option *ngFor="let month of months" [value]="month.value">
+                        {{month.name}}
+                    </option>
+                </select>
+            </div> -->
+            <div class="col-md-4" style="margin-top: 1rem !important">
+              <label>From Date<sup style="color: red">*</sup></label>
+              <input class="form-control" type="date" [(ngModel)]="fromDate">
+            </div>
+            <div class="col-md-4" style="margin-top: 1rem !important">
+              <label>To Date<sup style="color: red">*</sup></label>
+              <input class="form-control" type="date" [(ngModel)]="toDate">
+            </div>
+        </div>
+        <div class="row" style="margin: auto;width: 12rem;text-align: center;">
+            <button style="margin-top: 1.5rem;" class="btn btn-block btn-outline-primary" (click)="load()">Load</button>
+        </div>
+    </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 2rem; width: 100%; text-align: center;">
+    <c-spinner size="sm" style="margin-left: 0 !important;"></c-spinner>
+</div>
+
+<div class="card" *ngIf="loading === false && showTable === true" style="margin-bottom: 1rem;margin-top: 1.5rem;overflow-x: scroll;">
+    <div class="card-body">
+        <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+            <thead>
+                <tr style="background-color: lightgrey;font-weight: bold;">
+                    <td>Branch</td>
+                    <td *ngFor="let approver of approverData">{{approver.user_name}}</td>
+                    <td>Grand Total</td>
+
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of l2DataTemp; let i = index;">
+                    <tr>
+                        <td style="background-color: #e9e9e9;font-weight: bold;">{{data.branchName}}</td>
+                        <td *ngFor="let count of data.branchCount"
+                            [ngStyle]="{'background-color': count.isSelf ? 'yellow' : 'white' }">{{count.count}}</td>
+                        <td>{{TotalBranchwise[i]}}</td>
+                    </tr>
+                </ng-container>
+                <tr style="font-weight: bold;">
+                    <td style="background-color: #e9e9e9;font-weight: bold;">Grand Total</td>
+                    <td *ngFor="let data of TotalApproverwise">{{data}}</td>
+                    <td>{{grandTotal}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card" *ngIf="loading === false && showTable === true" style="margin-bottom: 1rem;margin-top: 1.5rem;">
+    <div class="card-body">
+        <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+            <thead>
+                <tr style="background-color: lightgrey;font-weight: bold;">
+                    <td>Location Approvals</td>
+                    <ng-container *ngFor="let data of locationApprovalTemp">
+                    <td *ngFor="let approver of data.approverName">{{approver}}</td>
+                    </ng-container>
+                    <td>Grand Total</td>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of locationApprovalTemp">
+                    <tr>
+                        <td style="background-color: #e9e9e9;font-weight: bold;">Self</td>
+                        <td *ngFor="let count of data.selfCount">{{count}}</td>
+                        <td>{{totalSelf}}</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngFor="let data of locationApprovalTemp">
+                    <tr>
+                        <td style="background-color: #e9e9e9;font-weight: bold;">Others</td>
+                        <td *ngFor="let count of data.othersCount">{{count}}</td>
+                            <td>{{totalOthers}}</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngFor="let data of locationApprovalTemp">
+                    <tr style="background-color: #e9e9e9;font-weight: bold;">
+                        <td >Grand Total</td>
+                        <td *ngFor="let count of data.totalCount">{{count}}</td>
+                        <td>{{grandTot}}</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngFor="let data of locationApprovalTemp">
+                    <tr>
+                        <td style="background-color: #e9e9e9;font-weight: bold;">Self Percentage</td>
+                        <td *ngFor="let count of data.selfPercentage">{{count}}</td>
+                        <td>{{selfTotalPer}}</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngFor="let data of locationApprovalTemp">
+                    <tr>
+                        <td style="background-color: #e9e9e9;font-weight: bold;">Others Percentage</td>
+                        <td *ngFor="let count of data.othersPercentage">{{count}}</td>
+                            <td>{{othersTotalPer}}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>

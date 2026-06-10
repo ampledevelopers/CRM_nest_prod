@@ -1,0 +1,110 @@
+<div class="card" style="padding: 1%;border: 0px solid lightgray;display:block;">
+    <div class="card" style="border: 1px solid lightgray;width: 50%;float:left;">
+        <div class="card-header">Filters - CSAT Weekly Trend Dashboard</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Year<sup style="color: red">*</sup></label>
+                    <select id="year" [(ngModel)]="financialYear" name="year" class="form-control">
+                        <option value="">Select Year</option>
+                        <option value="FY2022">FY2022</option>
+                        <option value="FY2023">FY2023</option>
+                        <option value="FY2024">FY2024</option>
+                        <option value="FY2025">FY2025</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Month<sup style="color: red">*</sup></label>
+                    <select id="quarter" [(ngModel)]="finMonth" name="quarter" class="form-control">
+                        <option *ngFor="let docType of months" [value]="docType.value">
+                            {{docType.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Week<sup style="color: red">*</sup></label>
+                    <select [(ngModel)]="finWeek" class="form-control">
+                        <option value="">Select Week</option>
+                        <option value="W1">W1</option>
+                        <option value="W2">W2</option>
+                        <option value="W3">W3</option>
+                        <option value="W4">W4</option>
+                        <option value="W5">W5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="border: 1px solid lightgray;width:48%;display: flex;float:right;">
+        <div class="card-header">Compare with..</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Year<sup style="color: red">*</sup></label>
+                    <select id="year" [(ngModel)]="pervFinancialYear" name="year" class="form-control">
+                        <option value="">Select Year</option>
+                        <option value="FY2022">FY2022</option>
+                        <option value="FY2023">FY2023</option>
+                        <option value="FY2024">FY2024</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Month<sup style="color: red">*</sup></label>
+                    <select id="quarter" [(ngModel)]="prevMonth" name="quarter" class="form-control">
+                        <option *ngFor="let docType of prevMonths" [value]="docType.value">
+                            {{docType.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Week<sup style="color: red">*</sup></label>
+                    <select [(ngModel)]="prevWeek" class="form-control">
+                        <option value="">Select week</option>
+                        <option value="W1">W1</option>
+                        <option value="W2">W2</option>
+                        <option value="W3">W3</option>
+                        <option value="W4">W4</option>
+                        <option value="W5">W5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin: auto;width: 8rem;text-align: center;">
+        <button style="margin-top: 1.5rem;" class="btn btn-block btn-outline-primary" (click)="load()">Load</button>
+    </div>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === true" style="margin: auto; margin-top: 10% !important;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+<div class="card" *ngIf="csatDataLoad === true && loading === false" style="margin-bottom: 2rem;margin-top: 1.5rem;">
+    <div class="card-body">
+        <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+            <tbody style="text-align: center;">
+                <tr style="background-color:lightgrey; font-weight: bold;">
+                    <td>Location</td>
+                    <td>{{pervFinancialYear + prevMonth}}</td>
+                    <td>{{financialYear + finMonth}}</td>
+                    <td>{{prevMonth + prevWeek}}</td>
+                    <td>{{finMonth + finWeek}}</td>
+                    <td>Total Satisfied Samples</td>
+                    <td>Total Dis-sat / Neutral Samples</td>
+                    <td>Total Samples</td>
+                </tr>
+                <tr *ngFor="let data of array;">
+                    <td class="td2">{{data.branch}}</td>
+                    <td>{{data.prevMonthSatPer || ' '}}</td>
+                    <td>{{data.currMonthSatPer || ' '}}</td>
+                    <td>{{data.prevWeekSatPer || ' '}}</td>
+                    <td>{{data.currWeekSatPer || ' '}}</td>
+                    <td>{{data.currWeekSatCount || ' '}}</td>
+                    <td>{{data.currWeekDisNeuCount || ' '}}</td>
+                    <td>{{data.currWeektotSam || ' '}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+
+  <div *ngIf="error" class="alert alert-danger mt-3">
+    Failed to load consignment report. Please try again.
+  </div>
+
+  <div class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display: flex !important; justify-content: space-between; align-items: center;">
+        <span>
+          <i class="material-icons" style="margin-right: 0.3rem !important;"></i>
+          Active Consignment Report
+        </span>
+        <span style="font-size: 0.85rem; color: #555;">
+          Branch: <strong>{{ branchCode }}</strong>
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="mb-3" style="max-width: 28rem;">
+          <label for="consignmentSearch" class="form-label mb-1">Search</label>
+          <input
+            id="consignmentSearch"
+            type="search"
+            placeholder="Part no"
+            autocomplete="off"
+            class="form-control form-control-sm"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+          />
+        </div>
+
+        <div style="overflow-x: auto; padding-top: 0px;">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Part No</th>
+                <th>Description</th>
+                <th>Apple Quantity</th>
+                <th>Ample Quantity</th>
+                <th>Total Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="filteredItems.length === 0">
+                <td colspan="6" class="text-center text-muted">No records found.</td>
+              </tr>
+              <tr *ngFor="let item of filteredItems | paginate: { id: 'consignmentPage', itemsPerPage: pageSize, currentPage: page }; let i = index">
+                <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                <td>{{ item.part_no }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.apple_qty }}</td>
+                <td>{{ item.ample_qty }}</td>
+                <td><strong>{{ item.total_quantity }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div *ngIf="filteredItems.length > 0">
+            <pagination-controls
+              id="consignmentPage"
+              style="display: block ruby; margin-top: 1rem;"
+              (pageChange)="page = $event"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,429 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false && siteType === '2'">
+    <div class="row">
+      <div class="col-sm-6"></div>
+      <div class="col-sm-6">
+        <div class="card" style="margin-bottom: 0px !important;">
+          <div class="card-header">
+            From
+          </div>
+          <div class="card-body">
+            <div class="form-group row" style="margin-bottom: 0.5rem;"></div>
+            <div class="form-group row" style="margin-bottom: 0.5rem; margin-left: 0px;">
+              <div class="info_row">
+                <div class="col-md-12" style="color: gray; line-height: 1.2rem;" [innerHtml]="fromHtml">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 1rem;">
+      <div class="col-sm-6">
+        <div class="card" style="margin-top: 1rem;">
+          <div class="card-header">
+            To
+          </div>
+          <div class="card-body">
+            <div class="info_row">
+              <div class="col-md-12" style="line-height: 0.8rem;">
+                <h5>{{companyDetails.company_name}}</h5>
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1rem; margin-bottom: 0.3rem;">
+                <input class="information" placeholder="Address Line1" [(ngModel)]="companyDetails.address1"
+                  style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1rem; margin-bottom: 0.3rem;">
+                <input class="information" placeholder="Address Lin2" [(ngModel)]="companyDetails.address2"
+                  style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1rem; margin-bottom: 0.3rem;">
+                <input class="information" placeholder="City" [(ngModel)]="companyDetails.city"
+                  style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1rem; margin-bottom: 0.3rem;">
+                <input class="information" placeholder="State" [(ngModel)]="companyDetails.state"
+                  style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1rem; margin-bottom: 0.3rem;">
+                <input class="information" placeholder="Pin" [(ngModel)]="companyDetails.pin"
+                  style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+              </div>
+              <div class="col-md-12" style="color: gray; line-height: 1rem; margin-bottom: 0.3rem;">
+                <input class="information" placeholder="GST No" [(ngModel)]="companyGST"
+                  style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="card" style="height: auto; margin: auto; position: relative; width: 100%;">
+          <div class="card-body">
+            <div class="form-group row" style="margin-bottom: 0.5rem;"></div>
+            <div class="form-group row" style="margin-bottom: 0.5rem; margin-left: 0px;">
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>DC Type<sup style="color: red">*</sup></label>
+                </div>
+                <div class="col-md-8">
+                  <select [(ngModel)]="dcType" [disabled]="isApprover || (!showCreateBtn)">
+                    <option value="Select DC Type">Select DC Type</option>
+                    <option value="Returnable Delivery Challan">Returnable Delivery Challan</option>
+                    <option value="Non Returnable Delivery Challan">Non Returnable Delivery Challan</option>
+                  </select>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>DC No</label>
+                </div>
+                <div class="col-md-8">
+                  <input class="information" placeholder="DC No" [(ngModel)]="dcNo" style="background: transparent;"
+                    type="text" readonly>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>Date</label>
+                </div>
+                <div class="col-md-8">
+                  <b style="border-bottom: 1px solid lightgray;">{{dcDate}}</b>
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>E Way Bill</label>
+                </div>
+                <div class="col-md-8">
+                  <input class="information" placeholder="E Way Bill No" [(ngModel)]="eWayBillNo"
+                    style="background: transparent;" type="text" [disabled]="isApprover || (!showCreateBtn)">
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>Contact Person<sup style="color: red">*</sup></label>
+                </div>
+                <div class="col-md-8">
+                  <input [disabled]="isApprover" class="information" placeholder="Enter your name"
+                    [(ngModel)]="contactPerson" style="background: transparent;" type="text"
+                    [disabled]="isApprover || (!showCreateBtn)">
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>Contact No.<sup style="color: red">*</sup></label>
+                </div>
+                <div class="col-md-8">
+                  <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Enter mobile no"
+                    [(ngModel)]="contactMobile" style="background: transparent;" (keydown)="getCustomerAddress($event)">
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>Docket Number</label>
+                </div>
+                <div class="col-md-8">
+                  <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Enter docket no"
+                    [(ngModel)]="docketNo" style="background: transparent;">
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>Shipper Name</label>
+                </div>
+                <div class="col-md-8">
+                  <input [disabled]="isApprover || (!showCreateBtn)" class="information"
+                    placeholder="Enter shipper name" [(ngModel)]="shipperName" style="background: transparent;">
+                </div>
+              </div>
+              <div class="info_row">
+                <div class="col-md-4">
+                  <label>Invoice Number</label>
+                </div>
+                <div class="col-md-8">
+                  <input [disabled]="isApprover || (!showCreateBtn)" class="information"
+                    placeholder="Enter shipper name" [(ngModel)]="invoiceNo" style="background: transparent;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 1rem;">
+      <div class="card" style="width: 100%; padding: 0px;">
+        <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+          <thead>
+            <tr>
+              <th>Ticket Id</th>
+              <th>Serial No</th>
+              <th>Part No</th>
+              <th>Part Description</th>
+              <th *ngIf="(!isApprover) && (showCreateBtn)"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sPart of partList; let indx = index" class="exPartList">
+              <td>{{sPart.ticket_id}}</td>
+              <td>{{sPart.serial_no}}</td>
+              <td>
+                <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Part No"
+                [(ngModel)]="sPart.part_number">
+              </td>
+              <td>
+                <p style="word-wrap: anywhere;width: 85%;float: left; margin-bottom: 0;">{{sPart.description}}</p>
+              </td>
+              <td *ngIf="(!isApprover) && (showCreateBtn)">
+                <div class="docBtn" style="margin: auto; width: 100%;">
+                  <a (click)="deleterow(indx)"><i class="material-icons" alt="Delete" style="font-size: 1.6em !important">delete</i></a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="totalValue">
+          <span>APPROX VALUE OF THE CONSIGNMENT<sup style="color: red">*</sup></span><input class="information"
+            placeholder="0.00" [(ngModel)]="totalValue" type="text" [disabled]="isApprover || (!showCreateBtn)">
+        </div>
+      </div>
+    </div>
+  <div class="col-sm-6" style="margin: auto; margin-top: 1rem;">
+    <div class="info_row" style="margin-bottom: 0.3rem;">
+      <div class="col-md-4">
+        <label>Remarks<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Remarks"
+          [(ngModel)]="remarks">
+      </div>
+    </div>
+    <div class="info_row" style="margin-bottom: 0.3rem;">
+      <div class="col-md-4">
+        <label>Delivery Date<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input type="date" id="datePicker" name="datePicker" placeholder="yyyy/mm/dd" [(ngModel)]="dlDate"
+          style="width: 100%; border: 0px; border-bottom: 1px solid lightgray;"
+          [disabled]="isApprover || (!showCreateBtn)">
+      </div>
+    </div>
+    <div class="info_row" style="margin-bottom: 0.3rem;">
+      <div class="col-md-4">
+        <label>Delivery Person Name<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Name"
+          [(ngModel)]="dlPersonName">
+      </div>
+    </div>
+    <div class="info_row">
+      <div class="col-md-4">
+        <label>Mode of Transport<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Mode" [(ngModel)]="dlMode">
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; margin-top: 1.5rem; padding-bottom: 1rem;">
+    <div class="header_left" style="display: flex !important;">
+      <div class="acceptbtns" style="float: left" *ngIf="((buttonSpin === false) && (showCreateBtn))">
+        <button (click)="saveDC(simple_alert_temp)">Create DC</button>
+      </div>
+      <div class="acceptbtns" style="float: left; margin-left: 1rem;" *ngIf="((buttonSpin === false) && (!isApprover))">
+        <button (click)="cancelDC()">Cancel</button>
+      </div>
+      <div style="margin-left: 1rem; border: 1px solid red;" class="acceptbtns"
+        *ngIf="((buttonSpin === false) && (isApprover))">
+        <button style="color: red;" (click)="approveDeclineDC('D', approve_decline_temp)">Decline</button>
+      </div>
+      <div style="margin-left: 1rem;" class="acceptbtns" *ngIf="(buttonSpin === false) && (isApprover)">
+        <button (click)="approveDeclineDC('A', approve_decline_temp)">Approve</button>
+      </div>
+      <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!-- ********************************************************** DROP LOCATION ***************************************************** -->
+
+
+<div class="animated fadeIn" *ngIf="(loading === false && siteType !== '2') || (loading === false && (dropLocationFlag === '1' || siteType === '1'))">
+  <div style="display: flex;">
+    <div class="col-sm-6" style="width: 48%; margin-right: 1rem">
+      <div class="card" style="margin-bottom: 0px !important;">
+        <div class="card-header">
+          From
+        </div>
+        <div class="card-body">
+          <div class="form-group row" style="margin-bottom: 0.5rem;"></div>
+          <div class="form-group row" style="margin-bottom: 0.5rem; margin-left: 0px;">
+            <div class="info_row">
+              <div class="col-md-12" style="color: gray; line-height: 1.2rem;" [innerHtml]="fromHtml">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6" style="width: 48%;">
+      <div class="card">
+        <div class="card-header">
+          To
+        </div>
+        <div class="card-body">
+          <div class="form-group row" style="margin-bottom: 0.5rem;"></div>
+          <div class="form-group row" style="margin-bottom: 0.5rem; margin-left: 0px;">
+            <div class="info_row">
+              <div class="col-md-12" style="color: gray; line-height: 1.2rem;" [innerHtml]="toHtml">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-right: 15px; margin-top: 2rem;">
+    <div class="card" style="width: 100%; padding: 0px;">
+      <table class="table table-bordered table-striped table-sm" style="margin-bottom: 0.5rem">
+        <thead>
+          <tr>
+            <th>Ticket Id</th>
+            <th>Serial No</th>
+            <th>Customer Name</th>
+            <th>Product Family</th>
+            <th>Value</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sPart of partList; let indx = index" class="exPartList">
+            <td>{{sPart.ticket_id}}</td>
+            <td>{{sPart.serial_no}}</td>
+            <td>{{sPart.customer_firstname + ' ' + sPart.customer_lastname}}</td>
+            <td>{{sPart.product_family}}</td>
+            <td><input [(ngModel)]="sPart.value" class="information" type="text" name="partdetails" placeholder="Value" (keyup)="getTotalValue()" style="width: 50% !important"></td>
+            <td>
+              <div class="docBtn" style="margin: auto; width: 100%;">
+                <a (click)="deleterow(indx)"><i class="material-icons" alt="Delete" style="font-size: 1.6em !important">delete</i></a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="totalValue">
+        <span>APPROX VALUE OF THE CONSIGNMENT<sup style="color: red">*</sup></span><input class="information"
+          placeholder="0.00" [(ngModel)]="totalValue" type="text" readonly>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6" style="margin: auto; margin-top: 1rem;">
+   <!--  <div class="info_row" style="margin-bottom: 0.3rem;">
+      <div class="col-md-4">
+        <label>Remarks<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input class="information" placeholder="Remarks"
+          [(ngModel)]="remarks">
+      </div>
+    </div> -->
+    <div class="info_row" style="margin-bottom: 0.3rem;">
+      <div class="col-md-4">
+        <label>Delivery Date<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input type="date" id="datePicker" name="datePicker" placeholder="yyyy/mm/dd" [(ngModel)]="dlDate"
+          style="width: 100%; border: 0px; border-bottom: 1px solid lightgray;">
+      </div>
+    </div>
+    <div class="info_row" style="margin-bottom: 0.3rem;">
+      <div class="col-md-4">
+        <label>Delivery Person Name<sup style="color: red">*</sup></label>
+      </div>
+      <div class="col-md-8">
+        <input [disabled]="isApprover || (!showCreateBtn)" class="information" placeholder="Name"
+          [(ngModel)]="dlPersonName">
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; margin-top: 1.5rem; padding-bottom: 1rem;">
+    <div class="header_left" style="display: flex !important;">
+      <div class="acceptbtns" style="float: left" *ngIf="(buttonSpin === false && showDlCreateBtn === true)">
+        <button (click)="saveDlDC(simple_alert_temp)">Create DC</button>
+      </div>
+      <div class="acceptbtns" style="float: left; margin-left: 1rem;" *ngIf="(buttonSpin === false && showDlCancelBtn === true)">
+        <button (click)="cancelDC()">Cancel</button>
+      </div>
+      <div class="acceptbtns" style="float: left; margin-left: 1rem;" *ngIf="(buttonSpin === false && showDownload === true)">
+        <button (click)="downloadDC()">Download</button>
+      </div>
+      <div class="acceptbtns" style="float: left; margin-left: 1rem;" *ngIf="(buttonSpin === false && showClose === true)">
+        <button (click)="dlClose()">Close</button>
+      </div>
+      <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ********************** Templates **********************-->
+
+<ng-template class="modal fade" #simple_alert_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{simpleAlert.msg}}</p>
+      </div>
+      <div class="modal-footer" style="height: 55px">
+        <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template class="modal fade" #approve_decline_temp>
+  <div class="modal-dialog" role="document" style="margin: 0px">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">DC Approve/Decline</h4>
+      </div>
+      <div class="modal-body" style="padding-bottom: 0px;">
+        <textarea [(ngModel)]="approveDeclineRemarks" placeholder="Enter remarks" class="information" rows="3"
+          style="border: 1px solid lightgrey; margin-bottom: .5rem;"></textarea>
+        <div *ngIf="notfilled" style="color: red; margin-bottom: 0.5rem; display: flex;">
+          <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; Enter remarks
+        </div>
+        <div class="modal-footer" style="height: 55px">
+          <div>
+            <button type="button" class="btn btn-secondary" (click)="submit(simple_alert_temp)">{{approveDeclineStatus === 'A'? 'Approve': 'Decline'}}</button>
+          </div>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

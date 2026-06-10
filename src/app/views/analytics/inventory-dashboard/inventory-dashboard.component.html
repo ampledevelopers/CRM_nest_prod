@@ -1,0 +1,59 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="info_row" *ngIf="!loading">
+  <div class="col-md-12" style="float: left; padding: 0px;">
+    <div class="card">
+      <div class="card-header">
+        <strong>Inventory Dashboard</strong>
+      </div>
+      <div class="card-body" style="padding: 0px; overflow-x: auto">
+        <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+          <thead style="font-weight: bold;">
+            <tr style="text-align: center;">
+              <td>
+              </td>
+              <td *ngFor="let branch of branchList" colspan="4">
+                {{branch.branchCode}}
+              </td>
+              <td colspan="2">
+                Overall
+              </td>
+              <td>
+                Buffer 1W
+              </td>
+              <td>
+                TBO
+              </td>
+            </tr>
+            <tr>
+              <td>Row Labels</td>
+              <td *ngFor="let inventoryHead of inventoryHeaders">
+                <span *ngIf="inventoryHead.head !== undefined">{{inventoryHead.head}}</span>
+                <span *ngIf="inventoryHead.head === undefined">SOH</span>
+              </td>
+              <td>
+                Avg Con
+              </td>
+              <td>
+                SOH
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let finalData of finalInventoryData">
+              <td>
+                {{finalData.part}}
+              </td>
+              <td *ngFor="let dataCount of finalData.countArray" style="text-align: center;">
+                {{dataCount.count}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

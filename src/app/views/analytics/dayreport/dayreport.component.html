@@ -1,0 +1,28 @@
+<div class="animated fadeIn">
+  <div class="card" *ngIf="isChart===true">
+    <div class="card-header">
+      {{compName}}
+    </div>
+    <div class="card-columns cols-2" style="column-count:2;margin-top: 1rem;margin-left:0.5rem;margin-right: 0.5rem ">
+      <div class="card">
+        <div class="card-header">
+          Warranty Cases
+          <div class="card-header-actions">
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrapper">
+            <canvas baseChart class="chart" [datasets]="barChartData4" [labels]="barChartLabels4"
+              [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+              (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isChart===false">
+    <div class="card-header">
+      No Data for the Analytics
+    </div>
+  </div>
+</div>

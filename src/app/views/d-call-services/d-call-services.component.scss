@@ -1,0 +1,118 @@
+.badge {
+    --cui-badge-padding-x: 0.85em;
+    --cui-badge-padding-y: 0.55em;
+  }
+  
+  c-badge {
+    font-size: 0.75rem;
+  }
+  
+  a {
+    color: #20a8d8 !important;
+    cursor: pointer;
+  }
+  
+  .expandLeftDiv {
+    width: 70%;
+    float: left;
+  }
+  
+  .expandRightDiv {
+    width: 30%;
+    float: right;
+  }
+  
+  .expandLeft {
+    text-align: center;
+    border: 0px solid lightgray !important;
+  }
+  
+  .expandRight {
+    text-align: center;
+    border: 0px solid lightgray !important;
+  }
+  
+  .ackBox {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0px;
+    height: 400px;
+  }
+  
+  .forMoreInfo {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+  }
+  
+  
+  c-badge {
+    margin-left: -1rem;
+    height: 100%;
+    width: 100%;
+    --cui-bg-opacity: 0.8 !important;
+    font-weight: bolder;
+    color: white !important;
+  }
+  
+  .modal-body {
+    max-height: calc(100vh - 50px) !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+  
+    select {
+      border-bottom: 1px solid lightgray !important;
+      font-size: medium;
+      color: gray;
+      border: 0;
+      margin-top: 0rem;
+      line-height: 0.8;
+      background-color: white;
+    }
+  
+  }
+  
+  .Acknowledge.input {
+    border: 1px solid lightgray !important;
+    width: 50% !important;
+    color: gray;
+    margin-left: 8rem;
+    border: 0;
+    margin-top: 0.2rem;
+    font-size: 1.0rem;
+    height: 1.8rem;
+    text-align: center;
+  }
+  
+  .material-icons {
+    align-items: center;
+  }
+  
+  .noQrcode {
+    display: grid;
+    top: 5rem;
+    position: absolute;
+    right: 4rem;
+    text-align: center;
+    color: gray;
+  }
+  
+  .images {
+    color: #20a8d8;
+    cursor: pointer;
+  }
+  
+  .makeCall {
+    float: right;
+    color: #04c104;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    font-size: inherit;
+  
+    i {
+      margin-top: 0px !important;
+    }
+  }

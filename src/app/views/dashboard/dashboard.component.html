@@ -1,0 +1,178 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 20%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div *ngIf="(data.length === 0)" style="margin-top: 5rem;">
+    <p style="text-align: center">No Tickets are available</p>
+    <div class="info_row">
+      <div class="col-sm-12">
+        <div style="display: flex;">
+          <div class="header_left">
+            <button *ngIf="buttonSpin === false" style="display: block; margin: auto; padding: .2rem .4rem .2rem .4rem;"
+              class="btn btn-block btn-outline-primary" (click)="getData_Status()">Retry</button>
+            <div class="sk-three-bounce" style="float: left;" *ngIf="buttonSpin === true">
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span>
+    <div *ngIf="(data.length != 0)" class="card col-md-9"
+      style="float:left; margin-bottom: 1rem; padding: 0px !important; margin-right: 1.2rem;">
+      <table class="table table-striped table-hover table-responsive-lg" style=" margin-top: 0% !important;">
+        <tbody>
+          <tr style="display: none;"></tr>
+          <tr style="background-color: white !important;">
+            <td colspan="3" style=" font-weight: normal; padding: 0.75rem !important;">
+              <label *ngIf="ticket_type != 'enquiry' && ticket_type != 'mytickets' && ticket_type != 'closed' "
+                style="width:50%; color:  black; text-align: left; font-weight: bold;">{{data[0].status}}</label>
+              <label style="color: gray; margin-bottom: 0px;">Total Tickets: {{filterMetadata.count}}</label>
+              <a style="cursor: pointer; color: #20a8d8; float: right;" *ngIf="buttonSpin === false"><b
+                  (click)="getData_Status()">Refresh</b></a>
+              <div class="sk-three-bounce" style="float: right;" *ngIf="buttonSpin === true">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="grid-container" *ngFor="let el of data | dataFilter : [nameSearch, statusSearch, ticketSearch, locationSearch, phoneSearch, emailSearch, warrantySearch, serviceSearch, productSearch, serialSearch, technicianSearch, imeiSearch, gNoSearch, pendingSearch]:filterMetadata | paginate: { itemsPerPage: num, currentPage: p }" >
+            <td style="width: 6%">
+              <div>
+                <div class="namebox">
+                  <p *ngIf="el.ticket_date <= '2024-03-31'" style="text-align: center; display: table-cell; vertical-align: middle; line-height: 16px;">
+                    <small>{{el.branch_code}}</small><br />{{el.id}}</p>
+                  <p *ngIf="el.ticket_date > '2024-03-31'" style="text-align: center; display: table-cell; vertical-align: middle; line-height: 16px;">
+                      <small>{{el.new_branch_code}}</small><br />{{el.id}}<br /><small>{{el.branch_code}}</small></p>
+                </div>
+              </div>
+            </td>
+              <td style="padding-right: 0px;" [ngClass]="{ 'crer-td': el.crer_flag == '1' }">
+              <div class="title" *ngIf="siteType === '1'">
+                <a style="color: #20a8d8; cursor: pointer;"><b
+                    (click)="ticketselect(el.id)">{{el.problem_reported}}</b></a>
+                <p style="margin-bottom: 0.2rem; margin-top: 0.2rem;">
+                  <span><b>Name:</b>&nbsp;{{el.customer_name}}</span>&nbsp;<span><b>Phone:</b>&nbsp;{{el.customer_phone_no}}</span>&nbsp;<span>&nbsp;&nbsp;</span><span><b>Token:</b>&nbsp;<span *ngIf="isTekne">T</span>{{el.token_no}}/{{el.ticket_date}}</span><span>&nbsp;&nbsp;</span><span><b>Family:</b>&nbsp;{{el.family}}</span>&nbsp;<span>&nbsp;&nbsp;</span>
+                </p>
+                <p style="margin-bottom: 0px;"><span *ngIf="!isTekne"><b>Phy
+                      Loc</b>&nbsp;{{el.device_physical_location}}</span><span *ngIf="!isTekne">&nbsp;</span><span><b>Assigned
+                      to:</b>&nbsp;{{el.assigned_user_name}}</span>&nbsp;<span><b>Serial
+                      No:</b>&nbsp;{{el.serial_no}}</span>&nbsp;<span *ngIf="!isTekne"><b>G-Number</b>&nbsp;{{el.g_number}}</span></p>
+              </div>
+              <div class="title" *ngIf="siteType === '2'">
+                <a style="color: #20a8d8; cursor: pointer;"><b
+                    (click)="ticketselect(el.id)">{{el.problem_reported}}</b></a>
+                <p style="margin-bottom: 0.2rem; margin-top: 0.2rem;">
+                  <span><b>Name:</b>&nbsp;{{el.customer_name}}</span>&nbsp;<span><b>Phone:</b>&nbsp;{{el.customer_phone_no}}</span>&nbsp;<span>&nbsp;&nbsp;</span><span><b>Date:</b>&nbsp;{{el.ticket_date}}</span>&nbsp;&nbsp;<span><b>Family:</b>&nbsp;{{el.family}}</span>&nbsp;
+                </p>
+                <p style="margin-bottom: 0px;"><span><b>Assigned
+                      to:</b>&nbsp;{{el.assigned_user_name}}</span><span>&nbsp;&nbsp;</span><span><b>Comp.Name</b>&nbsp;{{el.companyName}}</span>
+                </p>
+                <p><span><b>Serial
+                      No</b>&nbsp;{{el.serial_no}}</span>&nbsp;<span><b>G-Number</b>&nbsp;{{el.g_number}}</span></p>
+              </div>
+            </td>
+            <td *ngIf="ticket_type == 'enquiry' || ticket_type == 'mytickets' || ticket_type == 'closed' ">
+              <div style="float:left; margin-left: 5px; margin-top: 20px; display: table; border-radius: 3px;"
+                [ngStyle]="{'background-color': [el.statusclr], 'width': '10px', 'height': '10px'}">
+              </div>
+              <p style="margin-top: 13px; margin-left: 22px;">{{el.status}}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="display: flex;">
+        <pagination-controls style="display:block ruby; margin-top: 1rem;" (pageChange)="p = $event">
+        </pagination-controls>
+        <select (change)="itemsPerPage($event.target.value)">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20" selected>20</option>
+        </select>
+      </div>
+    </div>
+  </span>
+</div>
+
+<div class="card" style=" margin-bottom: .5rem; margin-left: 0.2rem !important; padding: 0px !important"
+  *ngIf="(loading === false && data.length != 0)">
+  <div class="card-header">
+    Filters
+  </div>
+  <div class="card-body" style="padding: 0px 0.75rem">
+    <div class="col-md-12" *ngIf="(userRole === '3') || (userRole === '2')">
+      <p style="margin-bottom: 0em; margin-top: 1em">Location</p>
+      <fieldset class="form-group" style="margin-bottom: 0px">
+        <ng-select [multiple]="true" class="bootstrap" placeholder="anything" [items]="options.branch" bindLabel="label"
+          bindValue="value" [(ngModel)]="locationSearch" (change)="locationselect(locationSearch)"></ng-select>
+      </fieldset>
+    </div>
+    <div class="col-md-12" *ngIf="(userRole === '3') || (userRole === '2') || (userRole === '6') || (userRole === '8')">
+      <p style="margin-bottom: 0em; margin-top: 1em">Technician</p>
+      <input type="search" class="form-control" placeholder="Search by Engineer Id" id="technicianSearch"
+        [(ngModel)]="technicianSearch" (change)="searchTechnician(technicianSearch)">
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Ticket Id</p>
+      <input type="search" class="form-control" placeholder="Search by Ticket Id" id="ticketsearch"
+        [(ngModel)]="ticketSearch">
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Serial Number</p>
+      <input type="search" class="form-control" placeholder="Search by Serial Number" id="seralsearch"
+        [(ngModel)]="serialSearch">
+    </div>
+    <div class="col-md-12" *ngIf="siteType === '2'">
+      <p style="margin-bottom: 0em; margin-top: 1em">Pending Status</p>
+      <fieldset class="form-group" style="margin-bottom: 1rem">
+        <ng-select class="bootstrap" placeholder="any" [items]="pendingOptions" [multiple]="true" bindLabel="label"
+          bindValue="value" [(ngModel)]="pendingSearch"></ng-select>
+      </fieldset>
+    </div>
+    <div class="col-md-12" *ngIf="!isTekne">
+      <p style="margin-bottom: 0em; margin-top: 1em">IMEI Number</p>
+      <input type="search" class="form-control" placeholder="Search by IEMI Number" id="imeisearch"
+        [(ngModel)]="imeiSearch">
+    </div>
+    <div class="col-md-12" *ngIf="!isTekne">
+      <p style="margin-bottom: 0em; margin-top: 1em">G Number</p>
+      <input type="search" class="form-control" placeholder="Search by G Number" id="imeisearch"
+        [(ngModel)]="gNoSearch">
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Customer Name</p>
+      <input type="search" class="form-control" placeholder="Search by Name" id="namesearch" [(ngModel)]="nameSearch">
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Phone Number</p>
+      <input type="search" class="form-control" placeholder="Search by Phone Number" id="phonesearch" maxlength="10"
+        [(ngModel)]="phoneSearch">
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Email</p>
+      <input type="search" class="form-control" placeholder="Search by Email" id="emailsearch"
+        [(ngModel)]="emailSearch">
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Warranty Status</p>
+      <fieldset class="form-group" style="margin-bottom: 0px">
+        <ng-select class="bootstrap" placeholder="any" [items]="warrantyOptions" [multiple]="true" bindLabel="label"
+          bindValue="value" [(ngModel)]="warrantySearch"></ng-select>
+      </fieldset>
+    </div>
+    <div class="col-md-12">
+      <p style="margin-bottom: 0em; margin-top: 1em">Product Family</p>
+      <fieldset class="form-group" style="margin-bottom: 1rem">
+        <ng-select class="bootstrap" placeholder="any" [items]="options.family" [multiple]="true" bindLabel="label"
+          bindValue="value" [(ngModel)]="productSearch" (change)="familySelect(productSearch)"></ng-select>
+      </fieldset>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

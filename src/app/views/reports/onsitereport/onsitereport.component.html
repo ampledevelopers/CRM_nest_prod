@@ -1,0 +1,138 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch</label>
+          <fieldset class="form-group">
+            <ng-select ng-multiple="true" class="box" placeholder="any" [items]="branches" [multiple]="true"
+              bindLabel="label" bindValue="value" [(ngModel)]="branchId">
+            </ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-3">
+          <label>Company</label>
+          <fieldset class="form-group">
+            <ng-select class="bootstrap" placeholder="any" [items]="companies" [multiple]="true"
+              bindLabel="label" bindValue="id" [(ngModel)]="companyId" (change)="companySelect(companyId)"></ng-select>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="date">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="date">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+          <div style="margin-left: 1rem;" class="acceptbtns">
+            <button (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.row-->
+  </div>
+  <!--/.row-->
+
+  <div *ngIf="reportLoading === true" style="margin-top: 1rem;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div class="card" style="margin-top: 1rem !important; margin-bottom: 1rem !important;" *ngIf="isReport===true">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important; margin-bottom: .5rem;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <!-- <div class="header_right" style="width: 100%;padding: 1rem;">
+        <div class="actionbtns">
+          <input type="search" class="form-control" placeholder="Search by Ticket ID" id="namesearch"
+            [(ngModel)]="ticketSearch">
+        </div>
+      </div> -->
+      <div class="card-body" style="overflow-x: auto;padding-top: 0px;">
+        <!-- <table class="table table-bordered table-striped table-sm" datatable style="padding-top: .5rem;">
+          <thead>
+            <tr>
+              <th>Ticket_Id</th>
+              <th>Branch_Code</th>
+              <th>Serial_No</th>
+              <th>Company_Name</th>
+              <th>Entry_Time</th>
+              <th>Customer_Name</th>
+              <th>Repair_Type</th>
+              <th>Assigned_To</th>
+              <th>Status</th>
+              <th>Product_Description</th>
+              <th>Warranty_Status</th>
+              <th>Quote_Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let idx = index">
+              <td>{{item.id}}</td>
+              <td>{{item.branch_code}}</td>
+              <td>{{item.serial_no}}</td>
+              <td>{{item.logger_name}}</td>
+              <td>{{item.entrytime}}</td>
+              <td>{{item.customer_name}}</td>
+              <td>{{item.service_type}}</td>
+              <td>{{item.user_name}}</td>
+              <td>{{item.repair_status}}</td>
+              <td>{{item.product_description}}</td>
+              <td>{{item.warranty_status}}</td>
+              <td>{{item.quotation_new_flag}}</td>
+            </tr>
+          </tbody>
+        </table> -->
+        <c-smart-table [tableFilter]="true" activePage="1" cleaner #smartTable="cSmartTable" [columnFilter]="false"
+            [columnSorter]="false" header [columns]="columns" [itemsPerPage]="100" [items]="data" pagination
+            [tableProps]="{ hover: true, striped: true, responsive: true }">
+
+            <ng-template cTemplateId="tableData" let-columnName="columnName" let-item="item" let-tdContent="tdContent">
+              <td>
+                <ng-container [ngSwitch]="columnName">
+                  <ng-container *ngSwitchDefault>
+                    {{ tdContent }}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-template>
+
+          </c-smart-table>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="isRecords===1" style="margin-top: 1rem !important; margin-bottom: 1rem !important;">
+    <div class="col-lg-16">
+      <div class="card-header" style="display:flex !important;">
+        <i class="material-icons" style="margin-right:0.3rem !important;">view_headline</i> {{reportHeader}}
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <!-- <th>Sl No</th> -->
+              <th>{{ alert }}</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

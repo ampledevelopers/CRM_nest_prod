@@ -1,0 +1,78 @@
+<div class="animated fadeIn">
+    <div class="card">
+      <div class="card-header" style="text-align: center">
+        Missing Device Entry
+      </div>
+      <div class="card-body">
+      <div class="info_row">
+        <div class="col-md-4">
+            <label>Serial Number<sup style="color: red">*</sup></label>
+        </div>
+        <div class="col-md-8">
+            <input class="information" type="text" placeholder="Enter Serial Number"  [(ngModel)]="serialNo" >
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-4">
+            <label>Customer Name<sup style="color: red">*</sup></label>
+        </div>
+        <div class="col-md-8">
+            <input class="information" type="text" placeholder="Enter Customer Name" [(ngModel)]="customerName">
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-4">
+            <label>Company Name</label>
+        </div>
+        <div class="col-md-8">
+            <input class="information" type="text" placeholder="Enter Company Name" [(ngModel)]="companyName">
+        </div>
+      </div>
+      <div class="info_row">
+          <div class="col-md-4">
+              <label>Phone Number<sup style="color: red">*</sup></label>
+          </div>
+          <div class="col-md-8">
+              <input class="information" type="text" maxlength="10" placeholder="Enter Phone Number" [(ngModel)]="phoneNo">
+          </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-4">
+            <label>Email Id<sup style="color: red">*</sup></label>
+        </div>
+        <div class="col-md-8">
+            <input class="information" type="text" placeholder="Enter Email Id" [(ngModel)]="emailId">
+        </div>
+      </div>
+      <div class="info_row">
+        <div class="col-md-4">
+            <label>Lost Status<sup style="color: red">*</sup></label>
+        </div>
+        <div class="col-md-8">
+          <ng-select
+          class="bootstrap"
+          [closeOnSelect]="true"
+          [items]="statusList"
+          bindLabel="label"
+          bindValue="value"
+          [multiple]="false" [(ngModel)]="lostStatus" style="margin-bottom: .5rem" [clearable]="false"></ng-select>
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem; ">
+        <div class="header_left" style="display: flex !important" >
+          <div class="acceptbtns" style="float: left" *ngIf="buttonSpin === false">
+              <button  (click)="save()">Save</button>
+          </div>
+          <div style="margin-left: 1rem;float: left;" class="acceptbtns" *ngIf="buttonSpin === false" >
+            <button  (click)="cancel()">Cancel</button>
+          </div>
+          <div class="sk-three-bounce" style="margin: auto; margin-top: 1rem;" *ngIf="buttonSpin === true">
+            <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+              <div class="spinner-grow spinner-grow-sm" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.dashboard-table {
+  border-collapse: collapse;
+  font-size: 20px;
+  min-width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  text-align: center;
+}
+
+/* Apply padding and borders */
+.dashboard-table th,
+.dashboard-table td {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+}
+
+/* Override Bootstrap’s header background */
+.dashboard-table thead th {
+  background: rgb(229, 237, 247) !important; /* custom blue */
+  color: rgb(0, 0, 0) !important;
+  text-align: center;
+  font-weight: 600;
+
+}

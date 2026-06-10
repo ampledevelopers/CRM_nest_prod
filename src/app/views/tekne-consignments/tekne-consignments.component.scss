@@ -1,0 +1,32 @@
+input {
+  height: 36px;
+  border-color: #ddd !important;
+  margin-bottom: 1rem !important;
+  padding-left: 0.5rem;
+}
+
+.serachInput{
+  float: right;
+}
+
+.listType {
+  margin-top: 0.5rem;
+  float: right;
+  margin-right: 1rem;
+  cursor: pointer;
+  color: #20a8d8;
+}
+
+.addNew tr {
+  border: 0px !important;
+}
+
+.addNew td {
+  border: 0px !important;
+}
+
+.grid-container i {
+  margin-top: 0px !important;
+  margin-left: 0.5rem !important;
+  cursor: pointer;
+}

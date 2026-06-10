@@ -1,0 +1,67 @@
+
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <!-- <div class="sk-chasing-dots">
+    <div class="sk-child sk-dot1"></div>
+    <div class="sk-child sk-dot2"></div>
+  </div> -->
+  <c-spinner size="sm"></c-spinner>
+</div>
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="card">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body">
+      <div class="info_row" style="padding-bottom: 0px;">
+        <div class="col-sm-12">
+            <div style="display: flex;">
+              <div class="header_left" style="width: 70% !important;">
+                  <div class="info_row" style="padding-bottom: 0px;">
+                    <div class="col-md-5">
+                      <fieldset class="form-group">
+                        <ng-select
+                        class="bootstrap"
+                        placeholder="All Branch"
+                        [items]="branchList"
+                        [multiple]="false" (change)="selectBranch($event)" [clearable]="false"></ng-select>
+                      </fieldset>
+                    </div>
+                    <div class="col-md-4">
+                      <fieldset class="form-group">
+                        <ng-select
+                        class="bootstrap"
+                        placeholder="Select Report Type"
+                        [items]="reportTypes"
+                        [multiple]="false" (change)="selectReport($event)" [clearable]="false"></ng-select>
+                      </fieldset>
+                    </div>
+                    <div class="col-md-3">
+                      <button *ngIf="buttonSpin === false" class="btn btn-block btn-outline-primary" style="height: 32px;padding: 0px !important;" (click)="getReport()">Get Report</button>
+                      <div class="sk-three-bounce" style="float: left; margin-top: 0.3rem" *ngIf="buttonSpin === true">
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                        <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+         </div>
+        </div>
+      </div>
+    </div><!--/.row-->
+</div>
+
+<div [innerHtml]="html" style="overflow: auto; width: 100%"></div>
+<div [innerHtml]="html1" style="overflow: auto; width: 100%"></div>
+
+<!-- <div class="header_right">
+  <ng-template #popTemplateHtml>
+      <div [innerHtml]="html"></div>
+    </ng-template>
+    <div class="col-6 col-sm-4 col-md mb-3 mb-xl-0 text-center" style="padding: 0px;">
+      <button type="button" class="btn btn-outline-primary" [popover]="popTemplateHtml"
+      popoverTitle="Legends" triggers="focus" placement="bottom" style="padding: 0.2rem 0.5rem 0.2rem 0.5rem; width:210px;"><i class="fa fa-info-circle"></i>&nbsp;Keywords - Legends
+      </button>
+    </div>
+</div>
+ -->

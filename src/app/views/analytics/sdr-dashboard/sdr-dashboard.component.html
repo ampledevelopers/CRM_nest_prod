@@ -1,0 +1,199 @@
+<!-- <div class="animated fadeIn"  style="margin-top: 30%;">
+    <c-spinner size="sm"></c-spinner>
+</div> -->
+<div>
+  <div class="card">
+    <div class="card-header">
+      Filters
+    </div>
+    <div class="card-body" style="padding: 1rem">
+
+      <div class="row">
+        <div class="col-md-4">
+          <label>Branch<sup style="color: red">*</sup></label>
+          <select [(ngModel)]="branch" class="form-control">
+            <option value="" selected disabled>Select Branch</option>
+            <option value="">All</option>
+            <option *ngFor="let branch of branches" [value]="branch.branch_code">
+              {{ branch.label }}
+            </option>
+          </select>
+
+        </div>
+        <div class="col-md-4">
+          <label>From Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="fromDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+        <div class="col-md-4">
+          <label>To Date<sup style="color: red">*</sup></label>
+          <input class="form-control" [(ngModel)]="toDate" id="date-input" type="date" name="date-input"
+            placeholder="dd/mm/yyyy">
+        </div>
+      </div>
+      <div style="display: flex;margin-top: 1rem ">
+        <div class="header_left" style="display:block !important;">
+          <div class="acceptbtns" style="float: left">
+            <button (click)="load()">Load</button>
+          </div>
+          <div *ngIf="showexportBtn" style="margin-left: 1rem;float: left;" class="acceptbtns">
+            <button (click)="exportAsXLSX()">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="animated fadeIn" *ngIf="showTable === false && loading === true"
+    style="margin-top: 2rem; width: 100%; text-align: center;">
+    <c-spinner size="sm" style="margin-left: 0 !important;"></c-spinner>
+  </div>
+
+
+
+  <!-- ALL WARRANTY  -->
+  <div *ngIf="!loading && showWarrantyTable" class="card" style="margin-top: 1rem">
+    <div class="card-header">
+      SDR Dashboard
+    </div>
+    <div class="card-body" style="overflow: auto; padding: 0;">
+      <table class="table table-bordered table-striped table-sm text-nowrap" style="width: 100%; table-layout: fixed;">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width: 49%;">Branch/Part No(Part Desc)</th>
+            <th colspan="2" class="text-center" style="width: 15%;">Repair Count</th>
+            <th colspan="2" class="text-center" style="width: 15%;">Ample SDR Count</th>
+            <th colspan="2" class="text-center" style="width: 15%;">Apple SDR Count</th>
+            <th rowspan="2" style="width: 10%;">Grand Total</th>
+            <th rowspan="2" style="width: 10%;">SDR %</th>
+          </tr>
+          <tr>
+            <th style="text-align:center;">IW</th>
+            <th style="text-align:center;">OOW</th>
+            <!-- Ample SDR subcolumns -->
+            <th style="text-align:center;">IW</th>
+            <th style="text-align:center;">OOW</th>
+            <!-- Apple SDR subcolumns -->
+            <th style="text-align:center;">IW</th>
+            <th style="text-align:center;">OOW</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let branch of branchesListData; let i = index;">
+            <tr>
+              <td class="head">
+                <a (click)="expandBranch(i, branch.branchCode, 'open')" *ngIf="!branch.showInnerTable">+</a>
+                <a (click)="expandBranch(i, branch.branchCode, 'close')" *ngIf="branch.showInnerTable">-</a>
+                {{branch.name}}
+              </td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{branch.repairIW}}</td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{branch.repairOOW}}</td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{branch.amIWCount}}</td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{branch.amOOWCount}}</td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">{{branch.apTotalCount}}</td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }"> {{ branch.apOOWCount || 0 }}
+              </td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }"> {{
+                (branch.amIWCount || 0) +
+                (branch.amOOWCount || 0) +
+                (branch.apTotalCount || 0) +
+                (branch.apOOWCount || 0)
+                }}
+              </td>
+              <td [ngStyle]="{'font-weight': branch.showInnerTable ? 'bold' : 'normal' }">
+                {{
+                branch.totalRepairCount > 0
+                ? (((branch.grandTotal || 0) / branch.totalRepairCount) * 100 | number:'1.0-0')
+                : 0
+                }}
+                %
+              </td>
+            </tr>
+
+            <!-- Inner Part Table -->
+            <ng-container *ngIf="branch.showInnerTable">
+              <ng-container *ngFor="let tech of branchPartNo; let j = index;">
+                <tr>
+                  <td class="tech" style="max-width: 100%; padding: 0;">
+                    <div style="max-width: 100%; overflow-x: auto; white-space: nowrap;">
+                      <a *ngIf="!tech.showProductList" style="border:1px ; padding: 0px 3px; margin-left: 1rem;">-</a>
+                      <a *ngIf="tech.showProductList" style="border:1px ; padding: 0px 3px; margin-left: 1rem;">-</a>
+                      {{tech.part_number}}
+                      <span style="font-weight: lighter; font-size: 12px;">
+                        ({{tech.description}})
+                      </span>
+                    </div>
+                  </td>
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{tech.repairIWPartCount}}
+                  </td>
+
+                  <!-- OOW Repairs -->
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{tech.repairOOWPartCount}}
+                  </td>
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{tech.amIWPartCount}}
+                  </td>
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{tech.amOOWPartCount}}
+                  </td>
+
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{tech.apPartCount}}
+                  </td>
+                  <td>0
+                  </td>
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{ (tech.amIWPartCount || 0) + (tech.amOOWPartCount || 0) +
+                    (tech.apPartCount || 0) }}
+                  </td>
+                  <td [ngClass]="tech.showProductList ?  'childExpand' : !expanded ? 'techExpand' : 'null'">
+                    {{
+                    tech.totalRepairCount > 0
+                    ? ((((tech.amIWPartCount || 0) + (tech.amOOWPartCount || 0) + (tech.apPartCount || 0)) /
+                    tech.totalRepairCount) * 100 | number:'1.0-0')
+                    : 0
+                    }}
+                    %
+                  </td>
+              </ng-container>
+            </ng-container>
+
+          </ng-container>
+          <tr style="font-weight: bold; ">
+            <td>Total</td>
+            <td>{{ getTotal('repairIW') }}</td>
+            <td>{{ getTotal('repairOOW') }}</td>
+            <td>{{ getTotal('amIWCount') }}</td>
+            <td>{{ getTotal('amOOWCount') }}</td>
+            <td>{{ getTotal('apTotalCount') }}</td>
+            <td>{{ getTotal('apOOWCount') }}</td>
+            <td>
+              {{
+              getTotal('amIWCount') +
+              getTotal('amOOWCount') +
+              getTotal('apTotalCount') +
+              getTotal('apOOWCount')
+              }}
+            </td>
+            <td>
+              {{
+              (getTotal('totalRepairCount') > 0)
+              ? (((getTotal('amIWCount') + getTotal('amOOWCount') + getTotal('apTotalCount')) / (getTotal('repairIW') +
+              getTotal('repairOOW'))) * 100 | number:'1.0-0')
+              : 0
+              }}%
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="!loading && showNoData" class="text-center"
+    style="font-size: 1.5rem; font-weight: 500; margin-top: 2rem;">
+    No Data Found
+  </div>

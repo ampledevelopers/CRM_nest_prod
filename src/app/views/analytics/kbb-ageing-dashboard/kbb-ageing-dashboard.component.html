@@ -1,0 +1,115 @@
+<div class="animated fadeIn" *ngIf="loading === true" style="margin-top: 30%;">
+  <c-spinner size="sm"></c-spinner>
+</div>
+
+<div class="animated fadeIn" *ngIf="loading === false">
+  <div class="info_row">
+    <div class="col-md-12" style="float: left; padding: 0px;">
+      <div class="card">
+        <div class="card-header">
+          <strong>KBB Ageing Dashboard - {{this.preday}}</strong>
+        </div>
+        <div class="card-body" style="padding: 0px; overflow-x: auto">
+          <table class="table table-bordered table-sm" style="margin: auto;border-block-color: #808080">
+            <thead>
+              <tr>
+                <td rowspan="2" class="loc-tot">
+                  LOCATION
+                </td>
+                <td colspan="1" class="loc-tot">
+                  Ready For Pickup
+                </td>
+                <td colspan="3" class="loc-tot">
+                  Repair Marked Complete
+                </td>
+                <td rowspan="2" class="loc-tot">
+                  Grand Total
+                </td>
+              </tr>
+              <tr>
+                <td class="loc-tot">> than 20 Days</td>
+                <td class="loc-tot">1 Week</td>
+                <td class="loc-tot">2 Week</td>
+                <td class="loc-tot">> than 20Days</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let eligibleData of eligibleDatas">
+                <td class="others">{{eligibleData.branchCode}}</td>
+                <td><span (click)="kbbPendingList('GT20',20,'3500',ticket_list_temp, eligibleData.branch_id)"
+                    style="margin-left: 0.5rem; cursor: pointer;"> {{eligibleData.rfpu_20Days}}</span></td>
+                <td><span (click)="kbbPendingList('1week',7,'3600',ticket_list_temp, eligibleData.branch_id)"
+                    style="margin-left: 0.5rem; cursor: pointer;"> {{eligibleData.dd_1week}}</span></td>
+                <td><span (click)="kbbPendingList('2week',14,'3600',ticket_list_temp, eligibleData.branch_id)"
+                    style="margin-left: 0.5rem; cursor: pointer;"> {{eligibleData.dd_2week}}</span></td>
+                <td><span (click)="kbbPendingList('GT20',20,'3600',ticket_list_temp, eligibleData.branch_id)"
+                    style="margin-left: 0.5rem; cursor: pointer;"> {{eligibleData.dd_20days}}</span></td>
+                <td>{{eligibleData.total}}</td>
+              </tr>
+            </tbody>
+            <tr *ngFor="let grandTotal of grandTotals">
+              <td class="gtotal">Grand Total</td>
+              <td class="gtotal">{{grandTotal.rfpu_20Days_tot}}</td>
+              <td class="gtotal">{{grandTotal.dd_1week_tot}}</td>
+              <td class="gtotal">{{grandTotal.dd_2week_tot}}</td>
+              <td class="gtotal">{{grandTotal.dd_20days_tot}}</td>
+              <td class="gtotal">{{grandTotal.grand_total}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template class="fade" #ticket_list_temp>
+  <div class="modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="height: 55px;">
+        <h4 class="modal-title" style="line-height: 1.2">Ticket List</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12" *ngIf="isTicketList === true">
+          <table class="table table-bordered table-striped table-md" style="word-wrap: anywhere;">
+            <thead class="popthead">
+              <th>
+                Ticket Id
+              </th>
+              <th>
+                Branch Code
+              </th>
+              <th>
+                Part Number
+              </th>
+              <th>
+                Part Description
+              </th>
+              <th>
+                Ageing Since
+              </th>
+            </thead>
+            <tbody class="popTableBody">
+              <tr *ngFor="let ticket of ticketsList">
+                <td>{{ticket.ticket_id}}</td>
+                <td>{{ticket.branch_code}}</td>
+                <td>{{ticket.part_number}}</td>
+                <td>{{ticket.description}}</td>
+                <td>{{ticket.ageing_since | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--/.col-->
+      </div>
+      <div class="modal-footer" style="height: 50px">
+        <button type="button" class="btn btn-secondary" *ngIf="isTicketList === false" (click)="back()">Back</button>
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Close</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="export()">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

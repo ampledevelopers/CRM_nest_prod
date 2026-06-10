@@ -1,0 +1,76 @@
+<div class="card" style="border: 1px solid lightgray;">
+    <div class="card-header">Filters - DSAT Findings Dashboard</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Year<sup style="color: red">*</sup></label>
+                <select id="year" [(ngModel)]="year" name="year" class="form-control">
+                    <option value="">Select Year</option>
+                    <option value="FY2022">FY2022</option>
+                    <option value="FY2023">FY2023</option>
+                    <option value="FY2024">FY2024</option>
+                    <option value="FY2025">FY2025</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Month<sup style="color: red">*</sup></label>
+                <select id="quarter" [(ngModel)]="month" name="quarter" class="form-control">
+                    <option *ngFor="let docType of months" [value]="docType.value">
+                        {{docType.name}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Week<sup style="color: red">*</sup></label>
+                <select [(ngModel)]="week" class="form-control">
+                    <option value="">Select Week</option>
+                    <option value="W1">W1</option>
+                    <option value="W2">W2</option>
+                    <option value="W3">W3</option>
+                    <option value="W4">W4</option>
+                    <option value="W5">W5</option>
+                </select>
+            </div>
+            <div class="row" style="margin: auto;width: 12rem;text-align: center;">
+                <button style="margin-top: 1.5rem;" class="btn btn-block btn-outline-primary"
+                    (click)="load()">Load</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="animated fadeIn" *ngIf="loading === true" style="margin: auto; margin-top: 10% !important;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+<div class="card" *ngIf="dsatDataLoad === true && loading === false" style="margin-bottom: 1rem;margin-top: 1.5rem;">
+    <div class="card-body">
+        <div class="serachInput" style="margin-right: .5rem;width: 20%;margin-bottom: 1rem;float: right;">
+            <input type="search" class="form-control" placeholder="Search by RCA" id="namesearch" [(ngModel)]="rca"
+                (keydown)="searchRCA($event)" style=" width:100%;">
+        </div>
+        <table class="table table-bordered table-sm" style="border: 1px solid black !important;">
+            <tbody style="text-align: center;">
+                <tr style="background-color: lightgrey;font: bold;">
+                    <td class="td1">Location</td>
+                    <td class="td1">Dispatch Identifier</td>
+                    <td class="td1">Product Description</td>
+                    <td class="td1">Warranty Group</td>
+                    <td class="td1">Dispatch Type</td>
+                    <td class="td1">SVR</td>
+                    <td class="td1">Findings</td>
+                    <td class="td1">RCA</td>
+                    <td class="td1">Apple Corrective Actions</td>
+                </tr>
+                <tr *ngFor="let data of dsatDataTemp;">
+                    <td class="td2">{{data.branch_name.replace('iCare ', '') || ' '}}</td>
+                    <td class="td2">{{data.dispatch_identifier || ' '}}</td>
+                    <td class="td2">{{data.product_descriptioin || ' '}}</td>
+                    <td class="td2">{{data.warranty_group || ' '}}</td>
+                    <td class="td2">{{data.dispatch_type || ' '}}</td>
+                    <td class="td2">{{data.svr || ' '}}</td>
+                    <td>{{data.findings || ' '}}</td>
+                    <td>{{data.rca || ' '}}</td>
+                    <td>{{data.ample_corrective_actions || ' '}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>

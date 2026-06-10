@@ -1,0 +1,84 @@
+<div class="app-body">
+    <main class="main d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card-group" style="margin:auto; margin-top:15rem !important; width:45rem !important; height:10rem !important;box-shadow: none;">
+                        <div class="card p-4">
+                            <div class="card-body">
+                                <div class="needs-validation">
+                                    <h2>OTP</h2>
+                                    <p class="text-muted">Please enter OTP recieved in your registered Email id </p>
+                                    <div class="input-group mb-3" >
+                                         <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="material-icons">lock</i></span>
+                                        </div>
+                                        <input type="text" [(ngModel)]="otpInput" class="form-control" placeholder="OTP" required>
+                                    </div>
+                                    <div class="input-group mb-3" *ngIf="gsxApiInput">
+                                      <div class="input-group-prepend">
+                                         <span class="input-group-text"><i class="material-icons">login</i></span>
+                                      </div>
+                                      <input type="text" class="form-control" [(ngModel)]="gsxApiKey" placeholder="Enter GSX API Token" required style="margin-right: 0.3rem !important;">
+                                      <a rel="noopener" class="otpGSX" href="https://login-partner-connect.apple.com/" target="_blank">Get GSX API Token</a>
+                                    </div> <!-- https://login-partner-connect-uat.apple.com/ --> <!-- https://login-partner-connect.apple.com/ -->
+                                    <div class="input-group mb-3">
+                                        <span  *ngIf="gsxAuthError !== ''">
+                                          {{gsxAuthError}}
+                                        </span>
+                                    </div>
+
+                                    <div class="input-group mb-3" >
+                                        <input  type="hidden" #mobile  class="form-control"  placeholder="Mobile Number" >
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <button type="button" (click)="OnSubmit(otpInput)"  class="btn btn-primary px-4" type="submit" style="background-color : #20a8d8 !important; margin-left:12rem !important; color: white !important" *ngIf="loading === false" >SUBMIT</button>
+                                            <button style="background-color: #20a8d8 !important; margin-left: 11rem !important;" class="btn btn-primary" type="button" disabled="" *ngIf="loading === true"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="--cui-spinner-width: 1rem !important; --cui-spinner-height: 1rem !important; --cui-spinner-border-width: 0.2em !important; margin-right: 0.2rem !important;"></span> Verifying...</button>
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+<style>
+     .has-error {
+   border: 1px solid red;
+}
+
+.has-success {
+    color: black;
+    background-color: green;
+}
+
+</style>
