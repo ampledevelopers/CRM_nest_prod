@@ -9,17 +9,26 @@ import { map } from 'rxjs';
 export class UserCreateService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) {
   }
 
   getBranches() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/common/get_user_details', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'manage-user/get_user_details', form, {headers : this.getHeaders()});
   }
 
   getUsers() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/common/get_users', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'manage-user/get_users', form, {headers : this.getHeaders()});
   }
 
   checkUser(empId: string) {

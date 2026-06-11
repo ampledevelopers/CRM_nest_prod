@@ -10,6 +10,15 @@ import { ApproveReject } from './ticketdetail/ticketdetail.component';
 export class DashboardService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   ticketList: any;
   constructor(private http: HttpClient) {
   }
@@ -29,9 +38,9 @@ export class DashboardService {
       tType = 'undefined';
       sId = ticket_type;
     }
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&offset=' + 0 + '&limit=' + 2000 + '&user_id=' +
+    const form = 'offset=' + 0 + '&limit=' + 2000 + '&user_id=' +
                   localStorage.getItem('userId') + '&status_id=' + sId + '&ticket_type=' + tType;
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
 
   }
 
@@ -42,8 +51,8 @@ export class DashboardService {
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get_options?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'common/get_options?' + form, {headers : this.getHeaders()});
   }
 
   getTicketDetail(t_id: string) {
@@ -148,8 +157,8 @@ export class DashboardService {
   }
 
   getDetail(id: string | null) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   getAssignees(userId: any) {
@@ -164,9 +173,9 @@ export class DashboardService {
   }
 
   navigateTo(id: string, branch: string, navTo: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&branch_code=' + branch +
+    const form = 'ticket_id=' + id + '&branch_code=' + branch +
                   '&navigate_to=' + navTo + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   qcRequest(ticketId: string, hdId: string) {
