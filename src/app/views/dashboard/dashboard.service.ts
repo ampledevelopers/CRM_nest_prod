@@ -776,8 +776,8 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   getSVC(t_id: string | null) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/svc_show', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/svc_show', form, {headers : this.getHeaders()});
   }
 
   deleteSVC(t_id: string, svcid: string, remarks: string) {

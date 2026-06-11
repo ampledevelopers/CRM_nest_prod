@@ -28,14 +28,14 @@ export class RelocateEnggService {
   }
 
   chechEngg(empId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + empId;
-    return this.http.post(this.rootUrl + 'api/common/profile', form, {headers : this.reqHeader});
+    const form = 'user_id=' + empId;
+    return this.http.post(this.nestUrl + 'manage-user/profile', form, {headers : this.getHeaders()});
   }
 
   relocateUser(branchcode: string, branchid: string, siteId: string , roleId: string, userId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + userId +
+    const form = 'user_id=' + userId +
                 '&site_type_id=' + siteId + '&branch_id=' + branchid + '&branch_code=' + branchcode + '&group_id=' + roleId;
-    return this.http.post(this.rootUrl + 'api/common/relocate_user', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'manage-user/relocate_user', form, {headers : this.getHeaders()});
   }
 
 }

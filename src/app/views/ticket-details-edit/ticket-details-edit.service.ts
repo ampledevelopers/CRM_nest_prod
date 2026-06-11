@@ -69,8 +69,8 @@ export class TicketDetailsEditService {
   }
 
   getSVC(t_id: string) {
-    const form = '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.nestUrl + '/common/svc_show', form, {headers : this.getHeaders()});
+    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/svc_show', form, {headers : this.getHeaders()});
   }
 
   updateSvcRemarks(ticketId: string, svcId: string, svcRemarks: string) {

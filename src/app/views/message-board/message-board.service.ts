@@ -26,9 +26,9 @@ export class MessageBoardService {
   }
 
   submitMessageBoard(data: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') +  '&user_id=' + localStorage.getItem('userId') + data;
+    const form = 'user_id=' + localStorage.getItem('userId') + data;
      const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-     return this.http.post(this.rootUrl + 'api/common/message_board', form , {headers : reqHeader});
+     return this.http.post(this.nestUrl + 'dashboard/message_board', form , {headers : this.getHeaders()});
   }
 
 }

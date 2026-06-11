@@ -8,6 +8,15 @@ import { forkJoin, map, throwError } from 'rxjs';
 export class TekneTicketdetailService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   ticketList: any;
   constructor(private http: HttpClient) {
   }
@@ -190,8 +199,8 @@ export class TekneTicketdetailService {
   }
 
   getSVC(t_id: string | null) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/svc_show', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/svc_show', form, {headers : this.getHeaders()});
   }
 
   deleteSVC(t_id: string, svcid: string, remarks: string) {
