@@ -9,7 +9,15 @@ export class UpdateAgeingTimeService {
 
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) {
   }
 
@@ -19,9 +27,9 @@ export class UpdateAgeingTimeService {
   }
 
   getSitetypeBranches(siteType: string | null) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&siteType=' + siteType ;
-    return this.http.post(this.rootUrl + 'api/reports/get_sitetype_branches', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/get_sitetype_branches', form, {headers : this.getHeaders()});
 }
 
 getStatuses(siteType: string) {
@@ -31,13 +39,13 @@ getStatuses(siteType: string) {
 }
 
 getSitetypes() {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken')  ;
-    return this.http.post(this.rootUrl + 'api/reports/get_site_types', form, {headers : this.reqHeader});
+  const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
 }
 
 getProductFamily() {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken')  ;
-    return this.http.post(this.rootUrl + 'api/reports/get_site_types', form, {headers : this.reqHeader});
+  const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
 }
 
 addAgeingTime(sitetypeId: string, branchId: string, statusId: string, familyId: string, ageingTime: string, remarks: string, recordstatus: string, statusName: string) {
@@ -47,8 +55,8 @@ addAgeingTime(sitetypeId: string, branchId: string, statusId: string, familyId: 
     }
 
 getAgeingTimeData() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') ;
-      return this.http.post(this.rootUrl + 'api/tickets/get_ageing_time_details', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') ;
+      return this.http.post(this.nestUrl + 'ticket_edit/get_ageing_time_details', form, {headers : this.getHeaders()});
     }
 
 }
