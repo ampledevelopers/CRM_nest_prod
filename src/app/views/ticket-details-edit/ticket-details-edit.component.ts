@@ -127,8 +127,8 @@ export class TicketDetailsEditComponent {
     let result: any;
     if (this.ticketId !== '') {
       this.dataService.getDetail(this.ticketId)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             result = data;
             if (result.status === true) {
               if ((this.userRole === '3') || (this.userRole === '8')) {
@@ -206,10 +206,12 @@ export class TicketDetailsEditComponent {
                 this.deviceInfo.serviceType = 'Select Service Type';
               }
 
-              for (let i = 0; i < this.options.family.length; i++) {
-                if (this.data.product_family === this.options.family[i].value) {
-                  this.selectedFamily = this.options.family[i].id;
-                  break;
+              if (this.options?.family) {
+                for (let i = 0; i < this.options.family.length; i++) {
+                  if (this.data.product_family === this.options.family[i].value) {
+                    this.selectedFamily = this.options.family[i].id;
+                    break;
+                  }
                 }
               }
 
@@ -225,8 +227,14 @@ export class TicketDetailsEditComponent {
               this.simpleAlert = { title: 'Ticket Details Edit', msg: result.message };
               this.openModal(simple_alert_temp);
               this.isData = false;
+              this.buttonSpin = false;
             }
-          });
+          },
+          error: () => {
+            this.buttonSpin = false;
+            this.isData = false;
+          }
+        });
     } else {
       this.bcolor = true;
     }
@@ -251,6 +259,9 @@ export class TicketDetailsEditComponent {
   }
 
   selectFamily(event: any) {
+    if (!this.options?.family) {
+      return;
+    }
     for (let i = 0; i < this.options.family.length; i++) {
       if (event === this.options.family[i].value) {
         this.selectedFamily = this.options.family[i].id;

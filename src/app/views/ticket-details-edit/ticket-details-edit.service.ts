@@ -26,8 +26,8 @@ export class TicketDetailsEditService {
   }
 
   getOptions() {
-    const form =  '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.nestUrl + 'manage-user/get_user_details?' + form, {headers : this.getHeaders()});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'common/get_options?' + form, {headers : this.getHeaders()});
   }
 
   getDetail(id: string) {
@@ -38,7 +38,7 @@ export class TicketDetailsEditService {
   getCustomerInfo(site_id: string, c_id: string, phone_no: string) {
     const form =  '&user_id=' + localStorage.getItem('userId') +
                   '&site_type_id=' + site_id + '&c_id=' + c_id + '&phone=' + phone_no;
-    return this.http.post(this.nestUrl + '/ticket_edit/get_customer', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'ticket_edit/get_customer', form, {headers : this.getHeaders()});
   }
 
   updateUserInfo(data: Userinfo, customerId: string, ticketId: string) {
@@ -47,7 +47,7 @@ export class TicketDetailsEditService {
                   '&email=' +  data.email + '&address1=' + data.address1 + '&address2=' + data.address2 +
                   '&city=' + data.city + '&state=' + data.state + '&pin=' + data.pin + '&gstn=' + data.gstn + '&customer_id=' + customerId
                   + '&ticket_id=' + ticketId;
-    return this.http.post(this.nestUrl + '/common/customer_update', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'common/customer_update', form, {headers : this.getHeaders()});
   }
 
   updateDeviceInfo(data: Deviceinfo, ticketId: string, selectedFamily: string, device_condition: string | number | boolean, warrantyStatus: string, unitDate: string, unitTime: string, hdId: string,
@@ -59,24 +59,24 @@ export class TicketDetailsEditService {
                   + '&ticket_id=' + ticketId + '&warranty_status=' + warrantyStatus + '&unit_received_date=' + unitDate
                   + '&unit_received_time=' + unitTime + '&hd_id=' + hdId + '&customer_query=' + customerQuery + '&technician_comment=' + techComment
                   + '&payment_date=' + paymentDate;
-    return this.http.post(this.nestUrl + '/ticket_edit/ticket_update', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'ticket_edit/ticket_update', form, {headers : this.getHeaders()});
   }
 
   updateRepairInfo(ticketId: string, hd_id: string, gNumber: string) {
     const form = '&user_id=' + localStorage.getItem('userId') +
                   '&ticket_id=' + ticketId + '&hd_id=' + hd_id + '&g_number=' + gNumber + '&direct=' + '1';
-    return this.http.post(this.nestUrl + '/gsxapi/update_g_number', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'gsxapi/update_g_number', form, {headers : this.getHeaders()});
   }
 
   getSVC(t_id: string) {
-    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    const form = '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
     return this.http.post(this.nestUrl + 'common/svc_show', form, {headers : this.getHeaders()});
   }
 
   updateSvcRemarks(ticketId: string, svcId: string, svcRemarks: string) {
     const form = '&user_id=' + localStorage.getItem('userId') +
                   '&ticket_id=' + ticketId + '&hd_id=' + svcId + '&svc_remarks=' + svcRemarks;
-    return this.http.post(this.nestUrl + '/ticket_edit/svc_remarks_update', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'ticket_edit/svc_remarks_update', form, {headers : this.getHeaders()});
   }
 
 }
