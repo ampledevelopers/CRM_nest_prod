@@ -118,8 +118,7 @@ export class DefaultAsideComponent implements AfterViewInit {
   }
 
   readMessage() {
-    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId') + '&X_API_KEY=' +
-      localStorage.getItem('userToken');
+    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId') 
     this.userService.getMessageBoard(data1).subscribe({
       next: (data: any) => {
         if (data.message_read_flag === 'Y') {
@@ -141,8 +140,7 @@ export class DefaultAsideComponent implements AfterViewInit {
     });
   }
   getAllMessages() {
-    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId') + '&X_API_KEY=' +
-      localStorage.getItem('userToken');
+    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId');
     let result: any;
     this.userService.getAllMessageBoard(data1).subscribe({
       next: (data: any) => {
@@ -159,8 +157,7 @@ export class DefaultAsideComponent implements AfterViewInit {
   }
 
   setMessageFlag() {
-    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId') + '&X_API_KEY=' +
-      localStorage.getItem('userToken');
+    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId');
     let result;
     this.userService.setMessageFlag(data1).subscribe({
       next: (data: any) => {

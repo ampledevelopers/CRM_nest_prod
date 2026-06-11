@@ -21,7 +21,9 @@ export class LoginComponent implements OnInit {
 
     localStorage.setItem('rootUrl', 'https://api.icareservice.co.in/');
     localStorage.setItem('reportsUrl', 'https://reports.icareservice.co.in/');
-
+    localStorage.setItem('nestUrl', 'http://napi.icareservice.co.in/');
+    localStorage.setItem('reportUrl', 'http://napi.icareservice.co.in/');
+    
     //  localStorage.setItem('rootUrl', 'https://api4uat.icareservice.co.in/');
     //  localStorage.setItem('reportsUrl', 'https://api4uat.icareservice.co.in/');
 

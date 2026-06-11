@@ -12,7 +12,9 @@ import { timeout } from 'rxjs/operators';
 @Injectable()
 export class UserService {
   rootUrl = localStorage.getItem('rootUrl');
+  reportsUrl = localStorage.getItem('reportsUrl');
   reportUrl = localStorage.getItem('reportsUrl');
+  nestUrl = localStorage.getItem('nestUrl');
   selectedWidget: any = 'Pre-Repair';
   allWidgets: any = [];
   isGroup = false;
@@ -20,16 +22,19 @@ export class UserService {
   public s3: any;
   public aws: any;
   datePipe = new DatePipe('en-US');
-
+   
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
+
   constructor(private http: HttpClient) {
-  //   this.s3 = new AWS.S3Client({
-  //     region: environment.aws.region,
-  //     credentials: {
-  //       accessKeyId: environment.aws.accessKeyId,
-  //       secretAccessKey: environment.aws.secretAccessKey,
-  //     },
-  //   });
   }
 
   registerUser(user: User) {
@@ -48,155 +53,158 @@ export class UserService {
 
   userAuthentication(userName: string, password: string) { // alert(userName);
     const data = 'mobile=' + userName + '&password=' + password + '&grant_type=password';
-    return this.http.post(this.rootUrl + 'user/flogin', data, { headers: this.reqHeader });
+
+    return this.http.post(this.nestUrl + 'auth/flogin', data, { headers: this.getHeaders() });
+
   }
 
   getMenu(data: string) {
-    return this.http.post(this.rootUrl + 'user/user/getmenu', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/get_menu', data, { headers: this.getHeaders() });
   }
 
   getWidget(data: string) {
-    return this.http.post(this.reportUrl + 'user/user/getwidget', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/get_widget', data, { headers: this.getHeaders() });
   }
 
   getWidgetOnly(data: string) {
-    return this.http.post(this.rootUrl + 'user/user/get_only_widget', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/get_only_widget', data, { headers: this.getHeaders() });
   }
 
   getMenuPermission(groupID: string, subMenu: string) {
     const data = 'group=' + groupID + '&submenu=' + subMenu + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode') +
-      '&X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'user/get_menu_permission', data, { headers: this.reqHeader });
+      '';
+    return this.http.post(this.nestUrl + 'dashboard/get_menu_permission', data, { headers: this.getHeaders() });
   }
 
   userLogVisit(subMenu: string) {
-    const data = 'X_API_KEY=' + localStorage.getItem('userToken') + '&menu_name=' + subMenu + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/common/log_menu_visit', data, { headers: this.reqHeader });
+    const data = 'menu_name=' + subMenu + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'dashboard/log_menu_visit', data, { headers: this.getHeaders() });
   }
 
   getWidgetPermission(groupID: string, statusId: string) {
-    const data = 'X_API_KEY=' + localStorage.getItem('userToken') + '&status_id=' + statusId + '&group_id=' + groupID;
-    return this.http.post(this.rootUrl + 'user/get_widget_permission', data, { headers: this.reqHeader });
+    const data = 'status_id=' + statusId + '&group_id=' + groupID;
+    return this.http.post(this.nestUrl + 'user/get_widget_permission', data, { headers: this.reqHeader });
   }
 
   getUser(userId: string) {
     const data = 'user_id=' + userId;
-    return this.http.post(this.rootUrl + 'user/get_user', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'common/get_user', data, { headers: this.getHeaders() });
   }
 
   setUser(userId: any, user: any) {
-    const data = 'user_id=' + userId + '&data=' + user + '&X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/common/update_user', data, { headers: this.reqHeader });
+    const data = 'user_id=' + userId + '&data=' + user + '';
+    return this.http.post(this.nestUrl + 'manage-user/update_user', data, { headers: this.getHeaders() });
   }
   getTasks(data: string) {
-    /// var data = "group=" + groupID+"user_id=" + userId+ "&data=" + user+'&X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/common/get_tasks', data, { headers: this.reqHeader });
+    /// var data = "group=" + groupID+"user_id=" + userId+ "&data=" + user+'';
+    return this.http.post(this.nestUrl + 'dashboard/get_tasks', data, { headers: this.getHeaders() });
   }
 
   getNotifications(data: string) {
-    return this.http.post(this.rootUrl + 'api/tickets/get_notifications', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/get_notifications', data, { headers: this.getHeaders() });
   }
 
   resetPassword(userId: any, user: any) {
-    const data = 'user_id=' + userId + '&data=' + user + '&X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/common/reset_password', data, { headers: this.reqHeader });
+    const data = 'user_id=' + userId + '&data=' + user + '';
+    return this.http.post(this.nestUrl + 'auth/reset_password', data, { headers: this.getHeaders() });
   }
 
   userOtpAuthentication(mobile: string, otp: string) { // alert(userName);
     const data = 'mobile=' + mobile + '&otp=' + otp + '&grant_type=password';
-    return this.http.post(this.rootUrl + 'user/otplogin', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'auth/otplogin', data, { headers: this.getHeaders() });
   }
 
   authenticateGSX(key: string) {
     let form;
     if (key === '') {
-      form = 'user_id=' + localStorage.getItem('userId') + '&X_API_KEY=' + localStorage.getItem('userToken');
+      form = 'user_id=' + localStorage.getItem('userId') + '';
     } else {
-      form = 'user_id=' + localStorage.getItem('userId') + '&X_API_KEY=' + localStorage.getItem('userToken') + '&gsx_api_key=' + key;
+      form = 'user_id=' + localStorage.getItem('userId') + '' + '&gsx_api_key=' + key;
     }
     return this.http.post(this.rootUrl + 'api/gsxapi/get_auth_token', form, { headers: this.reqHeader });
   }
 
   dCallFetch(fromDate: any, toDate: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode') + '&from_date=' + fromDate + '&to_date=' + toDate;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode') + '&from_date=' + fromDate + '&to_date=' + toDate;
     return this.http.post(this.rootUrl + 'api/gsxapi/d_call', form, { headers: this.reqHeader });
   }
 
   mapCrmGsx(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
     return this.http.post(this.rootUrl + 'api/gsxapi/map_gsx_crm_repair_status', form, { headers: this.reqHeader });
   }
 
   mapPartConstraint(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
     return this.http.post(this.rootUrl + 'api/gsxapi/map_parts_constraint', form, { headers: this.reqHeader });
   }
 
   mapBlueDartTrack(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
     return this.http.post(this.rootUrl + 'api/gsxbatchapi/repair_shipping_tracking_auto', form, { headers: this.reqHeader });
   }
 
   logoutGSX() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
+    const form = 'user_id=' + localStorage.getItem('userId');
     return this.http.post(this.rootUrl + 'api/gsxapi/authenticate_end_session', form, { headers: this.reqHeader });
   }
 
   getMessageBoard(data: string) {
-    return this.http.post(this.rootUrl + 'api/common/get_message_board', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/get_message_board', data, { headers: this.getHeaders() });
   }
 
   getAllMessageBoard(data: string) {
-    return this.http.post(this.rootUrl + 'api/common/get_all_message', data, { headers: this.reqHeader });
+    // return this.http.post(this.rootUrl + 'api/common/get_all_message', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/get_all_message', data, { headers: this.getHeaders() });
   }
 
   getSMSMessages() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&status=' + 'U';
-    return this.http.post(this.rootUrl + 'api/message/get_message', form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + '&status=' + 'U';
+    return this.http.post(this.nestUrl + 'common/get_message', form, { headers: this.getHeaders() });
   }
 
   getAllSMS() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&status=' + 'R';
-    return this.http.post(this.rootUrl + 'api/message/get_message', form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + '&status=' + 'R';
+    return this.http.post(this.nestUrl + 'common/get_message', form, { headers: this.getHeaders() });
   }
 
   setMessageFlag(data: string) {
-    return this.http.post(this.rootUrl + 'api/common/set_message_flag', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'dashboard/set_message_flag', data, { headers: this.getHeaders() });
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
-    return this.http.post(this.rootUrl + 'api/common/get_user_details', form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
+    return this.http.post(this.nestUrl + 'manage-user/get_user_details', form, { headers: this.getHeaders() });
   }
 
   getUserList() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/message/get_users', form, { headers: this.reqHeader });
+    const form = '';
+    return this.http.post(this.nestUrl + 'common/get_users', form, { headers: this.getHeaders() });
   }
 
   sendMessage(inputData: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&from_user=' + localStorage.getItem('userId') + inputData;
+    const form = 'from_user=' + localStorage.getItem('userId') + inputData;
     return this.http.post(this.rootUrl + 'api/message/save_message', form, { headers: this.reqHeader });
   }
 
   updateMessage(messageId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&from_user=' + localStorage.getItem('userId') + '&id=' + messageId;
-    return this.http.post(this.rootUrl + 'api/message/update_status', form, { headers: this.reqHeader });
+    const form = 'from_user=' + localStorage.getItem('userId') + '&id=' + messageId;
+    return this.http.post(this.nestUrl + 'dashboard/update_status', form, { headers: this.getHeaders() });
   }
 
   switchType(siteType: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&site_type_id=' + siteType;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&site_type_id=' + siteType;
     return this.http.post(this.rootUrl + 'api/common/change_site', form, { headers: this.reqHeader });
   }
 
   getCertificates() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
+    const form = 'user_id=' + localStorage.getItem('userId');
     return this.http.get(this.rootUrl + 'api/common/atlas_certifications?' + form, { headers: this.reqHeader });
   }
 
   certificateRegister(docs: any, group: string, id: string, date: string) {
     const documents = JSON.stringify(docs);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&documents=' + documents +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&documents=' + documents +
       '&certification_group=' + group + '&certification_id=' + id + '&completion_date=' + date;
     return this.http.post(this.rootUrl + 'api/common/atlas_certifications', form, { headers: this.reqHeader });
   }
@@ -459,19 +467,19 @@ async uploadVideoS3Bucket(
 
   updateS3File(commonData: any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
+    const form = 'user_id=' + localStorage.getItem('userId') + commonData;
     return this.http.post(this.rootUrl + 'api/tickets/s3_data', form, { headers: this.reqHeader });
   }
 
   updateS3FileTekne(commonData: any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
+    const form = 'user_id=' + localStorage.getItem('userId') + commonData;
     return this.http.post(this.rootUrl + 'api/accytickets/s3_data', form, { headers: this.reqHeader });
   }
 
   deleteS3File(bucketName: any, fileName: any, ticket_id: any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
     return this.http.post(this.rootUrl + 'api/tickets/delete_s3_data', form, { headers: this.reqHeader });
   }
 
@@ -496,17 +504,17 @@ async uploadVideoS3Bucket(
   }
 
   getS3FileDetails(ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
     return this.http.get(this.rootUrl + 'api/tickets/s3_data?' + form, { headers: this.reqHeader });
   }
 
   getS3FileDetails_tekne(ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
     return this.http.get(this.rootUrl + 'api/accytickets/s3_data?' + form, { headers: this.reqHeader });
   }
 
   invoiceSummaryFetch() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
+    const form = 'user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
     return this.http.post(this.rootUrl + 'api/gsxapi/invoice_summary', form, { headers: this.reqHeader });
   }
 
@@ -530,18 +538,18 @@ async uploadVideoS3Bucket(
     return this.s3;
   }
   getBinAgeingBranch(data: { user_id: string | null, branch_code: string | null }) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') +
+  const form = '' +
                '&user_id=' + data.user_id +
                '&branch_code=' + data.branch_code;
-  return this.http.post(this.reportUrl + 'api/reports/branch_bin_ageing_dashboard', form, { headers: this.reqHeader });
+  return this.http.post(this.reportsUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
 }
   getBranchAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&family=' + family + '&type=' + type  + '&status_id=' + statusId + '&count_type=' + countType + '&branch_id=' + branchId ;
     return this.http.post(this.reportUrl + 'api/reports/branch_ageing_ticket_list', form, {headers : this.reqHeader});
   }
   logDashboardEvent(logData: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + logData.user_id +  '&branch_code=' + logData.branch_code;
+    const form = 'user_id=' + logData.user_id +  '&branch_code=' + logData.branch_code;
     return this.http.post(this.rootUrl + 'api/charts/log_dashboard', form, { headers: this.reqHeader });
   }
 

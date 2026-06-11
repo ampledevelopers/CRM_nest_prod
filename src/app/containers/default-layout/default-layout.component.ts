@@ -286,8 +286,7 @@ export class DefaultLayoutComponent implements OnDestroy {
   }
 
   getTasks() {
-    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId') + '&X_API_KEY=' +
-      localStorage.getItem('userToken');
+    const data1 = 'group=' + localStorage.getItem('userRole') + '&user_id=' + localStorage.getItem('userId');
     this.userService.getTasks(data1).subscribe({
       next: (data: any) => {
         this.tasks = data;
@@ -314,8 +313,7 @@ export class DefaultLayoutComponent implements OnDestroy {
 
   requestNotification() {
     let result: any = [];
-    const data = 'user_id=' + localStorage.getItem('userId') + '&group_id=' + localStorage.getItem('userRole') +
-      '&X_API_KEY=' + localStorage.getItem('userToken');
+    const data = 'user_id=' + localStorage.getItem('userId') + '&group_id=' + localStorage.getItem('userRole');
     this.userService.getNotifications(data).subscribe((res: any) => {
       result = res;
       if (result.status === true) {
