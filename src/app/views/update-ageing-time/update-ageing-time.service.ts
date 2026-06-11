@@ -38,13 +38,27 @@ getStatuses(siteType: string) {
     return this.http.post(this.nestUrl + 'ticket_edit/get_status', form, {headers : this.getHeaders()});
 }
 
+// getSitetypes() {
+//   const form = 'user_id=' + localStorage.getItem('userId');
+//     return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
+// }
+
+// getProductFamily() {
+//   const form = '';
+//     return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
+// }
+// getSitetypes() {
+//   const form = '' ;
+//     return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
+// }
+
 getSitetypes() {
-  const form = 'user_id=' + localStorage.getItem('userId');
+  const form = '';
     return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
 }
 
 getProductFamily() {
-  const form = 'user_id=' + localStorage.getItem('userId');
+  const form = '' ;
     return this.http.post(this.nestUrl + 'ticket_edit/get_site_types', form, {headers : this.getHeaders()});
 }
 

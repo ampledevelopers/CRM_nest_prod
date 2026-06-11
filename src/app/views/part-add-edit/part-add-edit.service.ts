@@ -24,7 +24,7 @@ export class PartAddEditService {
   getPart(partid: string) {
     const form =  '&user_id=' + localStorage.getItem('userId') +
     '&part_no=' + partid;
-    return this.http.post(this.nestUrl + 'common/get_part_price_details', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'common/get_part_price_details', form, {headers : this.getHeaders()});
   }
 
   getCityList() {
