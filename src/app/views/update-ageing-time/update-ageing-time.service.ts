@@ -33,9 +33,9 @@ export class UpdateAgeingTimeService {
 }
 
 getStatuses(siteType: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&siteType=' + siteType ;
-    return this.http.post(this.rootUrl + 'api/reports/get_status', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/get_status', form, {headers : this.getHeaders()});
 }
 
 getSitetypes() {
@@ -49,9 +49,9 @@ getProductFamily() {
 }
 
 addAgeingTime(sitetypeId: string, branchId: string, statusId: string, familyId: string, ageingTime: string, remarks: string, recordstatus: string, statusName: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
   '&sitetypeId=' + sitetypeId + '&branchId=' + branchId + '&statusId=' + statusId + '&familyId=' + familyId + '&ageingTime=' + ageingTime + '&remarks=' + remarks + '&recordstatus=' + recordstatus + '&statusName=' + statusName ;
-      return this.http.post(this.rootUrl + 'api/tickets/add_update_ageing_time', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'ticket_edit/add_update_ageing_time', form, {headers : this.getHeaders()});
     }
 
 getAgeingTimeData() {

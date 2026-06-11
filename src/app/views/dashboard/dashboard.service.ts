@@ -139,9 +139,9 @@ export class DashboardService {
   statusUpdate(data: string, remark: string | number | boolean, requiredfields: any[]) {
     remark = encodeURIComponent(remark);
     const inputdata = JSON.stringify(requiredfields);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + data + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') + data +
                 '&remarks=' + remark + '&data=' + inputdata;
-    return this.http.post(this.rootUrl + 'api/tickets/change_status', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/change_status', form, {headers : this.getHeaders()});
   }
 
   acceptTicket(id: string) {
@@ -470,8 +470,8 @@ export class DashboardService {
   /************ G-Drive ************/
 
   getDriveFiles(ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-    return this.http.get(this.rootUrl + 'api/tickets/gdrive_image?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    return this.http.get(this.nestUrl + 'ticket_edit/gdrive_image?' + form, {headers : this.getHeaders()});
   }
 
   /******* Quotation *********/

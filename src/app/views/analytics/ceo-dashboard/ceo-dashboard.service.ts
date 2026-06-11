@@ -15,6 +15,15 @@ export class CEODashboardService {
   bireqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded'});
   mailHeader = new HttpHeaders({ 'Content-Type': 'application/pdf'});
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) {
    }
 
@@ -54,14 +63,14 @@ export class CEODashboardService {
   }
 
   getBranches() {
-    const form = 'X_API_KEY=' + this.encodedApiKey  + '&user_id=' + '1911';
-    return this.http.post(this.reportsUrl + 'api/reports/get_branches', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/get_branches', form, {headers : this.getHeaders()});
   }
 
   getTargetValues(year: any, quarter: any, reportType: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId') + '&quarter=' + quarter + '&year=' + year + '&report_type=' + reportType;
-    return this.http.get(this.rootUrl +'api/analytics/target?' + form, {headers : this.reqHeader});
-  }
+    const form = '&user_id=' + localStorage.getItem('userId') + '&quarter=' + quarter + '&year=' + year + '&report_type=' + reportType;
+    return this.http.get(this.nestUrl +'uploads/target?' + form, {headers : this.reqHeader});
+  } 
 
   saveTargetValues(hd: any, dt: any) {
     const returnData = {
@@ -72,7 +81,7 @@ export class CEODashboardService {
     const usetkn: any = localStorage.getItem('userToken');
     const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True','X-API-KEY': usetkn });
     // const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl +'api/analytics/target_save', data, {headers : diagHeader});
+    return this.http.post(this.nestUrl +'uploads/target_save', data, {headers : diagHeader});
   }
 
   /* sendImageData(imageData: string): Observable<any> {

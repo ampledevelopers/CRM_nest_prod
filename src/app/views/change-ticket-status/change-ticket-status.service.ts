@@ -25,7 +25,7 @@ export class ChangeTicketStatusService {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
     return this.http.post(this.rootUrl + 'api/tickets/get_options?' + form, {headers : this.reqHeader});
   }
-
+  
   getStatus() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
     return this.http.post(this.nestUrl + 'ticket_edit/get_status_by_role', form, {headers : this.getHeaders()});
@@ -43,7 +43,7 @@ export class ChangeTicketStatusService {
   }
 
   getDriveFiles(ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-    return this.http.get(this.rootUrl + 'api/tickets/gdrive_image?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    return this.http.get(this.nestUrl + 'ticket_edit/gdrive_image?' + form, {headers : this.getHeaders()});
   }
 }

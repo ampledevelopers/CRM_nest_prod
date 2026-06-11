@@ -9,6 +9,15 @@ import { map } from 'rxjs';
 export class WinDashboardService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   ticketList: any;
   constructor(private http: HttpClient) {
   }
@@ -54,9 +63,9 @@ export class WinDashboardService {
   statusUpdate(data: string, remark: string | number | boolean, requiredfields: any) {
     remark = encodeURIComponent(remark);
     const inputdata = JSON.stringify(requiredfields);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + data + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') + data + '&user_id=' + localStorage.getItem('userId') +
                 '&remarks=' + remark + '&data=' + inputdata;
-    return this.http.post(this.rootUrl + 'api/tickets/change_status', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/change_status', form, {headers : this.getHeaders()});
   }
 
   getDetail(id: any) {

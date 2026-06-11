@@ -112,8 +112,8 @@ export class OnsiteDcService {
   } */
 
   getDriveFiles(ticket_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-    return this.http.get(this.rootUrl + 'api/tickets/gdrive_image?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    return this.http.get(this.nestUrl + 'ticket_edit/gdrive_image?' + form, {headers : this.getHeaders()});
   }
 
   shipmentConfirm(nrdcId: any, remarks: any) {
