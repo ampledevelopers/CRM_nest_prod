@@ -192,12 +192,12 @@ export class StockTransferInComponent {
   }
 
   getDC(DCNo: any) {
-    const url = localStorage.getItem('rootUrl') + 'api/stock/dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&dc_no=' + DCNo;
+    const url = localStorage.getItem('nestUrl') + 'stock/dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&dc_no=' + DCNo;
     const tab = window.open(url);
   }
 
   getAdhesiveDC(DCNo: any) {
-    const url = localStorage.getItem('rootUrl') + 'api/adhesives/dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&dc_no=' + DCNo;
+    const url = localStorage.getItem('nestUrl') + 'stock/dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&dc_no=' + DCNo;
     const tab = window.open(url);
   }
   

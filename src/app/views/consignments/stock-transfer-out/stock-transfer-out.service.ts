@@ -49,7 +49,7 @@ export class StockTransferOutService {
     const userToken: any=localStorage.getItem('userToken');
     const user_id: any = localStorage.getItem('userId');
     const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True', 'X-API-KEY':userToken});
-    return this.http.post(this.rootUrl + 'api/stock/consignment_transfer', form, {headers : diagHeader});
+    return this.http.post(this.nestUrl + 'stock/consignment_transfer', form, {headers : this.getHeaders()});
   }
 
   adhesiveConfirm(fromBranchCode:any,to_branch_code:any,confirmAdData:any) {
@@ -67,12 +67,12 @@ export class StockTransferOutService {
 
   stockTransList(fromBranchCode:any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&from_branch_code=' + fromBranchCode + '&ack=' + '2';
-    return this.http.get(this.rootUrl + 'api/stock/stock_transfer_list?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'stock/stock_transfer_list?' + form, {headers : this.getHeaders()});
   }
 
   adhesivesTransList(fromBranchCode:any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&from_branch_code=' + fromBranchCode + '&ack=' + '2';
-    return this.http.get(this.rootUrl + 'api/adhesives/stock_transfer_list?' + form, {headers : this.reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + '&from_branch_code=' + fromBranchCode + '&ack=' + '2';
+    return this.http.get(this.nestUrl + 'stock/stock_transfer_list?' + form, {headers : this.getHeaders()});
   }
 
 }
