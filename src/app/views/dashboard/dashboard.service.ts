@@ -1033,8 +1033,8 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   unBlockAdhesive(asn_no: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;
-    return this.http.post(this.rootUrl + 'api/adhesives/unblock_adhesives', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;
+    return this.http.post(this.nestUrl + 'consignment/unblock_adhesives', form, {headers : this.getHeaders()});
   }
 
   getBlockedAdhesive(asn_no: any) {
@@ -1048,8 +1048,8 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   getAdhesiveList() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/adhesives/get_adhesives_list?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'consignment/get_adhesives_list?' + form, {headers : this.getHeaders()});
   }
 
   issueAdhesives(ticketId: any, asnNo: any) {

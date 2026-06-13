@@ -10,7 +10,15 @@ export class TekneConsignmentsService {
   reportsUrl = localStorage.getItem('reportsUrl');
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
 
   constructor(private http: HttpClient) { }
 
@@ -25,8 +33,8 @@ export class TekneConsignmentsService {
   }
 
   unBlockConsignment(asn_no: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/unblock_consignment', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;
+    return this.http.post(this.nestUrl + 'consignment/unblock_consignment', form, {headers : this.getHeaders()});
   }
 
   getConsignmentlist() {

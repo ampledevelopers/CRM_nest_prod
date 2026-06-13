@@ -183,7 +183,11 @@ export class RelocateEnggComponent {
      userRole = true;
     }
     if ((this.bcolor === false) && (this.rlError === '') && (userRole === true)) {
-      const msg = 'Are you sure want to relocate?';
+      const selectedBranch = this.branchList.find((b: { id: any }) => b.id === this.branch || b.id === this.newBranchID);
+      const selectedRole = this.userRoleList.find((r: { id: any }) => r.id === this.newUserRole || r.id === this.userRole);
+      const branchName = selectedBranch?.label || this.branch;
+      const roleName = selectedRole?.label || this.userRole;
+      const msg = `Are you sure you want to relocate Emp ID: ${this.empId} to Branch: ${branchName} with Role: ${roleName}?`;
       this.confirmAlert = {id: 'relocate', title: 'Re-Locate Engineer', msg: msg};
       this.openModal(confirm_alert_temp);
     }
