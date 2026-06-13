@@ -46,7 +46,7 @@ export class UserCreateService {
 
   updateUser(empId: string, userName: string, mobile: string,
     serviceType: string, branch: string, userRole: string, status: string, email: string, techType: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&emp_id=' + empId + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&emp_id=' + empId + '&user_id=' + localStorage.getItem('userId') +
                 '&site_type_id=' + serviceType + '&branch_id=' + branch + '&mobile=' + mobile + '&group_id=' + userRole + '&status='
                 + status + '&email=' + email + '&user_name=' + userName + '&technician_type=' + techType;
     return this.http.post(this.nestUrl + 'manage-user/edit_user', form, {headers : this.getHeaders()});

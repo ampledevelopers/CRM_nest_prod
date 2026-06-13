@@ -110,7 +110,7 @@ export class UserService {
   }
 
   userOtpAuthentication(mobile: string, otp: string) { // alert(userName);
-    const data = 'mobile=' + mobile + '&otp=' + otp + '&grant_type=password';
+    const data = 'mobile=' + mobile + '&otp=' + otp ;
     return this.http.post(this.nestUrl + 'auth/otplogin', data, { headers: this.getHeaders() });
   }
 
