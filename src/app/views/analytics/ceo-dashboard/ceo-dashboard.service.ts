@@ -10,12 +10,12 @@ export class CEODashboardService {
 
   rootUrl = 'https://api.icareservice.co.in/';
   reportsUrl = 'https://reports.icareservice.co.in/'
+  nestUrl = 'http://napi.icareservice.co.in/'
   encodedApiKey = encodeURIComponent('UI@PWD#');
   reportUrl = localStorage.getItem('reportsUrl');
   bireqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded'});
   mailHeader = new HttpHeaders({ 'Content-Type': 'application/pdf'});
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-  nestUrl = localStorage.getItem('nestUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -63,14 +63,14 @@ export class CEODashboardService {
   }
 
   getBranches() {
-    const form = 'user_id=' + localStorage.getItem('userId');
+    const form = '&user_id=' + '1911';
     return this.http.post(this.nestUrl + 'common/get_branches', form, {headers : this.getHeaders()});
   }
 
   getTargetValues(year: any, quarter: any, reportType: any) {
     const form = '&user_id=' + localStorage.getItem('userId') + '&quarter=' + quarter + '&year=' + year + '&report_type=' + reportType;
-    return this.http.get(this.nestUrl +'uploads/target?' + form, {headers : this.reqHeader});
-  } 
+    return this.http.get(this.nestUrl +'uploads/target?' + form, {headers : this.getHeaders()});
+  }
 
   saveTargetValues(hd: any, dt: any) {
     const returnData = {
