@@ -270,15 +270,23 @@ private processPartLevel() {
 
   /** --------------------------  Excel Export -------------------------- **/
 
+  formatTicketIds(ids: (string | number)[]): string {
+    return [...new Set((ids || []).filter(Boolean).map(String))].join(', ');
+  }
+
    exportAsXLSX(): void {
   const exportData: any[] = [];
 
   // Branch-level + Part-level rows
   this.branchesListData.forEach((branch: any) => {
+    const branchTicketIds = this.repairCountData
+      .filter((r: any) => r.branch_code === branch.branchCode)
+      .map((r: any) => r.id);
 
     // Branch-level row
     exportData.push({
       'Branch/Part No (Part Desc)': branch.name,
+      'Ticket Id': this.formatTicketIds(branchTicketIds),
       'Repair Count IW': branch.repairIW,
       'Repair Count OOW': branch.repairOOW,
       'Ample SDR IW': branch.amIWCount,
@@ -311,6 +319,7 @@ private processPartLevel() {
     parts.forEach((part: any) => {
       exportData.push({
         'Branch/Part No (Part Desc)': `${part.part_number} (${part.description})`,
+        'Ticket Id': this.formatTicketIds(part.repairTicketIds),
         'Repair Count IW': part.repairIWPartCount,
         'Repair Count OOW': part.repairOOWPartCount,
         'Ample SDR IW': part.amIWPartCount,
@@ -338,6 +347,7 @@ private processPartLevel() {
   // Total Row
   exportData.push({
     'Branch/Part No (Part Desc)': 'Total',
+    'Ticket Id': '',
     'Repair Count IW': this.getTotal('repairIW'),
     'Repair Count OOW': this.getTotal('repairOOW'),
     'Ample SDR IW': this.getTotal('amIWCount'),

@@ -125,13 +125,25 @@ export class SvrreportComponent {
           if (result.status === true) {
             this.reportLoading = false;
           }
-          if (result.status === true && result.data.length > 0) {
-            this.data = result.data;
-            this.data = this.data.filter((item: { repair_type: string; }) => item.repair_type !== 'SVNR');
-            this.isReport = true;
-            this.isRecords = 0;
+          const achievedRows = result.svr_acheived ?? result.svr_achieved ?? [];
+          const hasRows = (result.data?.length > 0) || (achievedRows.length > 0);
+
+          if (result.status === true && hasRows) {
+            if (this.reportType === 'TRAF') {
+              this.data = result.data.filter((item: { repair_type: string; }) => item.repair_type !== 'SVNR');
+            } else if (this.reportType === 'SVR') {
+              this.data = this.mergeSvrReportData(result.data ?? [], achievedRows)
+                .filter((item: { part_number: any; }) => this.hasPartNumber(item.part_number));
+            } else {
+              this.data = (result.data ?? []).map((item: any) => this.normalizeRow(item));
+            }
+            this.isReport = this.data.length > 0;
+            this.isRecords = this.data.length > 0 ? 0 : 1;
+            if (this.data.length === 0) {
+              alert('No Records Found.');
+            }
             this.reportName = result.name;
-            if (btnType === 'export') {
+            if (this.isReport && btnType === 'export') {
               this.exportAsXLSX();
             }
           } else {
@@ -153,5 +165,81 @@ export class SvrreportComponent {
     this.branchId = '';
     this.ticketSearch = '';
     this.siteType = 'Select Site Type';
+  }
+
+  mergeSvrReportData(eligible: any[], achieved: any[]): any[] {
+    const achievedMap = new Map<string, any>();
+    for (const row of achieved) {
+      achievedMap.set(String(row.id), this.normalizeRow(row));
+    }
+
+    const merged = new Map<string, any>();
+
+    for (const row of eligible) {
+      const id = String(row.id);
+      const normalized = this.normalizeRow(row);
+      const achievedRow = achievedMap.get(id);
+      merged.set(id, {
+        ...normalized,
+        elapsed_time: achievedRow?.elapsed_time ?? this.calcElapsedTime(normalized),
+        achieved_status: achievedRow ? 'Yes' : 'No',
+      });
+    }
+
+    for (const [id, achievedRow] of achievedMap) {
+      if (!merged.has(id)) {
+        merged.set(id, {
+          ...achievedRow,
+          achieved_status: 'Yes',
+        });
+      }
+    }
+
+    return Array.from(merged.values());
+  }
+
+  normalizeRow(row: any): any {
+    return {
+      ...row,
+      svc_time: row.svc_time ?? row.SVC_time ?? '',
+    };
+  }
+
+  calcElapsedTime(item: any): string {
+    const svcTime = item.svc_time ?? item.SVC_time;
+    if (!item.raf_created_time || !svcTime) {
+      return '';
+    }
+    const raf = new Date(item.raf_created_time.replace(' ', 'T')).getTime();
+    const svc = new Date(String(svcTime).replace(' ', 'T')).getTime();
+    if (isNaN(raf) || isNaN(svc)) {
+      return '';
+    }
+    return String(Math.round((svc - raf) / 60000));
+  }
+
+  displayValue(value: any): string {
+    if (value == null || value === 'null' || value === '<null>') {
+      return '';
+    }
+    return String(value);
+  }
+
+  getSvcTime(item: any): string {
+    return this.displayValue(item.svc_time ?? item.SVC_time);
+  }
+
+  getAchievedStatus(item: any): string {
+    if (item.achieved_status != null && item.achieved_status !== '') {
+      return String(item.achieved_status);
+    }
+    if (this.reportType === 'SARAF' || this.reportName === 'SARAF') {
+      return 'Yes';
+    }
+    return 'No';
+  }
+
+  hasPartNumber(value: any): boolean {
+    return value != null && value !== '' && value !== 'null' && value !== '<null>';
   }
 }
