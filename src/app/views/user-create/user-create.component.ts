@@ -259,6 +259,12 @@ export class UserCreateComponent {
       }
   }
 
+  isValidEmail(email: string): boolean {
+    const trimmed = email.trim();
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(trimmed);
+  }
+
   createUser() {
     let result: any;
     if (this.empId === '') {
@@ -291,6 +297,10 @@ export class UserCreateComponent {
     }
     if (this.email === '') {
       alert('Email is required');
+      return;
+    }
+    if (!this.isValidEmail(this.email)) {
+      alert('Please enter a valid email address');
       return;
     }
     if (this.status === 'Select Status') {
@@ -349,6 +359,10 @@ export class UserCreateComponent {
     }
     if (this.email === '') {
       alert('Email is required');
+      return;
+    }
+    if (!this.isValidEmail(this.email)) {
+      alert('Please enter a valid email address');
       return;
     }
     if (this.status === 'Select Status') {

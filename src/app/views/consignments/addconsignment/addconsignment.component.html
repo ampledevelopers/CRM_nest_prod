@@ -36,11 +36,11 @@
               <input [(ngModel)]="partDescription" class="information" style="border: 1px solid gray;" type="text"
                 placeholder="Part Description">
             </td>
-            <td *ngIf="stockType === 'Ample'">
+            <!-- <td *ngIf="stockType === 'Ample'">
               ERP ASN<sup style="color: red;">*</sup>
               <input [(ngModel)]="asnNo" class="information" style="border: 1px solid gray;" type="text"
                 placeholder="ERP ASN" [disabled]="isSerialised">
-            </td>
+            </td> -->
           </tr>
           <tr>
             <td *ngIf="stockType === 'Apple'">
