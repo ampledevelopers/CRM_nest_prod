@@ -45,14 +45,14 @@ export class ConsignmentsService {
   }
 
   inactiveConsignment(asn_no: string, remarks: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no + '&remarks=' + remarks;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no + '&remarks=' + remarks;
     return this.http.post(this.nestUrl + 'consignment/inactive_consignment', form, {headers : this.getHeaders()});
   }
 
   bulkUpload(docs: any) {
     const documents = JSON.stringify(docs);
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&documents=' + documents;
+    const form = '&user_id=' + localStorage.getItem('userId') + '&documents=' + documents;
     return this.http.post(this.nestUrl + 'consignment/inventory_import', form, {headers : this.getHeaders()});
   }
 }

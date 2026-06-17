@@ -141,10 +141,7 @@ export class AddconsignmentComponent {
       } else if (this.partNo === '') {
         alert('Enter Part Number');
         return;
-      } else if (this.asnNo === '') {
-        alert('Enter ERP ASN');
-        return;
-      } else if (this.partDescription === '') {
+      }  else if (this.partDescription === '') {
         alert('Enter Part Description');
         return;
       } else {
@@ -180,7 +177,7 @@ export class AddconsignmentComponent {
           '&gsx_acknowledged=' + this.acknowledgedType;
       } else {
         saveData = '&serialized=' + '' + '&stock_type=' + this.stockType + '&part_no=' + this.partNo +
-          '&serial_no=' + this.serialNo + '&erp_asn=' + this.asnNo + '&description=' + this.partDescription;
+          '&serial_no=' + this.serialNo  + this.asnNo + '&description=' + this.partDescription;
       }
       let result: any;
       this.buttonSpin = false;
