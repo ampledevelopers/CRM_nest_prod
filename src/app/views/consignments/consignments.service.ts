@@ -35,9 +35,10 @@ export class ConsignmentsService {
   }
 
   saveConsignment(data: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl + 'api/gsxapi/consignment_delivery_acknowledge', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + data;
+    return this.http.post(this.nestUrl + 'gsxapi/consignment_delivery_acknowledge', form, {headers : this.getHeaders()});
   }
+  
 
   unBlockConsignment(asn_no: any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;

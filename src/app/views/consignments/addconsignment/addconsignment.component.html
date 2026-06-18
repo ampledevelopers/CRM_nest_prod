@@ -156,3 +156,20 @@
       <button class="btn btn-success" (click)="bulkUpload(); modal.close()">Yes</button>
     </div>
   </ng-template>
+
+  <ng-template class="modal fade" #simple_alert_temp>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="height: 55px;">
+          <h4 class="modal-title" style="line-height: 1.2">{{simpleAlert.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{simpleAlert.msg}}</p>
+        </div>
+        <div class="modal-footer" style="height: 50px">
+          <button type="button" class="btn btn-secondary" (click)="cancelModel()">Ok</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

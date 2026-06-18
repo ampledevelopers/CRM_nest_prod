@@ -191,11 +191,16 @@ export class AddconsignmentComponent {
               this.buttonSpin = false;
             } else {
               this.buttonSpin = false;
-              this.simpleAlert = { title: 'Add Consignment', msg: result.message };
+              this.simpleAlert = { title: 'Add Consignment', msg: result.message || 'Failed to save consignment' };
               this.openModal(simple_alert_temp);
             }
           },
-          error: error => this.error = error
+          error: (error: any) => {
+            this.buttonSpin = false;
+            const msg = error?.error?.message || 'Failed to save consignment';
+            this.simpleAlert = { title: 'Add Consignment', msg: msg };
+            this.openModal(simple_alert_temp);
+          }
         });
     } else {
       this.buttonSpin = false;
