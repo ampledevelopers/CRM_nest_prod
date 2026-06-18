@@ -51,14 +51,14 @@ export class TicketDetailsEditService {
   }
 
   updateDeviceInfo(data: Deviceinfo, ticketId: string, selectedFamily: string, device_condition: string | number | boolean, warrantyStatus: string, unitDate: string, unitTime: string, hdId: string,
-    customerQuery: string, techComment: string, paymentDate: string) {
+    customerQuery: string, techComment: string, paymentDate: string , product_config: string) {
     device_condition = encodeURIComponent(device_condition);
     const form = '&user_id=' + localStorage.getItem('userId') +
                   '&serial_no=' + data.serialNo + '&imei_no=' + data.imeiNo + '&product_description=' + data.productName +
                   '&product_family=' +  selectedFamily + '&condition_of_device=' + device_condition
                   + '&ticket_id=' + ticketId + '&warranty_status=' + warrantyStatus + '&unit_received_date=' + unitDate
                   + '&unit_received_time=' + unitTime + '&hd_id=' + hdId + '&customer_query=' + customerQuery + '&technician_comment=' + techComment
-                  + '&payment_date=' + paymentDate;
+                  + '&payment_date=' + paymentDate + '&product_config=' + data.product_config;
     return this.http.post(this.nestUrl + 'ticket_edit/ticket_update', form, {headers : this.getHeaders()});
   }
 

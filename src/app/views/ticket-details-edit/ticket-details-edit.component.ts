@@ -27,6 +27,7 @@ export interface Deviceinfo {
   customerQuery: any;
   technicianComment: any;
   svcRemarks: any;
+  product_config: any;
 }
 
 export interface SimpleAlert {
@@ -52,7 +53,7 @@ export class TicketDetailsEditComponent {
   userInfo: Userinfo = { first_name: '', last_name: '', email: '', phone: '', address1: '', address2: '', city: '', state: '', pin: '', gstn: ''};
   deviceInfo: Deviceinfo = {
     serialNo: '', imeiNo: '', productName: '', productFamily: 'Select Product Family', repairType: '',
-    serviceType: '', condition: '', customerQuery: '', technicianComment: '', svcRemarks: ''
+    serviceType: '', condition: '', customerQuery: '', technicianComment: '', svcRemarks: '', product_config: ''
   };
   customerInfo: any;
   selectedFamily = '';
@@ -192,7 +193,7 @@ export class TicketDetailsEditComponent {
 
               this.deviceInfo = {
                 serialNo: this.data.serial_no, imeiNo: this.data.imei_no, productName: this.data.product_description,
-                productFamily: this.data.product_family, repairType: this.data.repair_type, serviceType: this.data.service_type,
+                productFamily: this.data.product_family, repairType: this.data.repair_type, serviceType: this.data.service_type, product_config: this.data.product_config,
                 condition: this.data.condition_of_device, customerQuery: this.data.customer_query, technicianComment: this.data.technician_comment, svcRemarks: this.diagnosisHd.svc_remarks
               };
               this.gsxRepairType = this.diagnosisHd.repair_type;
@@ -323,7 +324,7 @@ export class TicketDetailsEditComponent {
 
       this.dataService.updateDeviceInfo(this.deviceInfo, this.data.id, this.selectedFamily,
         this.deviceInfo.condition, this.warrantyStatus, unitDate, this.unitTime, this.diagnosisHd.id,
-        this.deviceInfo.customerQuery, this.deviceInfo.technicianComment, this.paymentDateTime)
+        this.deviceInfo.customerQuery, this.deviceInfo.technicianComment, this.paymentDateTime, this.deviceInfo.product_config)
         .subscribe(
           (data) => {
             result = data;
