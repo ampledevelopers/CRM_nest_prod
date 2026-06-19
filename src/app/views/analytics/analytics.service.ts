@@ -12,14 +12,22 @@ import { map } from 'rxjs';
 export class AnalyticsService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-
+  nreportUrl = localStorage.getItem('nreportUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) {
   }
 
 getCalltypeAnalytics(company_id: any, fromDate: any, toDate: any) {
-const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+const form =  '&user_id=' + localStorage.getItem('userId') +
 '&compId=' + company_id + '&fromDate=' + fromDate + '&toDate=' + toDate ;
-  return this.http.post(this.rootUrl + 'api/charts/calltype_analytics', form, {headers : this.reqHeader});
+  return this.http.post(this.nreportUrl + 'analytics/calltype_analytics', form, {headers : this.getHeaders()});
 }
 
 getCompanies() {

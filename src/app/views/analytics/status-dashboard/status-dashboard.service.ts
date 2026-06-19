@@ -9,6 +9,7 @@ export class StatusDashboardService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -30,8 +31,8 @@ export class StatusDashboardService {
   }
 
   getStatusDashboard(branchCode: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branchCode=' + branchCode ;
-    return this.http.post(this.rootUrl + 'api/charts/status_dashboard', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&branchCode=' + branchCode ;
+    return this.http.post(this.nreportUrl + 'analytics/status_dashboard', form, {headers : this.getHeaders()});
   }
 
   getTicketList(family: string, statusId: string, branchCode: string) {

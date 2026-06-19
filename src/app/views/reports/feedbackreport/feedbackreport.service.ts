@@ -10,6 +10,7 @@ export class FeedbackreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -27,10 +28,10 @@ export class FeedbackreportService {
 }
 
 getFeedbackReport(fromDate: string, toDate: string, branchId: string) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+  const form =  '&user_id=' + localStorage.getItem('userId') +
 '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId;
     // return this.http.post(this.rootUrl + 'api/reports/feedback_report', form, {headers : this.reqHeader});
-  return this.http.post(this.rootUrl + 'api/reports/psf_report', form, {headers : this.reqHeader});
+  return this.http.post(this.nreportUrl + 'reports/psf_report', form, {headers : this.getHeaders()});
 
   }
 

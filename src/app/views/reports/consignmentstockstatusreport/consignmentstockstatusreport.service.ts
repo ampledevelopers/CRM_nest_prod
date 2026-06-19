@@ -10,6 +10,7 @@ export class ConsignmentstockstatusreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -28,9 +29,9 @@ export class ConsignmentstockstatusreportService {
 }
 
   getConsignmentStockStatusReport(branchId: string, stockType: string, stockStatus: string, partNo: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
   '&branch_id=' + branchId + '&stock_status=' + stockStatus + '&stock_type=' + stockType + '&part_no=' + partNo ;
-      return this.http.post(this.rootUrl + 'api/reports/consignment_stock_status_report', form, {headers : this.reqHeader});
+      return this.http.post(this.nreportUrl + 'reports/consignment_stock_status_report', form, {headers : this.getHeaders()});
     //+ '&fromDate=' + fromDate + '&toDate=' + toDate
     }
 }

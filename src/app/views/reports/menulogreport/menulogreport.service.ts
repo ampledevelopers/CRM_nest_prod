@@ -9,14 +9,22 @@ import { HttpHeaders } from '@angular/common/http';
 export class MenulogreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-
+  nreportUrl = localStorage.getItem('nreportUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) {
   }
 
   getMenuLogReport(fromDate: string, toDate: string, menuName: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
   '&fromDate=' + fromDate + '&toDate=' + toDate + '&menu_name=' + menuName ;
-      return this.http.post(this.rootUrl + 'api/reports/menu_log_report', form, {headers : this.reqHeader});
+      return this.http.post(this.nreportUrl + 'reports/menu_log_report', form, {headers : this.getHeaders()});
     }
 
   }

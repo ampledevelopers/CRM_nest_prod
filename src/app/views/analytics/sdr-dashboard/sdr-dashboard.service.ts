@@ -10,6 +10,7 @@ export class SdrDashboardService {
   reportUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -31,8 +32,8 @@ export class SdrDashboardService {
   }
 
   getSdrData(branchCode: any,fromDate: any, toDate: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&branch=' + branchCode + '&fromDate=' + fromDate + '&toDate=' + toDate;
-    return this.http.get(this.reportUrl + 'api/analytics/sdr_report?'+ form, {headers : this.reqHeader});
+    const form = '&branch=' + branchCode + '&fromDate=' + fromDate + '&toDate=' + toDate;
+    return this.http.get(this.nreportUrl + 'analytics/sdr_report?'+ form, {headers : this.getHeaders()});
   }
 
 }
