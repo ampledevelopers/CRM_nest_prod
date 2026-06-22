@@ -72,7 +72,7 @@ export class StockTransferOutService {
 
   adhesivesTransList(fromBranchCode:any) {
     const form = '&user_id=' + localStorage.getItem('userId') + '&from_branch_code=' + fromBranchCode + '&ack=' + '2';
-    return this.http.get(this.nestUrl + 'stock/stock_transfer_list?' + form, {headers : this.getHeaders()});
+    return this.http.get(this.nestUrl + 'stock/adhesive_transfer_list?' + form, {headers : this.getHeaders()});
   }
 
 }

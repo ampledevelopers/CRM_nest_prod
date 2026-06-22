@@ -26,7 +26,7 @@ export class StockTransferInService {
 
   adhesivesTransList(to_branch_code:any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&to_branch_code=' + to_branch_code + '&ack=' + '2';
-    return this.http.get(this.nestUrl + 'stock/stock_transfer_list?' + form, {headers : this.getHeaders()});
+    return this.http.get(this.nestUrl + 'stock/adhesive_transfer_list?' + form, {headers : this.getHeaders()});
   }
 
   consignmentAck(dc_no:any) {
