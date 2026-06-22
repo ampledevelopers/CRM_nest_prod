@@ -1,0 +1,77 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      Hourly Token Report
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Date</label>
+          <input class="form-control" type="date" [(ngModel)]="reportDate" />
+        </div>
+        <div class="col-md-4">
+          <label>Branch<sup style="color: red">*</sup></label>
+          <select [(ngModel)]="branchCode" class="form-control">
+            <option value="" disabled>Select Branch</option>
+            <option *ngFor="let branch of branches" [value]="branch.branch_code">
+              {{ branch.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex; margin-top: 1rem;">
+        <div class="acceptbtns">
+          <button (click)="loadReport()">Load</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" style="margin-top: 2rem; text-align: center;">
+    <c-spinner size="sm"></c-spinner>
+  </div>
+
+  <div *ngIf="!loading && showTable" class="card" style="margin-top: 1rem;">
+    <div class="card-header">
+      Hourly Token Report - {{ getSelectedBranchLabel() }} ({{ reportDate }})
+    </div>
+    <div class="card-body" style="overflow-x: auto; padding: 0;">
+      <table class="table table-bordered table-striped table-sm text-nowrap" style="width: 100%;">
+        <thead>
+          <tr>
+            <th rowspan="2" style="vertical-align: middle;">Time Slot</th>
+            <th *ngFor="let user of users" colspan="3" class="text-center">{{ user }}</th>
+          </tr>
+          <tr>
+            <ng-container *ngFor="let user of users">
+              <th class="text-center">RAF</th>
+              <th class="text-center">Delivery</th>
+              <th class="text-center">Enquiry</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of tableRows">
+            <td>{{ row.time_slot }}</td>
+            <ng-container *ngFor="let user of users">
+              <td class="text-center" [ngClass]="{'token-count-active': isActiveValue(getUserValue(row, user, 'raf'))}">
+                {{ formatDisplayValue(getUserValue(row, user, 'raf')) }}
+              </td>
+              <td class="text-center" [ngClass]="{'token-count-active': isActiveValue(getUserValue(row, user, 'delivery'))}">
+                {{ formatDisplayValue(getUserValue(row, user, 'delivery')) }}
+              </td>
+              <td class="text-center" [ngClass]="{'token-count-active': isActiveValue(getUserValue(row, user, 'enquiry'))}">
+                {{ formatDisplayValue(getUserValue(row, user, 'enquiry')) }}
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && showNoData" class="text-center"
+    style="font-size: 1.25rem; font-weight: 500; margin-top: 2rem;">
+    No Data Found
+  </div>
+</div>

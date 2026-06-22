@@ -476,6 +476,10 @@ const routes: Routes = [
         loadChildren: () => import('./consignment-report/consignment-report.module').then(m => m.ConsignmentReportModule)
       },
       {
+        path: 'hourly-token-report',
+        loadChildren: () => import('./hourly-token-report/hourly-token-report.module').then(m => m.HourlyTokenReportModule)
+      },
+      {
         path: 'analytics',
         component: AnalyticsComponent,
         data: {
