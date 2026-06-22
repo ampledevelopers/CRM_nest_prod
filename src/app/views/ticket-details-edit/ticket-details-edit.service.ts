@@ -46,7 +46,7 @@ export class TicketDetailsEditService {
                   '&first_name=' + data.first_name + '&last_name=' + data.last_name + '&phone=' + data.phone +
                   '&email=' +  data.email + '&address1=' + data.address1 + '&address2=' + data.address2 +
                   '&city=' + data.city + '&state=' + data.state + '&pin=' + data.pin + '&gstn=' + data.gstn + '&customer_id=' + customerId
-                  + '&ticket_id=' + ticketId;
+                  + '&ticket_id=' + ticketId + '&branch_code=' + localStorage.getItem('branchCode');
     return this.http.post(this.nestUrl + 'common/customer_update', form, {headers : this.getHeaders()});
   }
 
