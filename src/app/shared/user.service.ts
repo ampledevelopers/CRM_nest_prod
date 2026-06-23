@@ -117,35 +117,35 @@ export class UserService {
   authenticateGSX(key: string) {
     let form;
     if (key === '') {
-      form = 'user_id=' + localStorage.getItem('userId') + '';
+      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
     } else {
-      form = 'user_id=' + localStorage.getItem('userId') + '' + '&gsx_api_key=' + key;
+      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&gsx_api_key=' + key;
     }
     return this.http.post(this.rootUrl + 'api/gsxapi/get_auth_token', form, { headers: this.reqHeader });
   }
 
   dCallFetch(fromDate: any, toDate: any) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode') + '&from_date=' + fromDate + '&to_date=' + toDate;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode') + '&from_date=' + fromDate + '&to_date=' + toDate;
     return this.http.post(this.rootUrl + 'api/gsxapi/d_call', form, { headers: this.reqHeader });
   }
 
   mapCrmGsx(ticketId: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
     return this.http.post(this.rootUrl + 'api/gsxapi/map_gsx_crm_repair_status', form, { headers: this.reqHeader });
   }
 
   mapPartConstraint(ticketId: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
     return this.http.post(this.rootUrl + 'api/gsxapi/map_parts_constraint', form, { headers: this.reqHeader });
   }
 
   mapBlueDartTrack(ticketId: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
     return this.http.post(this.rootUrl + 'api/gsxbatchapi/repair_shipping_tracking_auto', form, { headers: this.reqHeader });
   }
 
   logoutGSX() {
-    const form = 'user_id=' + localStorage.getItem('userId');
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
     return this.http.post(this.rootUrl + 'api/gsxapi/authenticate_end_session', form, { headers: this.reqHeader });
   }
 
@@ -183,7 +183,7 @@ export class UserService {
   }
 
   sendMessage(inputData: string) {
-    const form = 'from_user=' + localStorage.getItem('userId') + inputData;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&from_user=' + localStorage.getItem('userId') + inputData;
     return this.http.post(this.rootUrl + 'api/message/save_message', form, { headers: this.reqHeader });
   }
 
@@ -193,18 +193,18 @@ export class UserService {
   }
 
   switchType(siteType: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&site_type_id=' + siteType;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&site_type_id=' + siteType;
     return this.http.post(this.rootUrl + 'api/common/change_site', form, { headers: this.reqHeader });
   }
 
   getCertificates() {
-    const form = 'user_id=' + localStorage.getItem('userId');
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
     return this.http.get(this.rootUrl + 'api/common/atlas_certifications?' + form, { headers: this.reqHeader });
   }
 
   certificateRegister(docs: any, group: string, id: string, date: string) {
     const documents = JSON.stringify(docs);
-    const form = 'user_id=' + localStorage.getItem('userId') + '&documents=' + documents +
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&documents=' + documents +
       '&certification_group=' + group + '&certification_id=' + id + '&completion_date=' + date;
     return this.http.post(this.rootUrl + 'api/common/atlas_certifications', form, { headers: this.reqHeader });
   }
@@ -445,9 +445,9 @@ async uploadVideoS3Bucket(
   async deleteFileFromS3Bucket(bucketName: string, fileName: string): Promise<string> {
 
     const body =
-      'bucketName=' + encodeURIComponent(bucketName) +
+      'X_API_KEY=' + localStorage.getItem('userToken') +
+      '&bucketName=' + encodeURIComponent(bucketName) +
       '&fileName=' + encodeURIComponent(fileName) +
-      '&X_API_KEY=' + encodeURIComponent(localStorage.getItem('userToken') || '') +
       '&user_id=' + encodeURIComponent(localStorage.getItem('userId') || '');
   
     const res: any = await firstValueFrom(
@@ -467,19 +467,19 @@ async uploadVideoS3Bucket(
 
   updateS3File(commonData: any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'user_id=' + localStorage.getItem('userId') + commonData;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
     return this.http.post(this.rootUrl + 'api/tickets/s3_data', form, { headers: this.reqHeader });
   }
 
   updateS3FileTekne(commonData: any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'user_id=' + localStorage.getItem('userId') + commonData;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
     return this.http.post(this.rootUrl + 'api/accytickets/s3_data', form, { headers: this.reqHeader });
   }
 
   deleteS3File(bucketName: any, fileName: any, ticket_id: any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
     return this.http.post(this.rootUrl + 'api/tickets/delete_s3_data', form, { headers: this.reqHeader });
   }
 
@@ -504,17 +504,17 @@ async uploadVideoS3Bucket(
   }
 
   getS3FileDetails(ticket_id: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
     return this.http.get(this.rootUrl + 'api/tickets/s3_data?' + form, { headers: this.reqHeader });
   }
 
   getS3FileDetails_tekne(ticket_id: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
     return this.http.get(this.rootUrl + 'api/accytickets/s3_data?' + form, { headers: this.reqHeader });
   }
 
   invoiceSummaryFetch() {
-    const form = 'user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
     return this.http.post(this.rootUrl + 'api/gsxapi/invoice_summary', form, { headers: this.reqHeader });
   }
 
@@ -544,12 +544,12 @@ async uploadVideoS3Bucket(
   return this.http.post(this.nreportUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
 }
   getBranchAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
-    const form = 'user_id=' + localStorage.getItem('userId') +
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&family=' + family + '&type=' + type  + '&status_id=' + statusId + '&count_type=' + countType + '&branch_id=' + branchId ;
     return this.http.post(this.reportUrl + 'api/reports/branch_ageing_ticket_list', form, {headers : this.reqHeader});
   }
   logDashboardEvent(logData: any) {
-    const form = 'user_id=' + logData.user_id +  '&branch_code=' + logData.branch_code;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + logData.user_id +  '&branch_code=' + logData.branch_code;
     return this.http.post(this.rootUrl + 'api/charts/log_dashboard', form, { headers: this.reqHeader });
   }
 
