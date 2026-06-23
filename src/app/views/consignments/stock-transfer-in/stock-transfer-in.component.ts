@@ -197,7 +197,7 @@ export class StockTransferInComponent {
   }
 
   getAdhesiveDC(DCNo: any) {
-    const url = localStorage.getItem('nestUrl') + 'stock/dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&dc_no=' + DCNo;
+    const url = localStorage.getItem('nestUrl') + 'stock/adhesive_dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&dc_no=' + DCNo;
     const tab = window.open(url);
   }
   
