@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class GSXReimbursementService {
   rootUrl = localStorage.getItem('rootUrl');
+  reportsUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
   private getHeaders(): HttpHeaders {
@@ -24,7 +25,7 @@ export class GSXReimbursementService {
     const documents = JSON.stringify(docs);
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&completion_date=' + date + '&documents=' + documents;
-    return this.http.post(this.nestUrl + 'uploads/labour_reimbursement', form, {headers : reqHeader});
+    return this.http.post(this.reportsUrl + 'api/analytics/labour_reimbursement', form, {headers : reqHeader});
   }
   
 
