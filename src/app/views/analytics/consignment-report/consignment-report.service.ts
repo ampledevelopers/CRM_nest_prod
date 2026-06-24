@@ -24,8 +24,8 @@ export class ConsignmentReportService {
       '&user_id=' + localStorage.getItem('userId') +
       '&branch_code=' + (localStorage.getItem('branchCode') || '');
     return this.http.get(
-      this.nreportUrl + 'reports/active_consignment_report?' + params,
-      { headers: this.getHeaders() }
+      this.reportsUrl + 'api/analytics/active_consignment_report?' + params,
+      { headers: this.reqHeader }
     );
   }
 }
