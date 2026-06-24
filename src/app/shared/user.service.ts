@@ -24,7 +24,6 @@ export class UserService {
   datePipe = new DatePipe('en-US');
    
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -541,7 +540,7 @@ async uploadVideoS3Bucket(
   const form = '' +
                '&user_id=' + data.user_id +
                '&branch_code=' + data.branch_code;
-  return this.http.post(this.nreportUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
+  return this.http.post(this.reportsUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
 }
   getBranchAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +

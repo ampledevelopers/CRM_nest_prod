@@ -10,7 +10,6 @@ export class DayReportService {
   rootUrl = localStorage.getItem('rootUrl');
   reportUrl = localStorage.getItem('reportsUrl');
   nestUrl = localStorage.getItem('nestUrl');
-  nreportUrl = localStorage.getItem('nreportUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
@@ -34,14 +33,14 @@ export class DayReportService {
   }
 
   dayReport() {
-    const form = '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.nreportUrl + 'analytics/day_report?' + form, {headers : this.getHeaders()});
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.reportUrl + 'api/analytics/day_report?' + form, {headers : this.reqHeader});
   }
 
   exportDayReport(fromDate:any,toDate:any,productFamily:any) {
-    const form = '&user_id=' + localStorage.getItem('userId') + '&product_family=' + productFamily
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&product_family=' + productFamily
    + '&from_date=' + fromDate + '&to_date=' + toDate;
-    return this.http.get(this.nreportUrl + 'analytics/export_day_report?' + form, {headers : this.getHeaders()});
+    return this.http.get(this.reportUrl + 'api/analytics/export_day_report?' + form, {headers : this.reqHeader});
   }
 
 }

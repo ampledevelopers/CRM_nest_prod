@@ -10,7 +10,6 @@ export class AccessoryenquiryreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
-  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -28,9 +27,9 @@ export class AccessoryenquiryreportService {
 }
 
   getAccessoryEnquiryReport(fromDate: string, toDate: string, branchId: string) {
-    const form = '&user_id=' + localStorage.getItem('userId') +
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId + '&group_id=' + localStorage.getItem('userRole');
-    return this.http.post(this.nreportUrl + 'reports/accessory_enquiry_report', form, {headers : this.getHeaders()});
+    return this.http.post(this.rootUrl + 'api/reports/accessory_enquiry_report', form, {headers : this.reqHeader});
   }
 
 }

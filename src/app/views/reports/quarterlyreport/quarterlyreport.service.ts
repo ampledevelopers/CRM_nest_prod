@@ -10,7 +10,6 @@ export class QuarterlyreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
-  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -28,13 +27,13 @@ export class QuarterlyreportService {
 }
 
   getYears() {
-    const form = '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.nreportUrl + 'reports/get_years', form, {headers : this.getHeaders()});
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.rootUrl + 'api/reports/get_years', form, {headers : this.reqHeader});
 }
 
 getQuarterlyReport(quarter: string, year: string, branchId: string) {
-  const form = '&user_id=' + localStorage.getItem('userId') +
+  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
 '&quarter=' + quarter + '&year=' + year + '&branchId=' + branchId ;
-    return this.http.post(this.nreportUrl + 'reports/quarterly_report', form, {headers : this.getHeaders()});
+    return this.http.post(this.rootUrl + 'api/reports/quarterly_report', form, {headers : this.reqHeader});
   }
 }

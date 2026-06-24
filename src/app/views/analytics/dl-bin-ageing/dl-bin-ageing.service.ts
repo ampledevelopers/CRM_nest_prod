@@ -8,20 +8,12 @@ export class DLBinAgeingService {
 
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-  nreportUrl = localStorage.getItem('nreportUrl');
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('userToken');
-    return new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'No-Auth': 'True',
-      'x-api-key': token || ''
-    });
-  }
+
   constructor(private http: HttpClient) { }
 
   getBinAgeingDashboard() {
-    const form = '&user_id=' + localStorage.getItem('userId') + '&site_type=' + localStorage.getItem('siteType');
-    return this.http.post(this.nreportUrl + 'analytics/dl_bin_ageing_dashboard', form, {headers : this.getHeaders()});
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&site_type=' + localStorage.getItem('siteType');
+    return this.http.post(this.rootUrl + 'api/charts/dl_bin_ageing_dashboard', form, {headers : this.reqHeader});
   }
 
   // getAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {

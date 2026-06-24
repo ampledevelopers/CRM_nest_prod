@@ -9,7 +9,6 @@ import { HttpHeaders } from '@angular/common/http';
 export class EnquiryreportService {
   reportsUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-  nreportUrl = localStorage.getItem('nreportUrl');
   nestUrl = localStorage.getItem('nestUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
@@ -28,8 +27,8 @@ export class EnquiryreportService {
 }
 
   getEnquiryReport(fromDate: string, toDate: string, branchId: string) {
-    const form = '&user_id=' + localStorage.getItem('userId') +
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
   '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId;
-      return this.http.post(this.nreportUrl + 'reports/enquiry_report', form, {headers : this.getHeaders()});
+      return this.http.post(this.reportsUrl + 'api/reports/enquiry_report', form, {headers : this.reqHeader});
     }
 }

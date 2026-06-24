@@ -12,7 +12,6 @@ export class GsxReimbursementReportService {
   reportUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
   nestUrl = localStorage.getItem('nestUrl');
-  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -30,13 +29,13 @@ export class GsxReimbursementReportService {
   }
   getGsxPendingReimburse(fromDate: any, toDate:any) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = '&user_id=' + localStorage.getItem('userId') + '&type=' + null + '&from_date=' + fromDate + '&to_date=' + toDate;
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&type=' + null + '&from_date=' + fromDate + '&to_date=' + toDate;
     return this.http.get(this.nestUrl + 'uploads/labour_reimbursement?' + form, { headers: reqHeader });
   }
   getLabourReport(fromDate: any, toDate: any, branchId: string) {
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = '&user_id=' + localStorage.getItem('userId') + '&from_date=' + fromDate + '&to_date=' + toDate + '&branch_id=' + branchId;
-    return this.http.get(this.nreportUrl + 'reports/part_wise_labour_report?' + form, { headers: this.getHeaders() });
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&from_date=' + fromDate + '&to_date=' + toDate + '&branch_id=' + branchId;
+    return this.http.get(this.reportUrl + 'api/reports/part_wise_labour_report?' + form, { headers: reqHeader });
   }
   getBranches() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId');

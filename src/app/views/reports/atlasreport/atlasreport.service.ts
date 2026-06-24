@@ -10,7 +10,6 @@ export class AtlasreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
-  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -28,14 +27,14 @@ export class AtlasreportService {
 }
 
   getCertificates(){
-    const form = '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.nreportUrl + 'reports/get_certificates', form, {headers : this.getHeaders()});
+    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.rootUrl + 'api/reports/get_certificates', form, {headers : this.reqHeader});
 }
 
 getAtlasCertificateReport(techId: string, certificateId: string, branchId: string) {
-  const form = '&user_id=' + localStorage.getItem('userId') +
+  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
 '&techId=' + techId + '&certificateId=' + certificateId + '&branchId=' + branchId;
-    return this.http.post(this.nreportUrl + 'reports/atlas_certification_report', form, {headers : this.getHeaders()});
+    return this.http.post(this.rootUrl + 'api/reports/atlas_certification_report', form, {headers : this.reqHeader});
   }
 
 }
