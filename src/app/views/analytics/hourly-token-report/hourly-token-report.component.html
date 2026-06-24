@@ -40,13 +40,14 @@
         <thead>
           <tr>
             <th rowspan="2" style="vertical-align: middle;">Time Slot</th>
-            <th *ngFor="let user of users" colspan="3" class="text-center">{{ user }}</th>
+            <th *ngFor="let user of users" colspan="4" class="text-center">{{ user }}</th>
           </tr>
           <tr>
             <ng-container *ngFor="let user of users">
               <th class="text-center">RAF</th>
               <th class="text-center">Delivery</th>
               <th class="text-center">Enquiry</th>
+              <th class="text-center">Abandon</th>
             </ng-container>
           </tr>
         </thead>
@@ -62,6 +63,9 @@
               </td>
               <td class="text-center" [ngClass]="{'token-count-active': isActiveValue(getUserValue(row, user, 'enquiry'))}">
                 {{ formatDisplayValue(getUserValue(row, user, 'enquiry')) }}
+              </td>
+              <td class="text-center" [ngClass]="{'token-count-active': isActiveValue(getUserValue(row, user, 'abandon'))}">
+                {{ formatDisplayValue(getUserValue(row, user, 'abandon')) }}
               </td>
             </ng-container>
           </tr>
