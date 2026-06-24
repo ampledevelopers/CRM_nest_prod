@@ -78,22 +78,22 @@
               <tr *ngFor="let macData of macAcseDatas">
                 <td class="others">{{macData.shipTo}}</td>
                 <td class="others">{{macData.branchName}}</td>
-                <td><span style="margin-left: 0.5rem; "> {{macData.mac_reptat_repair}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{macData.mac_eligible_repair}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(macData.mac_reptat_repair)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(macData.mac_eligible_repair)}}</span></td>
                 <td *ngIf="macData.REPTAT_points == '50'"><span style="margin-left: 0.5rem; color : green;">
                     {{macData.REPTAT_Rate | number : '1.0-2'}}</span></td>
                 <td *ngIf="macData.REPTAT_points < '50'"><span style="margin-left: 0.5rem; color : red ;">
                     {{macData.REPTAT_Rate | number : '1.0-2'}}</span></td>
                 <td><span style="margin-left: 0.5rem; "> {{macData.REPTAT_points | number : '1.0-0'}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{macData.mac_repair_PPR}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{macData.mac_PPR_eligible_repair}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(macData.mac_repair_PPR)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(macData.mac_PPR_eligible_repair)}}</span></td>
                 <td *ngIf="macData.PPR_points == '25'"><span style="margin-left: 0.5rem; color : green;">
                     {{macData.PPR_rating | number : '1.0-2'}}</span></td>
                 <td *ngIf="macData.PPR_points < '25'"><span style="margin-left: 0.5rem; color : red ;">
                     {{macData.PPR_rating | number : '1.0-2'}}</span></td>
                 <td><span style="margin-left: 0.5rem; "> {{macData.PPR_points | number : '1.0-0'}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{macData.mac_repeated_serials}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{macData.mac_looped_repairs}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(macData.mac_repeated_serials)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(macData.mac_looped_repairs)}}</span></td>
                 <td *ngIf="macData.cclr_points == '25'"><span style="margin-left: 0.5rem; color : green;">
                     {{macData.cclr_rating | number : '1.0-2'}}</span></td>
                 <td *ngIf="macData.cclr_points < '25'"><span style="margin-left: 0.5rem; color : red ;">
@@ -169,29 +169,29 @@
               <tr *ngFor="let iphoneData of iphoneAcseDatas">
                 <td class="others">{{iphoneData.shipTo}}</td>
                 <td class="others">{{iphoneData.branchName}}</td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_reptat_repair}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_eligible_repairs}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_reptat_repair)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_eligible_repairs)}}</span></td>
                 <td *ngIf="iphoneData.reptat_points == '40'"><span style="margin-left: 0.5rem; color : green;">
                     {{iphoneData.reptat_rate | number : '1.0-2'}}</span></td>
                 <td *ngIf="iphoneData.reptat_points < '40'"><span style="margin-left: 0.5rem; color : red ;">
                     {{iphoneData.reptat_rate | number : '1.0-2'}}</span></td>
                 <td><span style="margin-left: 0.5rem; "> {{iphoneData.reptat_points | number : '1.0-0'}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_sdr_events}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_SDR}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_sdr_events)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_SDR)}}</span></td>
                 <td *ngIf="iphoneData.iphone_SDR_points == '10'"><span style="margin-left: 0.5rem; color : green;">
                     {{iphoneData.iphone_SDR_rate | number : '1.0-2'}}</span></td>
                 <td *ngIf="iphoneData.iphone_SDR_points < '10'"><span style="margin-left: 0.5rem; color : red ;">
                     {{iphoneData.iphone_SDR_rate | number : '1.0-2'}}</span></td>
                 <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_SDR_points | number : '1.0-0'}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_NTF}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_no_trouble}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_NTF)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_no_trouble)}}</span></td>
                 <td *ngIf="iphoneData.iphone_ntf_points == '25'"><span style="margin-left: 0.5rem; color : green;">
                     {{iphoneData.iphone_ntf_rate | number : '1.0-2'}}</span></td>
                 <td *ngIf="iphoneData.iphone_ntf_points < '25'"><span style="margin-left: 0.5rem; color : red ;">
                     {{iphoneData.iphone_ntf_rate | number : '1.0-2'}}</span></td>
                 <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_ntf_points | number : '1.0-0'}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_SUR_repairs}}</span></td>
-                <td><span style="margin-left: 0.5rem; "> {{iphoneData.iphone_SUR_Opp}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_SUR_repairs)}}</span></td>
+                <td><span style="margin-left: 0.5rem; "> {{displayMetric(iphoneData.iphone_SUR_Opp)}}</span></td>
                 <td *ngIf="iphoneData.iphone_SUR_Opp_points == '25'"><span style="margin-left: 0.5rem; color : green;">
                     {{iphoneData.iphone_SUR_Opp_rate | number : '1.0-2'}}</span></td>
                 <td *ngIf="iphoneData.iphone_SUR_Opp_points < '25'"><span style="margin-left: 0.5rem; color : red ;">

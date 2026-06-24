@@ -235,4 +235,15 @@ export class AcseDashboardComponent {
   back() {
     this.isTicketList = true;
   }
+
+  displayMetric(value: any): string | number {
+    if (value === null || value === undefined) {
+      return '';
+    }
+    const num = Number(value);
+    if (!Number.isNaN(num) && num === 0) {
+      return '';
+    }
+    return value;
+  }
 }
