@@ -19,13 +19,12 @@ export class ConsignmentReportService {
   constructor(private http: HttpClient) {}
 
   getActiveConsignmentReport() {
-    const params =
-      'X_API_KEY=' + localStorage.getItem('userToken') +
+    const form =
       '&user_id=' + localStorage.getItem('userId') +
       '&branch_code=' + (localStorage.getItem('branchCode') || '');
-    return this.http.get(
-      this.reportsUrl + 'api/analytics/active_consignment_report?' + params,
-      { headers: this.reqHeader }
+    return this.http.post(
+      this.nreportUrl + 'reports/active_consignment_data', form,
+      { headers: this.getHeaders() }
     );
   }
 }
