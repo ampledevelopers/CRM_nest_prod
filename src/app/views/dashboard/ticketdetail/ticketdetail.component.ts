@@ -6802,13 +6802,18 @@ get showDeleteButton3() {
     if ((this.data.purchased_in === 'India') || (this.data.product_family === 'Mac')) {
       this.oocCheck = true;
     }
+    if (this.popAppleReviewHold === true && !this.selectedParts.some((part: any) => part.fromConsignedStock === true)) {
+      alert('Use Consignment Part is required when POP Apple Review Hold is enabled');
+      this.buttonSpin = false;
+      return;
+    }
 
     if ((this.repairType === 'CIN') && (!this.oocCheck) && (this.diagnosisHd.additional_part !== '1')) {
       alert('POP is not validated, its force Mail-In to Apple RC');
       this.buttonSpin = false;
       return;
     }
-
+   
     let popReview: any;
     if (this.popAppleReviewHold === false) {
       popReview = 0;
