@@ -10,12 +10,13 @@ export interface HourlyTokenRow {
   raf: string;
   delivery: string;
   enquiry: string;
+  cxnf: string;
   abandon: string;
 }
 
 export interface HourlyTokenTableRow {
   time_slot: string;
-  values: Record<string, { raf: string; delivery: string; enquiry: string; abandon: string }>;
+  values: Record<string, { raf: string; delivery: string; enquiry: string; cxnf: string; abandon: string }>;
 }
 
 @Component({
@@ -127,7 +128,7 @@ export class HourlyTokenReportComponent implements OnInit {
 
     this.tableRows = this.timeSlots.map((slot) => {
       const slotRows = report.filter((row) => row.time_slot === slot);
-      const values: Record<string, { raf: string; delivery: string; enquiry: string; abandon: string }> = {};
+      const values: Record<string, { raf: string; delivery: string; enquiry: string; cxnf: string; abandon: string }> = {};
 
       this.users.forEach((user) => {
         const match = slotRows.find((row) => this.normalizeUserName(row.user_name) === user);
@@ -135,6 +136,7 @@ export class HourlyTokenReportComponent implements OnInit {
           raf: match?.raf ?? '0',
           delivery: match?.delivery ?? '0',
           enquiry: match?.enquiry ?? '0',
+          cxnf: match?.cxnf ?? '0',
           abandon: match?.abandon ?? '0',
         };
       });
@@ -143,8 +145,20 @@ export class HourlyTokenReportComponent implements OnInit {
     });
   }
 
-  getUserValue(row: HourlyTokenTableRow, user: string, field: 'raf' | 'delivery' | 'enquiry' | 'abandon'): string {
+  getUserValue(row: HourlyTokenTableRow, user: string, field: 'raf' | 'delivery' | 'enquiry' | 'cxnf' | 'abandon'): string {
     return row.values[user]?.[field] ?? '0';
+  }
+
+  isTodaySelected(): boolean {
+    return this.reportDate === new Date().toISOString().split('T')[0];
+  }
+
+  showAbandonColumn(): boolean {
+    return !this.isTodaySelected();
+  }
+
+  userColumnCount(): number {
+    return this.showAbandonColumn() ? 5 : 4;
   }
 
   formatDisplayValue(value: string): string {
