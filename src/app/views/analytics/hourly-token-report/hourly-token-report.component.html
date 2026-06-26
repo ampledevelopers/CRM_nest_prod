@@ -35,11 +35,11 @@
     <div class="card-header">
       Hourly Token Report - {{ getSelectedBranchLabel() }} ({{ reportDate }})
     </div>
-    <div class="card-body" style="overflow-x: auto; padding: 0;">
-      <table class="table table-bordered table-striped table-sm text-nowrap" style="width: 100%;">
+    <div class="card-body hourly-token-table-wrap">
+      <table class="table table-bordered table-striped table-sm text-nowrap hourly-token-table">
         <thead>
           <tr>
-            <th rowspan="2" style="vertical-align: middle;">Time Slot</th>
+            <th rowspan="2" class="sticky-time-slot" style="vertical-align: middle;">Time Slot</th>
             <th *ngFor="let user of users" [attr.colspan]="userColumnCount()" class="text-center">{{ user }}</th>
           </tr>
           <tr>
@@ -54,7 +54,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of tableRows">
-            <td>{{ row.time_slot }}</td>
+            <td class="sticky-time-slot">{{ row.time_slot }}</td>
             <ng-container *ngFor="let user of users">
               <td class="text-center" [ngClass]="{'token-count-active': isActiveValue(getUserValue(row, user, 'raf'))}">
                 {{ formatDisplayValue(getUserValue(row, user, 'raf')) }}

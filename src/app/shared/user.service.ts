@@ -537,10 +537,10 @@ async uploadVideoS3Bucket(
     return this.s3;
   }
   getBinAgeingBranch(data: { user_id: string | null, branch_code: string | null }) {
-  const form = '' +
+  const form = 'X_API_KEY=' + localStorage.getItem('userToken') +
                '&user_id=' + data.user_id +
                '&branch_code=' + data.branch_code;
-  return this.http.post(this.reportsUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
+  return this.http.post(this.reportUrl + 'api/reports/branch_bin_ageing_dashboard', form, { headers: this.reqHeader });
 }
   getBranchAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
