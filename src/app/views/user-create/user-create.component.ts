@@ -235,7 +235,7 @@ export class UserCreateComponent {
                 this.userName = result.profile.user_name;
                 this.mobile = result.profile.mobile;
                 this.email = result.profile.email;
-                this.serviceType = result.profile.site_tye_id;
+                this.serviceType = result.profile.site_type_id;
                 this.branch = result.profile.branch_id;
                 this.userRole = result.profile.group_id;
                 this.status = result.profile.status;

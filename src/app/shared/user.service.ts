@@ -91,8 +91,8 @@ export class UserService {
   }
 
   setUser(userId: any, user: any) {
-    const data = 'user_id=' + userId + '&data=' + user ;
-    return this.http.post(this.nestUrl + 'gsxapi/update_user', data, { headers: this.getHeaders() });
+    const data = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + userId + '&data=' + user ;
+    return this.http.post(this.rootUrl + '/api/common/update_user', data, { headers: this.reqHeader });
   }
   getTasks(data: string) {
     /// var data = "group=" + groupID+"user_id=" + userId+ "&data=" + user+'';
@@ -116,11 +116,11 @@ export class UserService {
   authenticateGSX(key: string) {
     let form;
     if (key === '') {
-      form = '&user_id=' + localStorage.getItem('userId');
+      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
     } else {
-      form = '&user_id=' + localStorage.getItem('userId') + '&gsx_api_key=' + key;
+      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&gsx_api_key=' + key;
     }
-    return this.http.post(this.nestUrl + 'gsxapi/get_auth_token', form, { headers: this.getHeaders() });
+    return this.http.post(this.rootUrl + 'api/gsxapi/get_auth_token', form, { headers: this.reqHeader });
   }
 
   dCallFetch(fromDate: any, toDate: any) {

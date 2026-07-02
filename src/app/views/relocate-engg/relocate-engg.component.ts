@@ -126,7 +126,7 @@ export class RelocateEnggComponent {
                   this.profile.branch_code = this.branchList[i].label;
                 }
               }
-              this.userRoleList = this.userRoleListTemp.filter((item: { site_type_id: any; }) => item.site_type_id === this.profile.site_tye_id);
+              this.userRoleList = this.userRoleListTemp.filter((item: { site_type_id: any; }) => item.site_type_id === this.profile.site_type_id);
             } else {
               this.isProfile = false;
               this.rlError = result.message;
