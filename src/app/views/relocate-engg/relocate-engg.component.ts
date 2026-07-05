@@ -167,7 +167,7 @@ export class RelocateEnggComponent {
       this.rlError = '';
     }
 
-    if ((this.newServiceType !== '') && (this.profile.site_tye_id !== this.newServiceType)) {
+    if ((this.newServiceType !== '') && (this.profile.site_type_id !== this.newServiceType)) {
       for (let i = 0; i < this.userRoleList.length; i++) {
         if (this.newUserRole === this.userRoleList[i].id) {
           userRole = true;

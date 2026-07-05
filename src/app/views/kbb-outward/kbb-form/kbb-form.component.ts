@@ -213,6 +213,23 @@ export class KbbFormComponent {
 
   /* ********** From Approver ************ */
 
+  private parseBoxDetails(details: any): any[] {
+    if (!details) {
+      return [];
+    }
+    if (Array.isArray(details)) {
+      return details;
+    }
+    if (typeof details === 'string') {
+      try {
+        return JSON.parse(details || '[]');
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+
   getKbbData() {
     let result: any;
       this.dataService.getKbbList(localStorage.getItem('nrdcNo'), '', '')
@@ -222,8 +239,8 @@ export class KbbFormComponent {
                 this.buttonSpin = false;
                 if (result.status === true) {
                   this.enableBulkReturn = result.enable_bulk_return;
-                  this.partList = result.kbb.dt;
-                  this.kgbList = result.kbb.dt2;
+                  this.partList = result.kbb.dt || [];
+                  this.kgbList = result.kbb.dt2 || [];
                   for (let i = 0; i < this.partList.length; i++) {
                     this.partList[i].displayCheckColor = 'red';
                     this.partList[i].captured_serial_no = this.partList[i].kbb_serial_no;
@@ -234,8 +251,10 @@ export class KbbFormComponent {
                     }
                     sPart.validated_by = sPart.approved_by;
                   });
-                  this.getLocationaddress(result.kbb.hd[0].return_from);
-                  this.assignValues(result.kbb.hd[0]);
+                  if (result.kbb.hd?.length) {
+                    this.getLocationaddress(result.kbb.hd[0].return_from);
+                    this.assignValues(result.kbb.hd[0]);
+                  }
                   this.totalItems = this.partList.length;
                 } else {
                   alert(result.message);
@@ -282,8 +301,8 @@ export class KbbFormComponent {
       this.mode = '2';
     }
     this.boxType = [];
-    if (data.carton_box_no > 0) {
-      const cartonBoxDetails = JSON.parse(data.carton_box_details);
+    if (Number(data.carton_box_no) > 0) {
+      const cartonBoxDetails = this.parseBoxDetails(data.carton_box_details);
       for (let i = 0; i < cartonBoxDetails.length; i++) {
         this.boxType.push({
           type: cartonBoxDetails[i].type,
@@ -299,8 +318,8 @@ export class KbbFormComponent {
         });
       }
     }
-    if (data.tote_box_no > 0) {
-      const toteBoxDetails = JSON.parse(data.tote_box_details);
+    if (Number(data.tote_box_no) > 0) {
+      const toteBoxDetails = this.parseBoxDetails(data.tote_box_details);
       for (let j = 0; j < toteBoxDetails.length; j++) {
         this.boxType.push({
           type: toteBoxDetails[j].type,
@@ -1175,7 +1194,7 @@ check_battery_compitia(): Promise<boolean> {
   }
 
   printNrdc() {
-    const url = localStorage.getItem('rootUrl') + 'api/returns/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.nrdcNo.slice(3) + '&approved=' + 'N';
+    const url = localStorage.getItem('nestUrl') + 'kbb_outward/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.nrdcNo.slice(3) + '&approved=' + 'N';
     const tab = window.open(url);
   }
 

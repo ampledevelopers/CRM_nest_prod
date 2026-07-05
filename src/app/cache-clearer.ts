@@ -5,7 +5,7 @@ import { filter, map } from 'rxjs/operators';
 export function cacheClearer(swUpdate: SwUpdate) {
   console.log('Checking for Updates');
     if (swUpdate.isEnabled) {
-      console.log('Updated new version 4.1.11 (30-06-2026)');
+      console.log('Updated new version 4.1.11 (03-07-2026)');
         const updatesAvailable = swUpdate.versionUpdates.pipe(
             filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
             map(evt => ({

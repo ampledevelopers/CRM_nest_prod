@@ -29,14 +29,16 @@ export class KbbOutwardService {
   }
 
   checkPartSerialNo(tId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/check_display_repair', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
+    return this.http.post(this.nestUrl + 'kbb_outward/check_display_repair', form, { headers: this.getHeaders() });
   }
 
-  checkPartDetails(tId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/get_diagnosis', form, {headers : this.reqHeader});
-
+  checkPartDetails(tId: any, hdId?: any) {
+    let form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
+    if (hdId) {
+      form += '&hd_id=' + hdId;
+    }
+    return this.http.post(this.nestUrl + 'kbb_outward/get_diagnosis', form, { headers: this.getHeaders() });
   }
 
   /* getGsxDetail(repairId) {
@@ -46,21 +48,20 @@ export class KbbOutwardService {
   } */
 
   getReturnDetailList(fromDate: any, toDate: any, pageNo: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&from_date=' + fromDate + '&to_date=' + toDate + '&page_no=' + pageNo;
-    return this.http.post(this.rootUrl + 'api/gsxapi/returns_lookup', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') +
+      '&from_date=' + fromDate + '&to_date=' + toDate + '&page_no=' + pageNo;
+    return this.http.post(this.nestUrl + 'gsxapi/returns_lookup', form, { headers: this.getHeaders() });
   }
 
   getReturnDetail(repairId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&repairId=' + repairId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/returns_lookup', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&repairId=' + repairId;
+    return this.http.post(this.nestUrl + 'gsxapi/returns_lookup', form, { headers: this.getHeaders() });
   }
 
   getRcDc(type: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&type=' + type  +
     '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/returns/get_rc_dc', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'kbb_outward/get_rc_dc', form, {headers : this.getHeaders()});
   }
 
   getDocuments(id: string | null) {
@@ -71,11 +72,11 @@ export class KbbOutwardService {
   getLocation(code: any) {
     let form: any;
     if (code === '') {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
+      form = 'user_id=' + localStorage.getItem('userId');
     } else {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&branch_code=' + code + '&user_id=' + localStorage.getItem('userId');
+      form = 'branch_code=' + code + '&user_id=' + localStorage.getItem('userId');
     }
-    return this.http.post(this.rootUrl + 'api/returns/get_branch', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'kbb_outward/get_branch', form, { headers: this.getHeaders() });
   }
 
   kbbSubmit(hd: any, dt: any, cartonBoxes: any, toteBoxes: any): Observable<any> {
@@ -86,41 +87,43 @@ export class KbbOutwardService {
       'tote_box': toteBoxes,
     };
     const data = JSON.stringify(returnData);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&data=' + data +
-    '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/returns/create', form, {headers : this.reqHeader});
+    const form = 'data=' + encodeURIComponent(data) + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'kbb_outward/create', form, { headers: this.getHeaders() });
   }
 
   getKbbList(nrdcId: any, ticketId: any, status: any) {
     let form;
     if (nrdcId !== '') {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&approved='
-      + status + '&id=' + nrdcId;
+      form = 'user_id=' + localStorage.getItem('userId') + '&approved=' + status + '&id=' + nrdcId;
     } else if (ticketId !== '') {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&approved='
-      + '' + '&ticket_id=' + ticketId;
+      form = 'user_id=' + localStorage.getItem('userId') + '&approved=&ticket_id=' + ticketId;
     } else {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&approved='
-      + status;
+      form = 'user_id=' + localStorage.getItem('userId') + '&approved=' + status;
     }
-    return this.http.get(this.rootUrl + 'api/returns/get_kbb?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'kbb_outward/get_kbb?' + form, { headers: this.getHeaders() });
   }
 
   approveDeclineKbb(id: any, status: any, ewaybill: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&return_id=' + id + '&status=' + status + '&eway_bill=' + ewaybill;
-    return this.http.post(this.rootUrl + 'api/returns/approve', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') +
+      '&return_id=' + id + '&status=' + status + '&eway_bill=' + ewaybill;
+    return this.http.post(this.nestUrl + 'kbb_outward/approve', form, { headers: this.getHeaders() });
   }
 
   eWayBillUpdate(id: any, ewaybill: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&return_id=' + id + '&eway_bill=' + ewaybill;
-    return this.http.post(this.rootUrl + 'api/returns/update_eway_bill', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') +
+      '&return_id=' + id + '&eway_bill=' + ewaybill;
+    return this.http.post(this.nestUrl + 'kbb_outward/update_eway_bill', form, { headers: this.getHeaders() });
   }
 
-  viewKbb(nrdcId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + nrdcId;
-    return this.http.get(this.rootUrl + 'api/returns/print?' + form, {headers : this.reqHeader});
+  viewKbb(nrdcId: any, approved?: string) {
+    let form = 'id=' + nrdcId;
+    if (approved !== undefined && approved !== '') {
+      form += '&approved=' + approved;
+    }
+    return this.http.get(this.nestUrl + 'kbb_outward/print?' + form, {
+      headers: this.getHeaders(),
+      responseType: 'blob',
+    });
   }
 
   getDriveFiles(ticket_id: any) {
@@ -129,8 +132,8 @@ export class KbbOutwardService {
   }
 
   shipmentConfirm(nrdcId: any, remarks: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&nrdc_no=' + nrdcId + '&remarks=' + remarks;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/nrdc_shipment_confirmation', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&nrdc_no=' + nrdcId + '&remarks=' + encodeURIComponent(remarks);
+    return this.http.post(this.nestUrl + 'kbb_outward/nrdc_shipment_confirmation', form, { headers: this.getHeaders() });
   }
 
   bulkReturnCreate(nrdcId: any) {
@@ -139,65 +142,64 @@ export class KbbOutwardService {
   }
 
   bulkReturnCreateV2(bulkReturnJSON: any) {
-    const userToken: any= localStorage.getItem('userToken');
-    const diagHeader: any = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True',
-    'X-API-KEY': userToken });
-    return this.http.post(this.rootUrl + 'api/gsxapi/returns_manage_v2', JSON.stringify(bulkReturnJSON[0]), {headers : diagHeader});
+    const jsonHeader = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'No-Auth': 'True',
+      'x-api-key': localStorage.getItem('userToken') || ''
+    });
+    return this.http.post(this.nestUrl + 'gsxapi/returns_manage_v2', bulkReturnJSON[0], { headers: jsonHeader });
   }
 
   labelPrint(nrdcId: any, bulkReturnId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bulk_return_id=' + bulkReturnId + '&doc_type=' + 'bulkReturnLabel'
-    + '&nrdc_no=' + nrdcId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/document_download', form,
-    {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
-    return new Blob([res], { type: 'application/zip', });
-    }));
+    const form = 'user_id=' + localStorage.getItem('userId') + '&bulk_return_id=' + bulkReturnId + '&doc_type=' + 'bulkReturnLabel'
+      + '&nrdc_no=' + nrdcId;
+    return this.http.post(this.nestUrl + 'gsxapi/document_download', form,
+      { headers: this.getHeaders(), responseType: 'blob' }).pipe(map((res: BlobPart) => {
+        return new Blob([res], { type: 'application/zip' });
+      }));
   }
 
   labelSinglePrint(nrdcId: any, bulkReturnId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bulk_return_id=' + bulkReturnId + '&doc_type=' + 'bulkReturnLabel'
-    + '&nrdc_no=' + nrdcId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/document_download', form,
-    {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
-    return new Blob([res], { type: 'application/pdf', });
-    }));
+    const form = 'user_id=' + localStorage.getItem('userId') + '&bulk_return_id=' + bulkReturnId + '&doc_type=' + 'bulkReturnLabel'
+      + '&nrdc_no=' + nrdcId;
+    return this.http.post(this.nestUrl + 'gsxapi/document_download', form,
+      { headers: this.getHeaders(), responseType: 'blob' }).pipe(map((res: BlobPart) => {
+        return new Blob([res], { type: 'application/pdf' });
+      }));
   }
 
   bulkReturnConfirm(nrdcId: any,) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + nrdcId +'&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/returns_confirmshipment', form, {headers : this.reqHeader});
+    const form = '&id=' + nrdcId +'&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'gsxapi/returns_confirmshipment', form, {headers : this.getHeaders()});
   }
 
   packListPrint(nrdcId: any, bulkReturnId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bulk_return_id=' + bulkReturnId + '&doc_type=' + 'returnsPackingList'
-    + '&nrdc_no=' + nrdcId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/document_download', form,
-    {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
-    return new Blob([res], { type: 'application/pdf', });
-    }));
+    const form = 'user_id=' + localStorage.getItem('userId') + '&bulk_return_id=' + bulkReturnId + '&doc_type=' + 'returnsPackingList'
+      + '&nrdc_no=' + nrdcId;
+    return this.http.post(this.nestUrl + 'gsxapi/document_download', form,
+      { headers: this.getHeaders(), responseType: 'blob' }).pipe(map((res: BlobPart) => {
+        return new Blob([res], { type: 'application/pdf' });
+      }));
   }
 
   validationUpdate(data: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&data=' + JSON.stringify(data);
-    return this.http.post(this.rootUrl + 'api/returns/validation_update', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') +
+      '&data=' + encodeURIComponent(JSON.stringify(data));
+    return this.http.post(this.nestUrl + 'kbb_outward/validation_update', form, { headers: this.getHeaders() });
   }
 
- fetchPartDetails(partNos: string[]) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') +'&user_id=' + localStorage.getItem('userId') +'&part_nos=' + JSON.stringify(partNos);
-  return this.http.post(this.rootUrl + 'api/ticketsv3/get_HSN', form, { headers: this.reqHeader});
-}
+  fetchPartDetails(partNos: string[]) {
+    const form = 'user_id=' + localStorage.getItem('userId') + '&part_nos=' + JSON.stringify(partNos);
+    return this.http.post(this.nestUrl + 'kbb_outward/get_HSN', form, { headers: this.getHeaders() });
+  }
 
-checkBatteryByRepairIds(payload: { repair_ids: string[]; mode: string ;type:string}) {
-
-  const form =
-    'X_API_KEY=' + localStorage.getItem('userToken') +
-    '&user_id=' + localStorage.getItem('userId') +
-    '&repair_ids=' + JSON.stringify(payload.repair_ids) +
-    '&mode=' + payload.mode +
-    '&type=' + payload.type;
-
-  return this.http.post(this.rootUrl + 'api/returns/check_battery_compitia',form,{ headers: this.reqHeader });
+  checkBatteryByRepairIds(payload: { repair_ids: string[]; mode: string; type: string }) {
+    const form =
+      'user_id=' + localStorage.getItem('userId') +
+      '&repair_ids=' + JSON.stringify(payload.repair_ids) +
+      '&mode=' + payload.mode +
+      '&type=' + payload.type;
+    return this.http.post(this.nestUrl + 'kbb_outward/check_battery_compitia', form, { headers: this.getHeaders() });
   }
    updateToteTracker(ticketId: string, toteId: string) {
   const form =

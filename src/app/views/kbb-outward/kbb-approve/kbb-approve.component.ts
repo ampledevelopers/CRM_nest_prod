@@ -83,6 +83,23 @@ export class KbbApproveComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
+  private parseBoxDetails(details: any): any[] {
+    if (!details) {
+      return [];
+    }
+    if (Array.isArray(details)) {
+      return details;
+    }
+    if (typeof details === 'string') {
+      try {
+        return JSON.parse(details || '[]');
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+
   getKbbList(nrdc: any, ticket: any, status: any) {
     let result: any;
     const ewayList: any = [];
@@ -145,11 +162,7 @@ export class KbbApproveComponent implements OnInit {
     if (this.toteSearch || this.tagSearch) {
       filtered = filtered.filter(item => {
         let toteDetails: any[] = [];
-        try {
-          toteDetails = JSON.parse(item.tote_box_details || '[]');
-        } catch (e) {
-          toteDetails = [];
-        }
+        toteDetails = this.parseBoxDetails(item.tote_box_details);
 
         return toteDetails.some(tote =>
           (this.toteSearch && tote.toteId.toLowerCase().includes(this.toteSearch.toLowerCase())) ||
@@ -246,8 +259,15 @@ export class KbbApproveComponent implements OnInit {
 
   printNrdc() {
     this.modalService.dismissAll();
-    const url = localStorage.getItem('rootUrl') + 'api/returns/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.viewNrdcNo;
-    const tab = window.open(url);
+    this.dataService.viewKbb(this.viewNrdcNo).subscribe({
+      next: (data: Blob) => {
+        const tab = window.open();
+        if (tab) {
+          tab.location.href = URL.createObjectURL(data);
+        }
+      },
+      error: (error: any) => this.error = error
+    });
   }
 
   kbbShipped(nrdcId: any, shippedRemarks: TemplateRef<any>) {

@@ -33,6 +33,13 @@ export class UserService {
     });
   }
 
+  private getUploadHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'No-Auth': 'True',
+      'x-api-key': localStorage.getItem('userToken') || ''
+    });
+  }
+
   constructor(private http: HttpClient) {
   }
 
@@ -250,9 +257,8 @@ private uploadMultipart(file: File, bucketName: string, fileName: string, folder
   formData.append('fileName', fileName);
   formData.append('folder', folder);
   formData.append('file', file, fileName);
-  const headers = new HttpHeaders({ 'No-Auth': 'True' });
   return firstValueFrom(
-    this.http.post<any>(this.rootUrl + 'api/cdata/upload_to_s3', formData, { headers }).pipe(timeout(600000))
+    this.http.post<any>(this.nestUrl + 's3/upload', formData, { headers: this.getUploadHeaders() }).pipe(timeout(600000))
   ).then(response => {
     if (response?.status && response?.url) return response.url;
     throw new Error(response?.message || 'Upload failed');
@@ -328,15 +334,11 @@ async uploadVideoS3Bucket(
   formData.append('X_API_KEY', localStorage.getItem('userToken') || '');
   formData.append('user_id', localStorage.getItem('userId') || '');
 
-  const headers = new HttpHeaders({
-    'No-Auth': 'True'
-  });
-
   const res: any = await firstValueFrom(
     this.http.post(
-      this.rootUrl + 'api/cdata/upload_to_s3',
+      this.nestUrl + 's3/upload',
       formData,
-      { headers }
+      { headers: this.getUploadHeaders() }
     )
   );
 
@@ -465,9 +467,8 @@ async uploadVideoS3Bucket(
   }
 
   updateS3File(commonData: any) {
-    const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
-    return this.http.post(this.rootUrl + 'api/tickets/s3_data', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 's3/s3_data', form, { headers: this.getHeaders() });
   }
 
   updateS3FileTekne(commonData: any) {
@@ -477,9 +478,8 @@ async uploadVideoS3Bucket(
   }
 
   deleteS3File(bucketName: any, fileName: any, ticket_id: any) {
-    const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
-    return this.http.post(this.rootUrl + 'api/tickets/delete_s3_data', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 's3/delete_s3_data', form, { headers: this.getHeaders() });
   }
 
   /* updateS3File_raf(commonData: any) {
@@ -495,8 +495,8 @@ async uploadVideoS3Bucket(
       + '&bucket_name=' + encodeURIComponent(bucketName)
       + '&object_key=' + encodeURIComponent(objectKey);
     return firstValueFrom(
-      this.http.post(this.rootUrl + 'api/cdata/get_s3_file', form, {
-        headers: this.reqHeader,
+      this.http.post(this.nestUrl + 's3/get_s3_file', form, {
+        headers: this.getHeaders(),
         responseType: 'blob'
       }).pipe(timeout(120000))
     );
@@ -504,7 +504,7 @@ async uploadVideoS3Bucket(
 
   getS3FileDetails(ticket_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-    return this.http.get(this.rootUrl + 'api/tickets/s3_data?' + form, { headers: this.reqHeader });
+    return this.http.get(this.nestUrl + 's3/s3_data?' + form, { headers: this.getHeaders() });
   }
 
   getS3FileDetails_tekne(ticket_id: string) {
