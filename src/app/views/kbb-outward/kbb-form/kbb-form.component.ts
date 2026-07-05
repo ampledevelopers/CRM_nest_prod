@@ -213,23 +213,6 @@ export class KbbFormComponent {
 
   /* ********** From Approver ************ */
 
-  private parseBoxDetails(details: any): any[] {
-    if (!details) {
-      return [];
-    }
-    if (Array.isArray(details)) {
-      return details;
-    }
-    if (typeof details === 'string') {
-      try {
-        return JSON.parse(details || '[]');
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }
-
   getKbbData() {
     let result: any;
       this.dataService.getKbbList(localStorage.getItem('nrdcNo'), '', '')
@@ -302,7 +285,7 @@ export class KbbFormComponent {
     }
     this.boxType = [];
     if (Number(data.carton_box_no) > 0) {
-      const cartonBoxDetails = this.parseBoxDetails(data.carton_box_details);
+      const cartonBoxDetails = data.carton_box_details || [];
       for (let i = 0; i < cartonBoxDetails.length; i++) {
         this.boxType.push({
           type: cartonBoxDetails[i].type,
@@ -319,7 +302,7 @@ export class KbbFormComponent {
       }
     }
     if (Number(data.tote_box_no) > 0) {
-      const toteBoxDetails = this.parseBoxDetails(data.tote_box_details);
+      const toteBoxDetails = data.tote_box_details || [];
       for (let j = 0; j < toteBoxDetails.length; j++) {
         this.boxType.push({
           type: toteBoxDetails[j].type,

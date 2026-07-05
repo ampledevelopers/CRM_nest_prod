@@ -83,23 +83,6 @@ export class KbbApproveComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  private parseBoxDetails(details: any): any[] {
-    if (!details) {
-      return [];
-    }
-    if (Array.isArray(details)) {
-      return details;
-    }
-    if (typeof details === 'string') {
-      try {
-        return JSON.parse(details || '[]');
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }
-
   getKbbList(nrdc: any, ticket: any, status: any) {
     let result: any;
     const ewayList: any = [];
@@ -161,10 +144,9 @@ export class KbbApproveComponent implements OnInit {
 
     if (this.toteSearch || this.tagSearch) {
       filtered = filtered.filter(item => {
-        let toteDetails: any[] = [];
-        toteDetails = this.parseBoxDetails(item.tote_box_details);
+        const toteDetails = item.tote_box_details || [];
 
-        return toteDetails.some(tote =>
+        return toteDetails.some((tote: any) =>
           (this.toteSearch && tote.toteId.toLowerCase().includes(this.toteSearch.toLowerCase())) ||
           (this.tagSearch && tote.tagId.toLowerCase().includes(this.tagSearch.toLowerCase()))
         );
