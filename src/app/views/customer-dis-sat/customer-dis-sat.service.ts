@@ -28,7 +28,7 @@ export class CustomerDisSatService {
     const documents = JSON.stringify(docs);
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
     const form = 'user_id=' + localStorage.getItem('userId') + '&completion_date=' + date + '&documents=' + documents;
-    return this.http.post(this.nestUrl + 'uploads/ticket_customer_rating', form, {headers : reqHeader});
+    return this.http.post(this.nestUrl + 'uploads/ticket_customer_rating', form, {headers : this.getHeaders()});
   }
 
 }
