@@ -9,7 +9,14 @@ import { HttpHeaders } from '@angular/common/http';
 export class CustomerCareService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'X-API-KEY': localStorage.getItem('userToken') || ''
+    });
+  }
   constructor(private http: HttpClient) {
   }
 
@@ -25,9 +32,9 @@ export class CustomerCareService {
   }
 
   getCustomerInfo(site_id: any, c_id: any, phone_no: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
                   '&site_type_id=' + site_id + '&c_id=' + c_id + '&phone=' + phone_no;
-    return this.http.post(this.rootUrl + 'api/tickets/get_customer', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
   }
 
   saveEnquiry(inputData: any, products: any) {

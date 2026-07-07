@@ -79,8 +79,8 @@ export class TekneTicketdetailService {
   }
 
   getAssignees(userId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + userId;
-    return this.http.post(this.rootUrl + 'api/common/userlist', form, {headers : this.reqHeader});
+    const form = '&user_id=' + userId;
+    return this.http.post(this.nestUrl + 'tickets_v2/userlist', form, {headers : this.getHeaders()});
   }
 
   assignTicket(tId: string, assigned_user_id: string) {
@@ -97,9 +97,9 @@ export class TekneTicketdetailService {
 
 
   getCustomerInfo(c_id: string, phone_no: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
                   '&site_type_id=' + localStorage.getItem('siteType') + '&c_id=' + c_id + '&phone=' + phone_no;
-    return this.http.post(this.rootUrl + 'api/tickets/get_customer', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
   }
 
   /******* Diagnosis *********/

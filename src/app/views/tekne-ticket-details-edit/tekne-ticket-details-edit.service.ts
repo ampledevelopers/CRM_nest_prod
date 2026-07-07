@@ -32,9 +32,9 @@ export class TekneTicketDetailsEditService {
   }
 
   getCustomerInfo(site_id: string, c_id: string, phone_no: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
                   '&site_type_id=' + site_id + '&c_id=' + c_id + '&phone=' + phone_no;
-    return this.http.post(this.rootUrl + 'api/tickets/get_customer', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
   }
 
   updateUserInfo(data: Userinfo, customerId: string, ticketId: string) {
