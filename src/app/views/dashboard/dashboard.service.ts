@@ -1202,4 +1202,16 @@ const form = '&user_id=' + localStorage.getItem('userId') + data;
     this.rootUrl + 'api/ticketsv3/updateToteTracker',form, { headers: this.reqHeader });
 }
 
+  updateZZInvoiceNo(ticketId: string, invoiceId: string, invoiceDate: string, zzPopValidated: string | number = 0) {
+    const form =  '&user_id=' + localStorage.getItem('userId')
+      + '&ticket_id=' + ticketId + '&zz_invoice_id=' + invoiceId + '&invoice_date=' + invoiceDate
+      + '&zz_pop_validated=' + zzPopValidated;
+    return this.http.post(this.nestUrl + 'tickets_v2/update_ticket_more_info', form, { headers: this.getHeaders() });
+  }
+
+  getTicketMoreInfo(ticketId: string) {
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.get(this.nestUrl + 'tickets_v2/get_ticket_more_info?' + form, { headers: this.getHeaders() });
+  }
+
 }
