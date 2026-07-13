@@ -35,7 +35,7 @@ export class TokenreportComponent {
   todayDate: any;
   buttonSpin = false;
   userRole = localStorage.getItem('userRole');
-  columns = ['token_no', 'branch_code','new_branch_code', 'first_name', 'last_name', 'user_id', 'phone', 'email' ,'family', 'warranty_type', 'token_type', 'enquiry_flag', 'token_time', 'accepted_at', 'token_closedAt', 'user_name', 'service_type', 'CustomerWaitTime', 'CustomerAttendTime','promo_disclaimer','ticket_id', 'no_sale_reason','reason_for_closure'];
+  columns = ['token_no', 'branch_code','new_branch_code', 'first_name', 'last_name', 'user_id', 'phone', 'email' ,'family', 'warranty_type','brand', 'token_type', 'enquiry_flag', 'token_time', 'accepted_at', 'token_closedAt', 'user_name', 'service_type', 'CustomerWaitTime', 'CustomerAttendTime','promo_disclaimer','ticket_id', 'no_sale_reason','reason_for_closure'];
   constructor(
     public dataService: TokenreportService,
     private excelService: ExcelService
