@@ -11,6 +11,7 @@ export class GSXReimbursementService {
   reportsUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -24,8 +25,8 @@ export class GSXReimbursementService {
   uploadGsxReimb(docs: any, date: any) {
     const documents = JSON.stringify(docs);
     const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&completion_date=' + date + '&documents=' + documents;
-    return this.http.post(this.reportsUrl + 'api/analytics/labour_reimbursement', form, {headers : reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + '&completion_date=' + date + '&documents=' + documents;
+    return this.http.post(this.nreportUrl + 'reports/labour_reimbursement', form, {headers : this.getHeaders()});
   }
   
 

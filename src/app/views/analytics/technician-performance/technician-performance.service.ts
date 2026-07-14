@@ -9,6 +9,7 @@ export class TechnicianPerformanceService {
   reportUrl = localStorage.getItem('reportsUrl');
   rootUrl = localStorage.getItem('rootUrl');
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -22,8 +23,8 @@ export class TechnicianPerformanceService {
   constructor(private http: HttpClient) { }
 
   getPerformanceData(fromDate: any, toDate: any, siteTypeId: any, techId: any, branchCode: any, productFamily: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&from_date=' + fromDate + '&to_date=' + toDate + '&site_type_id=' + siteTypeId + '&technician_id=' + techId + '&product_family=' + productFamily + '&branch_code=' + branchCode;
-    return this.http.get(this.reportUrl + 'api/analytics/technician_performance?'+ form, {headers : this.reqHeader});
+    const form = '&from_date=' + fromDate + '&to_date=' + toDate + '&site_type_id=' + siteTypeId + '&technician_id=' + techId + '&product_family=' + productFamily + '&branch_code=' + branchCode;
+    return this.http.get(this.nreportUrl + 'analytics/technician_performance?'+ form, {headers : this.getHeaders()});
   }
 
   getBranches() {
@@ -37,8 +38,8 @@ export class TechnicianPerformanceService {
   }
 
   getTechnicians(branchCode: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&branch_code=' + branchCode;
-    return this.http.get(this.rootUrl + 'api/common/branch_users?' + form, {headers : this.reqHeader});
+    const form = '&branch_code=' + branchCode;
+    return this.http.get(this.nreportUrl + 'common/branch_users?' + form, {headers : this.getHeaders()});
   }
 
 }

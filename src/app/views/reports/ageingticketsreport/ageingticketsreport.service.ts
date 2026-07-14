@@ -10,6 +10,7 @@ export class AgeingticketsreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -22,13 +23,13 @@ export class AgeingticketsreportService {
    }
 
   getBranches() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId');
+    const form = '&user_id=' + localStorage.getItem('userId');
     return this.http.post(this.nestUrl + 'common/get_branches', form, {headers : this.getHeaders()});
   }
 
   getAgeingTicketsReport(branchId: string) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+  const form = '&user_id=' + localStorage.getItem('userId') +
   '&branchId=' + branchId;
-    return this.http.post(this.rootUrl + 'api/reports/ageing_tickets_for_sms', form, {headers : this.reqHeader});
+    return this.http.post(this.nreportUrl + 'reports/ageing_tickets_for_sms', form, {headers : this.getHeaders()});
   }
 }

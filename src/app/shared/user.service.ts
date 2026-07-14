@@ -14,6 +14,7 @@ export class UserService {
   rootUrl = localStorage.getItem('rootUrl');
   reportsUrl = localStorage.getItem('reportsUrl');
   reportUrl = localStorage.getItem('reportsUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   nestUrl = localStorage.getItem('nestUrl');
   selectedWidget: any = 'Pre-Repair';
   allWidgets: any = [];
@@ -537,10 +538,10 @@ async uploadVideoS3Bucket(
     return this.s3;
   }
   getBinAgeingBranch(data: { user_id: string | null, branch_code: string | null }) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') +
+  const form = '&user_id=' + data.user_id +
                '&user_id=' + data.user_id +
                '&branch_code=' + data.branch_code;
-  return this.http.post(this.reportUrl + 'api/reports/branch_bin_ageing_dashboard', form, { headers: this.reqHeader });
+  return this.http.post(this.nreportUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
 }
   getBranchAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +

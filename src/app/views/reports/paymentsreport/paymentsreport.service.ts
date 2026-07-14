@@ -10,6 +10,7 @@ export class PaymentsreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -27,8 +28,8 @@ export class PaymentsreportService {
 }
 
 getQuotepaymentReport(fromDate: string, toDate: string, branchId: string, branchCodes: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
   '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId + '&branchCode=' + branchCodes;
-      return this.http.post(this.rootUrl + 'api/reports/quote_payment', form, {headers : this.reqHeader});
+      return this.http.post(this.nreportUrl + 'reports/quote_payment', form, {headers : this.getHeaders()});
     }
 }

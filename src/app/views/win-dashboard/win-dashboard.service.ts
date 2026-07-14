@@ -10,6 +10,7 @@ export class WinDashboardService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -176,8 +177,8 @@ export class WinDashboardService {
 
   /************ Onsite ************/
   getCompanies() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/tickets/get_companies', form, {headers : this.reqHeader});
+    // const form = 'X_API_KEY=' + localStorage.getItem('userToken');
+    return this.http.post(this.nreportUrl + 'common/get_companies', '', {headers : this.getHeaders()});
   }
 
   getOnsiteEnggs(site_id: string) {

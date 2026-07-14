@@ -9,6 +9,7 @@ export class KbbReturnReportService {
   reportUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -25,7 +26,7 @@ export class KbbReturnReportService {
   }
 
   getKBBreport(branch: any, status: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&return_status=' + status + '&branch_code=' + branch;
-    return this.http.get(this.reportUrl + 'api/analytics/kbb_pending?' + form, {headers : this.reqHeader});
+    const form = '&return_status=' + status + '&branch_code=' + branch;
+    return this.http.get(this.nreportUrl + 'reports/kbb_pending?' + form, {headers : this.getHeaders()});
   }
 }

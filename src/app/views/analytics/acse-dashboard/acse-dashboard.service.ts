@@ -10,7 +10,15 @@ import { HttpHeaders } from '@angular/common/http';
 export class AcseDashboardService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
-
+  nreportUrl = localStorage.getItem('nreportUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) { }
 
   getOptions() {
@@ -19,7 +27,7 @@ export class AcseDashboardService {
   }
 
   getAcseData(date: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&date=' + date ;
-    return this.http.post(this.rootUrl + 'api/charts/get_acse_data', form, {headers : this.reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + '&date=' + date ;
+    return this.http.post(this.nreportUrl + 'analytics/get_acse_data', form, {headers : this.getHeaders()});
 }
 }

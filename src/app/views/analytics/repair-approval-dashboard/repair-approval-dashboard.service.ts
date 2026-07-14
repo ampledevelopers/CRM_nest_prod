@@ -10,6 +10,7 @@ export class RepairApprovalDashboardService {
   reportsUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -21,8 +22,8 @@ export class RepairApprovalDashboardService {
   constructor(private http: HttpClient) { }
 
   getL2Data(fromDate: any, toDate: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&from_date=' + fromDate + '&to_date=' + toDate;
-    return this.http.get(this.reportsUrl + 'api/analytics/get_l2_report?'+ form, {headers : this.reqHeader});
+    const form = '&from_date=' + fromDate + '&to_date=' + toDate;
+    return this.http.get(this.nreportUrl + 'analytics/get_l2_report?'+ form, {headers : this.getHeaders()});
   }
 
   getBranches() {

@@ -9,12 +9,21 @@ import { map } from 'rxjs';
 export class AddEditCompanyService {
   rootUrl = localStorage.getItem('rootUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  nreportUrl = localStorage.getItem('nreportUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   constructor(private http: HttpClient) {
   }
 
   getCompanies() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/tickets/get_companies', form, {headers : this.reqHeader});
+    // const form = 'X_API_KEY=' + localStorage.getItem('userToken');
+    return this.http.post(this.nreportUrl + 'common/get_companies', {headers : this.getHeaders()});
   }
 
   createOrg(name: any, add1: any, add2: any, city: any, state: any, pin: any) {

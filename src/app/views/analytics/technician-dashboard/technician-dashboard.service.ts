@@ -10,6 +10,7 @@ export class TechnicianDashboardService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -40,9 +41,9 @@ export class TechnicianDashboardService {
     }
 
     getLocationusers(branchId: string) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId') +
+      const form = '&user_id=' + localStorage.getItem('userId') +
       '&branchId=' + branchId ;
-      return this.http.post(this.rootUrl + 'api/reports/get_location_users', form, {headers : this.reqHeader});
+      return this.http.post(this.nreportUrl + 'reports/get_location_users', form, {headers : this.getHeaders()});
   }
 
   getTeamleadLocusers() {

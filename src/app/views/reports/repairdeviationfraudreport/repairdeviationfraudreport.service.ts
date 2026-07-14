@@ -10,6 +10,7 @@ export class RepairdeviationfraudreportService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nestUrl = localStorage.getItem('nestUrl');
+  nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
@@ -32,9 +33,9 @@ export class RepairdeviationfraudreportService {
   }
 
   getRepairdeviatiobfraudReport(fromDate: string, toDate: string, branchId: string, reportType: string, sitetype: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
   '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId +
    '&reportType=' + reportType + '&sitetype=' + sitetype + '&group_id=' + localStorage.getItem('userRole');
-      return this.http.post(this.rootUrl + 'api/reports/repair_deviation_fraud_report', form, {headers : this.reqHeader});
+      return this.http.post(this.nreportUrl + 'reports/repair_deviation_fraud_report', form, {headers : this.getHeaders()});
     }
 }
