@@ -55,9 +55,9 @@ export class WinDashboardService {
   }
 
   getCompany(t_id: string | null) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/tickets/get_company', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_company', form, {headers : this.getHeaders()});
   }
 
   statusUpdate(data: string, remark: string | number | boolean, requiredfields: any) {
@@ -81,7 +81,7 @@ export class WinDashboardService {
   assignTicket(tId: string, assigned_user_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&assigned_user_id=' + assigned_user_id;
-    return this.http.post(this.rootUrl + 'api/tickets/assign_ticket', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/assign_ticket', form, {headers : this.getHeaders()});
   }
 
   closeTicket(ticketId: string | null, remarks: string) {
@@ -111,9 +111,9 @@ export class WinDashboardService {
   /******* Diagnosis *********/
 
   changeBinManually(t_id: string, toStatus: string, invoice_id: string, invoiceDate: string, amount: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&next_status=' + toStatus + '&user_id=' + localStorage.getItem('userId') + '&invoice_id=' + invoice_id
+    const form = '&ticket_id=' + t_id + '&next_status=' + toStatus + '&user_id=' + localStorage.getItem('userId') + '&invoice_id=' + invoice_id
     + '&invoice_date=' + invoiceDate + '&amount=' + amount;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/ticket_status_change', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/ticket_status_change', form, {headers : this.getHeaders()});
   }
 
   changeStatus(reqData: string) {
@@ -130,14 +130,14 @@ export class WinDashboardService {
   }
 
   updateWarrantyStatus(t_id: string | null, warranty: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&warranty_status=' + warranty;
-    return this.http.post(this.rootUrl + 'api/tickets/warranty_status_update', form, {headers : this.reqHeader});
+    const form = '&ticket_id=' + t_id + '&warranty_status=' + warranty;
+    return this.http.post(this.nestUrl + 'ticketsv1/warranty_status_update', form, {headers : this.getHeaders()});
   }
 
   conditionDevice(t_id: string, condition: string | number | boolean) {
     condition = encodeURIComponent(condition);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&condition_of_device=' + condition;
-    return this.http.post(this.rootUrl + 'api/tickets/device_condition_update', form, {headers : this.reqHeader});
+    const form = '&ticket_id=' + t_id + '&condition_of_device=' + condition;
+    return this.http.post(this.nestUrl + 'tickets_v2/device_condition_update', form, {headers : this.getHeaders()});
   }
 
   /******* Timeline *********/
@@ -162,8 +162,8 @@ export class WinDashboardService {
   }
 
   deleteDocument(id: string, ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + id + '&ticket_id=' + ticket_id;
-    return this.http.post(this.rootUrl + 'api/tickets/delete_document', form, {headers : this.reqHeader});
+    const form = '&id=' + id + '&ticket_id=' + ticket_id;
+    return this.http.post(this.nestUrl + 'tickets_v2/delete_document', form, {headers : this.getHeaders()});
   }
 
   /******* Quotation *********/
@@ -187,22 +187,22 @@ export class WinDashboardService {
   }
 
   assign_call(t_id: string, a_id: string, visitDate: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId') +
                 '&assigned_user_id=' + a_id + '&visit_date=' + visitDate;
-    return this.http.post(this.rootUrl + 'api/tickets/assign_call', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/assign_call', form, {headers : this.getHeaders()});
   }
 
   /************ Analysis ************/
   uploadAnalysis(t_id: string | null, analysis: string | number | boolean) {
     analysis = encodeURIComponent(analysis);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id +
+    const form = '&ticket_id=' + t_id +
                 '&user_id=' + localStorage.getItem('userId') + '&analysis=' + analysis;
-    return this.http.post(this.rootUrl + 'api/tickets/analysis', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticketsv1/analysis', form, {headers : this.getHeaders()});
   }
 
   getAnalysis(t_id: string) {
     const form = '&ticket_id=' + t_id;
-    return this.http.post(this.nestUrl + 'ticketsv1/get_analysis', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_analysis', form, {headers : this.getHeaders()});
   }
 
   viewRaf(t_id: string) {

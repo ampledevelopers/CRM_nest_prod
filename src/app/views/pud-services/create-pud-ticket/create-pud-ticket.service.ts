@@ -38,8 +38,8 @@ export class CreatePudTicketService {
   }
 
   generateQuote(data: any){
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl  + 'api/ticketsv3/generate_quotation_generic', form, {headers : this.reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + data;
+    return this.http.post(this.nestUrl + 'tickets_v2/generate_quotation_generic', form, {headers : this.getHeaders()});
   }
 
   sendQuotePayment(ticketId: any, quoteId: any) {

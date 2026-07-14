@@ -26,8 +26,8 @@ export class StockTransferOutService {
   }
 
   getAdhesives(asn_no: string, fromBranchCode:any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;
-    return this.http.get(this.rootUrl + 'api/adhesives/adhesives_asn?' + form, {headers : this.reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + '&asn_no=' + asn_no;
+    return this.http.get(this.nestUrl + 'tickets_v2/adhesives_asn?' + form, {headers : this.getHeaders()});
   }
 
   getBranches() {

@@ -28,9 +28,9 @@ export class OnsiteDcService {
   }
 
   getCompany(t_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/tickets/get_company', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_company', form, {headers : this.getHeaders()});
   }
 
   getDcTickets(comp_id: any) {

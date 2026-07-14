@@ -84,9 +84,9 @@ export class TekneTicketdetailService {
   }
 
   assignTicket(tId: string, assigned_user_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&assigned_user_id=' + assigned_user_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/assign_ticket', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/assign_ticket', form, {headers : this.getHeaders()});
   }
 
   navigateTo(id: string, branch: string, navTo: string) {
@@ -188,9 +188,9 @@ export class TekneTicketdetailService {
 
   generateSVC(t_id: string, gsx: string, data: any) {
   const partData = JSON.stringify(data);
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId') +
+  const form = '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId') +
                gsx + '&data=' + partData;
-  return this.http.post(this.rootUrl + 'api/tickets/genarate_svc', form, {headers : this.reqHeader});
+  return this.http.post(this.nestUrl + 'tickets_v2/genarate_svc', form, {headers : this.getHeaders()});
   }
 
   generateSVCAuto(t_id: string) {
@@ -204,9 +204,9 @@ export class TekneTicketdetailService {
   }
 
   deleteSVC(t_id: string, svcid: string, remarks: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId') +
+    const form = '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId') +
     '&svc_id=' + svcid + '&remarks=' + remarks;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/mark_svc_delete', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/mark_svc_delete', form, {headers : this.getHeaders()});
   }
 
   showSVC(t_id: string) {
