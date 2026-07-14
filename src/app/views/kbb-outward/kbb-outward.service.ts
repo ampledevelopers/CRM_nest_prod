@@ -65,8 +65,8 @@ export class KbbOutwardService {
   }
 
   getDocuments(id: string | null) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id;
-    return this.http.post(this.rootUrl + 'api/tickets/get_documents', form, {headers : this.reqHeader});
+    const form =  '&ticket_id=' + id;
+    return this.http.post(this.nestUrl + 'tickets_v2/get_documents', form, {headers : this.getHeaders()});
   }
 
   getLocation(code: any) {

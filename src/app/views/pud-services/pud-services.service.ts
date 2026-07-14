@@ -74,8 +74,8 @@ export class PudServicesService {
     }
 
     getQuotation(id: string | null) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id;
-      return this.http.post(this.rootUrl + 'api/tickets/get_quotations', form, {headers : this.reqHeader});
+      const form = '&ticket_id=' + id;
+      return this.http.post(this.nestUrl + 'tickets_v2/get_quotations', form, {headers : this.getHeaders()});
     }
 
     getDriveFiles(ticket_id: string) {
@@ -121,8 +121,8 @@ export class PudServicesService {
     }
 
     getDocuments(id: string | null) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
-      return this.http.post(this.rootUrl + 'api/tickets/get_documents', form, {headers : this.reqHeader});
+      const form = '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
+      return this.http.post(this.nestUrl + 'tickets_v2/get_documents', form, {headers : this.getHeaders()});
     }
 
     getPUDImages(ticket_id: string) {

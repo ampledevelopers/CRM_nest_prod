@@ -46,7 +46,7 @@ export class StatusDashboardService {
   } */
 
   timelineData(id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
-    return this.http.post(this.rootUrl + 'api/tickets/timeline', form, {headers : this.reqHeader});
+    const form = '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
+    return this.http.post(this.nestUrl + 'tickets_v2/timeline', form, {headers : this.getHeaders()});
   }
 }

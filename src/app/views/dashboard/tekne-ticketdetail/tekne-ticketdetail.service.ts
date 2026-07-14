@@ -219,9 +219,9 @@ export class TekneTicketdetailService {
   /************ Analysis ************/
   uploadAnalysis(t_id: string, analysis: string | number | boolean) {
     analysis = encodeURIComponent(analysis);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id +
+    const form =  '&ticket_id=' + t_id +
                 '&user_id=' + localStorage.getItem('userId') + '&analysis=' + analysis;
-    return this.http.post(this.rootUrl + 'api/accytickets/analysis', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticketsv1/analysis', form, {headers : this.getHeaders()});
   }
 
   getAnalysis(t_id: string | null) {
@@ -230,8 +230,8 @@ export class TekneTicketdetailService {
   }
 
   viewRaf(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/view_raf', form, {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    const form =  '&ticket_id=' + t_id;
+    return this.http.post(this.nestUrl + 'itickets/view_raf', form, {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
       return new Blob([res], { type: 'application/pdf', });
     }));
   }

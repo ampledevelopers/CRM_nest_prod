@@ -143,15 +143,15 @@ export class WinDashboardService {
   /******* Timeline *********/
 
   timelineData(id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
-    return this.http.post(this.rootUrl + 'api/tickets/timeline', form, {headers : this.reqHeader});
+    const form = '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
+    return this.http.post(this.nestUrl + 'tickets_detail_page_accy/timeline', form, {headers : this.getHeaders()});
   }
 
   /******* Documents *********/
 
   getDocuments(id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
-    return this.http.post(this.rootUrl + 'api/tickets/get_documents', form, {headers : this.reqHeader});
+    const form = '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
+    return this.http.post(this.nestUrl + 'tickets_v2/get_documents', form, {headers : this.getHeaders()});
   }
 
   uploadDocuments(id: string, docs: any) {
@@ -201,13 +201,13 @@ export class WinDashboardService {
   }
 
   getAnalysis(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/tickets/get_analysis', form, {headers : this.reqHeader});
+    const form = '&ticket_id=' + t_id;
+    return this.http.post(this.nestUrl + 'ticketsv1/get_analysis', form, {headers : this.getHeaders()});
   }
 
   viewRaf(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/tickets/view_raf', form, {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    const form = '&ticket_id=' + t_id;
+    return this.http.post(this.nestUrl + 'itickets/view_raf', form, {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
       return new Blob([res], { type: 'application/pdf', });
     }));
   }

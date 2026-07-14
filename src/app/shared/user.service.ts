@@ -136,13 +136,13 @@ export class UserService {
   }
 
   mapCrmGsx(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/map_gsx_crm_repair_status', form, { headers: this.reqHeader });
+    const form =  '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.post(this.nestUrl + 'gsxapi/map_gsx_crm_repair_status', form, { headers: this.getHeaders() });
   }
 
   mapPartConstraint(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/map_parts_constraint', form, { headers: this.reqHeader });
+    const form =  '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.post(this.nestUrl + 'gsxapi/map_parts_constraint', form, { headers: this.getHeaders() });
   }
 
   mapBlueDartTrack(ticketId: string) {

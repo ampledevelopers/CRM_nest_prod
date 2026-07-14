@@ -29,8 +29,8 @@ export class SearchDashboardService {
   }
 
   viewRaf(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/tickets/view_raf', form, {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    const form = '&ticket_id=' + t_id;
+    return this.http.post(this.nestUrl + 'itickets/view_raf', form, {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
       return new Blob([res], { type: 'application/pdf', });
     }));
   }
@@ -44,7 +44,7 @@ export class SearchDashboardService {
 
   getAnalysis(t_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/tickets/get_analysis', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticketsv1/get_analysis', form, {headers : this.getHeaders()});
   }
 
 }
