@@ -64,9 +64,21 @@ export class BinAgeingDashboardComponent {
 
     getBinAgeingDashboard() {
       let result: any = [];
+      console.log('getBinAgeingDashboard called', {
+        userRole: this.userRole,
+        sitetypeId: this.sitetypeId,
+        type: this.type,
+        userId: localStorage.getItem('userId'),
+        siteType: localStorage.getItem('siteType'),
+        nreportUrl: localStorage.getItem('nreportUrl'),
+        reportsUrl: localStorage.getItem('reportsUrl')
+      });
       this.dataService.getBinAgeingDashboard()
         .subscribe({next:
           (data: any) => {
+            console.log('bin_ageing_dashboard component response', data);
+            console.log('component data.all', data?.data?.all);
+            console.log('component data.mac', data?.data?.mac);
             this.loading = false;
             result = data;
             this.iPhoneList = result.data.all;
@@ -74,13 +86,22 @@ export class BinAgeingDashboardComponent {
             this.macList = result.data.mac;
             this.oneBranchMacList = result.data.mac;
             this.branch = result.data.branch;
-            this.allBranches = result.data.branches;
-            this.allBranches = this.allBranches.filter((branchCode: any) => {
-              return branchCode.branch_type !== 'D' && branchCode.drop_location_flag === '0';
+            this.allBranches = result.data.branches || [];
+            this.allBranches = this.allBranches.filter((branch: any) => {
+              if (branch.branch_type === 'D') {
+                return false;
+              }
+              if (branch.drop_location_flag != null && branch.drop_location_flag !== '0') {
+                return false;
+              }
+              return true;
             });
-            this.allStatuses = result.data.statuses;
-            this.macStatuses = result.data.macstatuses;
-            this.allSVRAgeing = this.oneBranchiPhoneList.svr_ageing;
+            this.allStatuses = (result.data.statuses || []).filter((s: any) => s.status_name);
+            this.macStatuses = (result.data.macstatuses || []).filter((s: any) => s.status_name);
+            this.allSVRAgeing = this.oneBranchiPhoneList.svr_ageing || [];
+            this.headerArray = [];
+            this.macHeaderArray = [];
+            console.log('allBranches after filter', this.allBranches.length, this.allBranches);
             for (let b = 0; b < this.allStatuses.length; b++) {
               this.headerArray.push({
                 headName: 'Total',
@@ -103,12 +124,18 @@ export class BinAgeingDashboardComponent {
             if ((this.userRole !== '4')) {
                 this.createAllArray();
               this.createMacArray();
+              console.log('countArray rows', this.countArray.length, this.countArray);
             } else if ((this.userRole === '4')) {
               this.branchCountsAll();
               this.branchCountsMac();
             }
             }, // success path
-          error: error => this.error = error // error path
+          error: error => {
+            console.error('bin_ageing_dashboard error', error);
+            console.error('bin_ageing_dashboard error status', error?.status, error?.url, error?.message);
+            this.error = error;
+            this.loading = false;
+          }
           });
     }
 
@@ -237,8 +264,8 @@ export class BinAgeingDashboardComponent {
       this.countArray = branchDetails;
       const totalCounts = this.iPhoneList.allTotal;
       const ageing = this.iPhoneList.all_ageing;
-      const ageingCounts = [];
-      const svrAgeingCounts = [];
+      const ageingCounts: any[] = [];
+      const svrAgeingCounts: any[] = [];
       let ageingTotal = 0;
       let svrAgeingTotal = 0;
       for (let a = 0; a < ageing.length; a++) {
@@ -253,9 +280,9 @@ export class BinAgeingDashboardComponent {
       let svgAgeingCount: any = [];
       for (let i = 0; i < this.countArray.length; i++) {
         selectedBranch = this.countArray[i].branchStatuses;
-        statusCount = totalCounts.filter((item: { branch_id: any; }) => item.branch_id === this.countArray[i].branch_id);
-        ageingCount = ageingCounts.filter(item => item.branch_id === this.countArray[i].branch_id);
-        svgAgeingCount = svrAgeingCounts.filter(item => item.branch_id === this.countArray[i].branch_id);
+        statusCount = totalCounts.filter((item: { branch_id: any; }) => String(item.branch_id) === String(this.countArray[i].branch_id));
+        ageingCount = ageingCounts.filter(item => String(item.branch_id) === String(this.countArray[i].branch_id));
+        svgAgeingCount = svrAgeingCounts.filter(item => String(item.branch_id) === String(this.countArray[i].branch_id));
         ageingTotal = 0;
         svrAgeingTotal = 0;
         for (let k = 0; k < selectedBranch.length; k++) {
@@ -305,7 +332,7 @@ export class BinAgeingDashboardComponent {
       this.countArrayMac = branchDetails;
       const totalMacCounts = this.macList.macTotal;
       const ageing = this.macList.macAgeing;
-      const ageingMacCounts = [];
+      const ageingMacCounts: any[] = [];
       let ageingTotal = 0;
       for (let a = 0; a < ageing.length; a++) {
         ageingMacCounts.push(ageing[a][0]);
@@ -315,8 +342,8 @@ export class BinAgeingDashboardComponent {
       let ageingMacCount: any = [];
       for (let i = 0; i < this.countArrayMac.length; i++) {
         selectedMacBranch = this.countArrayMac[i].branchStatuses;
-        statusMacCount = totalMacCounts.filter((item: { branch_id: any; }) => item.branch_id === this.countArrayMac[i].branch_id);
-        ageingMacCount = ageingMacCounts.filter(item => item.branch_id === this.countArrayMac[i].branch_id);
+        statusMacCount = totalMacCounts.filter((item: { branch_id: any; }) => String(item.branch_id) === String(this.countArrayMac[i].branch_id));
+        ageingMacCount = ageingMacCounts.filter(item => String(item.branch_id) === String(this.countArrayMac[i].branch_id));
         ageingTotal = 0;
         for (let k = 0; k < selectedMacBranch.length; k++) {
           for (let l = 0; l < statusMacCount.length; l++) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class BinAgeingDashboardService {
   rootUrl = localStorage.getItem('reportsUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nreportUrl = localStorage.getItem('nreportUrl');
-  private getHeaders(): HttpHeaders {
+ private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
     return new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -26,7 +27,16 @@ export class BinAgeingDashboardService {
 
   getBinAgeingDashboard() {
     const form = '&user_id=' + localStorage.getItem('userId') + '&site_type=' + localStorage.getItem('siteType');
-    return this.http.post(this.nreportUrl + 'analytics/bin_ageing_dashboard', form, {headers : this.getHeaders()});
+    const apiUrl = this.nreportUrl + 'analytics/bin_ageing_dashboard';
+    console.log('bin_ageing_dashboard request', {
+      apiUrl,
+      nreportUrl: this.nreportUrl,
+      nreportUrlFromStorage: localStorage.getItem('nreportUrl'),
+      form
+    });
+    return this.http.post(apiUrl, form, { headers: this.getHeaders() }).pipe(
+      tap((res: any) => console.log('bin_ageing_dashboard response', res))
+    );
   }
 
   getAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
