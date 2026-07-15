@@ -21,21 +21,7 @@ export class PopValidatedReportComponent {
   alert = '';
   branchId = '';
   userRole = localStorage.getItem('userRole');
-  columns = [
-    'ticket_id',
-    'serial_no',
-    'part_number',
-    'description',
-    'kgb_serial_no',
-    'kbb_serial_no',
-    'coverage_option',
-    'consignment_asn_no',
-    'zz_invoice_no',
-    'zz_invoice_date',
-    'zz_pop_validated',
-    'ticket_date',
-    'branch_code'
-  ];
+  columns = ['ticket_id', 'branch_code', 'ticket_date','serial_no', 'part_number', 'description', 'kgb_serial_no', 'kbb_serial_no', 'coverage_option', 'consignment_asn_no', 'zz_invoice_no', 'zz_invoice_date', 'zz_pop_validated'];
 
   constructor(
     public dataService: PopValidatedReportService,
