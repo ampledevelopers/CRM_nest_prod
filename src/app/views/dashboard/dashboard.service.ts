@@ -227,9 +227,9 @@ export class DashboardService {
   }
 
   deviceAwayOTP(mobile: string, email: string, tId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&mobile=' + mobile +
+    const form = '&user_id=' + localStorage.getItem('userId') + '&mobile=' + mobile +
     '&email=' + email + '&ticket_id=' + tId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/device_away_otp', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/device_away_otp', form, {headers : this.getHeaders()});
   }
 
   markDeviceAway(tId: string, otp: string, mobile: string) {
