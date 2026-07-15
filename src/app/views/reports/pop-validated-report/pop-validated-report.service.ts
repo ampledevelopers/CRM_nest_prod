@@ -29,6 +29,6 @@ export class PopValidatedReportService {
   getPopValidatedReport(fromDate: string, toDate: string, branchId: string) {
     const form = '&user_id=' + localStorage.getItem('userId') +
       '&fromDate=' + fromDate + '&toDate=' + toDate + '&branchId=' + branchId + '&group_id=' + localStorage.getItem('userRole');
-    return this.http.post(this.nreportUrl + 'reports/ZZ_pop_validated_report', form, { headers: this.getHeaders() });
+    return this.http.post(this.nreportUrl + 'reports/ZZ_pop_validated', form, { headers: this.getHeaders() });
   }
 }

@@ -80,16 +80,24 @@ export class KbbOutwardService {
   }
 
   kbbSubmit(hd: any, dt: any, cartonBoxes: any, toteBoxes: any): Observable<any> {
+    const token = localStorage.getItem('userToken');
+  
     return this.http.post(
       this.nestUrl + 'kbb_outward/create',
       {
-        return_hd: hd,
+        return_hd: Array.isArray(hd) ? hd : [hd],
         return_dt: dt,
         carton_box: cartonBoxes,
         tote_box: toteBoxes,
         user_id: localStorage.getItem('userId'),
       },
-      { headers: this.getHeaders() }, // Content-Type: application/json
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'No-Auth': 'True',
+          'x-api-key': token || '',
+        }),
+      },
     );
   }
   getKbbList(nrdcId: any, ticketId: any, status: any) {
