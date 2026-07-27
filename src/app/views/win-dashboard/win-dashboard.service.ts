@@ -45,8 +45,8 @@ export class WinDashboardService {
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get_options?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'common/get_options?' + form, {headers : this.getHeaders()});
   }
 
   getCustomerInfo(c_id: string, phone_no: string) {
@@ -80,21 +80,21 @@ export class WinDashboardService {
   }
 
   assignTicket(tId: string, assigned_user_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&assigned_user_id=' + assigned_user_id;
     return this.http.post(this.nestUrl + 'tickets_v2/assign_ticket', form, {headers : this.getHeaders()});
   }
 
   closeTicket(ticketId: string | null, remarks: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + ticketId + '&remarks=' + remarks;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/close_ticket', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/close_ticket', form, {headers : this.getHeaders()});
   }
 
   KDOptionUpdate(ticketId: string | null, kd_status: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&kd_status=' + kd_status +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&kd_status=' + kd_status +
     '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/update_kd_call', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/update_kd_call', form, {headers : this.getHeaders()});
   }
 
   makeCall(tId: string, phone: string) {
@@ -182,9 +182,9 @@ export class WinDashboardService {
   }
 
   getOnsiteEnggs(site_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&site_type_id=' + site_id +
+    const form = 'site_type_id=' + site_id +
                 '&user_id=' + localStorage.getItem('userId') + '&group_id=' + localStorage.getItem('userRole');
-    return this.http.post(this.rootUrl + 'api/tickets/get_onsite_engineer', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_onsite_engineer', form, {headers : this.getHeaders()});
   }
 
   assign_call(t_id: string, a_id: string, visitDate: string) {
@@ -215,9 +215,9 @@ export class WinDashboardService {
 
   psfSubmit(t_id: string | null, remarks: string | number | boolean, feedback: string) {
     remarks = encodeURIComponent(remarks);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&emp_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + t_id + '&emp_id=' + localStorage.getItem('userId') +
                 '&user_id=' + localStorage.getItem('userId') + '&remarks=' + remarks + '&feedback=' + feedback;
-    return this.http.post(this.rootUrl + 'api/mis/update_cc_feedback', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/update_cc_feedback', form, {headers : this.getHeaders()});
   }
 
   private handleError(error: HttpErrorResponse) {

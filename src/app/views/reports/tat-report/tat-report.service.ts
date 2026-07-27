@@ -10,6 +10,15 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class TatReportService {
   rootUrl = localStorage.getItem('reportsUrl');
+  nestUrl = localStorage.getItem('nestUrl');
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   constructor(private http: HttpClient) {
   }
@@ -39,8 +48,8 @@ export class TatReportService {
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/get_options', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/get_options', form, {headers : this.getHeaders()});
   }
 
 }

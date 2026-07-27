@@ -35,15 +35,15 @@ export class TekneSearchDashboardService {
   }
 
   showSVC(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/svc_print', form, {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart)=> {
+    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'tickets_v2/svc_print', form, {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart)=> {
       return new Blob([res], { type: 'application/pdf', });
     }));
   }
 
   getAnalysis(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/get_analysis', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + t_id;
+    return this.http.post(this.nestUrl + 'tickets_v2/get_analysis', form, {headers : this.getHeaders()});
   }
 
 }

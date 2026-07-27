@@ -9,6 +9,7 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class AcseDashboardService {
   rootUrl = localStorage.getItem('reportsUrl');
+  nestUrl = localStorage.getItem('nestUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
@@ -22,8 +23,8 @@ export class AcseDashboardService {
   constructor(private http: HttpClient) { }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/get_options', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/get_options', form, {headers : this.getHeaders()});
   }
 
   getAcseData(date: any) {

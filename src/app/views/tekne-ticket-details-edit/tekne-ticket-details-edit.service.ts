@@ -22,8 +22,8 @@ export class TekneTicketDetailsEditService {
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/accy/get_options?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'common/get_options?' + form, {headers : this.getHeaders()});
   }
 
   getDetail(id: string) {

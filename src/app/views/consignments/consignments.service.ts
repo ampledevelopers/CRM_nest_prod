@@ -30,8 +30,8 @@ export class ConsignmentsService {
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/get_options', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'common/get_options', form, {headers : this.getHeaders()});
   }
 
   saveConsignment(data: any) {

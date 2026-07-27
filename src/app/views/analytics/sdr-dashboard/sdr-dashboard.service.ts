@@ -27,8 +27,8 @@ export class SdrDashboardService {
   }
 
   getOptions() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get_options?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'common/get_options?' + form, {headers : this.getHeaders()});
   }
 
   getSdrData(branchCode: any,fromDate: any, toDate: any) {

@@ -55,8 +55,8 @@ export class OnsiteDcService {
   }
 
   getCustomer(phone: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
-    return this.http.post(this.rootUrl + 'api/tickets/get_customer_by_phone', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
+    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
   }
 
   dcSubmit(hd: any, dt: any): Observable<any> {

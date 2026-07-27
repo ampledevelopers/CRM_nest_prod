@@ -468,18 +468,17 @@ async uploadVideoS3Bucket(
   }
 
   updateS3File(commonData: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
+    const form = 'user_id=' + localStorage.getItem('userId') + commonData;
     return this.http.post(this.nestUrl + 's3/s3_data', form, { headers: this.getHeaders() });
   }
 
   updateS3FileTekne(commonData: any) {
-    const reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True' });
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + commonData;
-    return this.http.post(this.rootUrl + 'api/accytickets/s3_data', form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + commonData;
+    return this.http.post(this.nestUrl + 's3/s3_data', form, { headers: this.getHeaders() });
   }
 
   deleteS3File(bucketName: any, fileName: any, ticket_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&bucket_name=' + bucketName + '&file_id=' + fileName + '&ticket_id=' + ticket_id;
     return this.http.post(this.nestUrl + 's3/delete_s3_data', form, { headers: this.getHeaders() });
   }
 
@@ -491,8 +490,7 @@ async uploadVideoS3Bucket(
   } */
 
   async getVideoObjectFromS3(bucketName: string, objectKey: string): Promise<Blob> {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')
-      + '&user_id=' + localStorage.getItem('userId')
+    const form = 'user_id=' + localStorage.getItem('userId')
       + '&bucket_name=' + encodeURIComponent(bucketName)
       + '&object_key=' + encodeURIComponent(objectKey);
     return firstValueFrom(
@@ -504,13 +502,13 @@ async uploadVideoS3Bucket(
   }
 
   getS3FileDetails(ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
     return this.http.get(this.nestUrl + 's3/s3_data?' + form, { headers: this.getHeaders() });
   }
 
   getS3FileDetails_tekne(ticket_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-    return this.http.get(this.rootUrl + 'api/accytickets/s3_data?' + form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+    return this.http.get(this.nestUrl + 's3/s3_data?' + form, { headers: this.getHeaders() });
   }
 
   invoiceSummaryFetch() {

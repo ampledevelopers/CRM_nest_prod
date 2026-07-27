@@ -126,8 +126,8 @@ export class PudServicesService {
     }
 
     getPUDImages(ticket_id: string) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-      return this.http.get(this.rootUrl + 'api/tickets/s3_data?' + form, {headers : this.reqHeader});
+      const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
+      return this.http.get(this.nestUrl + 's3/s3_data?' + form, {headers : this.getHeaders()});
     }
 
     makeCall(tId: string, phone: string) {
@@ -137,8 +137,8 @@ export class PudServicesService {
     }
 
     sendRAF(id: string | null) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id ;
-      return this.http.post(this.rootUrl + 'api/tickets/send_raf_mail', form, {headers : this.reqHeader});
+      const form = 'ticket_id=' + id ;
+      return this.http.post(this.nestUrl + 'itickets/send_raf_mail', form, {headers : this.getHeaders()});
     }
 
     updateGSXStatus(gNumber: string, repairStatus: string) {

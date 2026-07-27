@@ -202,15 +202,12 @@ export class KbbOutwardService {
       '&type=' + payload.type;
     return this.http.post(this.nestUrl + 'kbb_outward/check_battery_compitia', form, { headers: this.getHeaders() });
   }
-   updateToteTracker(ticketId: string, toteId: string) {
-  const form =
-    'X_API_KEY=' + localStorage.getItem('userToken') +
-    '&user_id=' + localStorage.getItem('userId') +
-    '&ticket_id=' + ticketId +
-    '&kgb_tote_id=' + toteId;
-
-  return this.http.post(
-    this.rootUrl + 'api/ticketsv3/updateToteTracker',form, { headers: this.reqHeader });
-}
+  updateToteTracker(ticketId: string, toteId: string) {
+    const form =
+      'user_id=' + localStorage.getItem('userId') +
+      '&ticket_id=' + ticketId +
+      '&kgb_tote_id=' + toteId;
+    return this.http.post(this.nestUrl + 'tickets_v2/updateToteTracker', form, { headers: this.getHeaders() });
+  }
 
 }
