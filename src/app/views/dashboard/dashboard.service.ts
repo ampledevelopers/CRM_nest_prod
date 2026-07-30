@@ -1204,4 +1204,16 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
     this.nestUrl + 'tickets_v2/updateToteTracker',form, { headers: this.getHeaders() });
 }
 
+  updateZZInvoiceNo(ticketId: string, invoiceId: string, invoiceDate: string, zzPopValidated: string | number = 0) {
+    const form =  '&user_id=' + localStorage.getItem('userId')
+      + '&ticket_id=' + ticketId + '&zz_invoice_id=' + invoiceId + '&zz_invoice_date=' + invoiceDate
+      + '&zz_pop_validated=' + zzPopValidated;
+    return this.http.post(this.nestUrl + 'tickets_v2/update_ticket_more_info', form, { headers: this.getHeaders() });
+  }
+
+  getTicketMoreInfo(ticketId: string) {
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.get(this.nestUrl + 'tickets_v2/get_ticket_more_info?' + form, { headers: this.getHeaders() });
+  }
+
 }

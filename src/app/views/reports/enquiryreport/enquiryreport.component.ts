@@ -30,7 +30,7 @@ export class EnquiryreportComponent {
   dlBranchList: any = [];
   userRole = localStorage.getItem('userRole');
 
-  columns = ['id','branch_code','new_branch_code','g_number','serial_no','entrytime','product_description','customer_name','customer_phone_no','customer_email_id','customer_query','user_name','enquiry_flag','dl_branch_code','technician_comment','warranty_status','Purchased_in','t1_type','t1_invoice_id','token_accepted_date','ledge_no','Protect_plus_details','service_nonrepair_type','repair_type','purchased_in','customer_exist','customer_denied_process','emi_offered','trade_in_offered'];
+  columns = ['id','branch_code','new_branch_code','g_number','serial_no','entrytime','product_description','customer_name','customer_phone_no','customer_email_id','customer_query','user_name','enquiry_flag','dl_branch_code','technician_comment','warranty_status','Purchased_in','t1_type','t1_invoice_id','token_accepted_date','ledge_no','Protect_plus_details','service_nonrepair_type','repair_type','purchased_in','customer_exist','customer_denied_process','emi_offered','trade_in_offered','internal_assets','department_name'];
 
   constructor(
     public dataService: EnquiryreportService,

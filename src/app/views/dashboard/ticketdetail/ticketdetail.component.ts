@@ -101,6 +101,7 @@ export class TicketdetailComponent {
   @ViewChild('myQInput', { static: true }) myQInputVariable!: ElementRef;
   @ViewChild('myPopInput', { static: true }) popInputVariable!: ElementRef;
   @ViewChild('homeOtpInput', { static: true }) otpInputVariable!: ElementRef;
+  @ViewChild('zz_invoice_temp', { static: true }) zzInvoiceTemp!: TemplateRef<any>;
   issueDescription: string = '';
   issueDescription1: string = '';
   issueDescription2: string = '';
@@ -470,6 +471,12 @@ export class TicketdetailComponent {
   L1L2DeclineReview = '';
   customerInvoiceId = '';
   customerInvoiceDateTime = '';
+  zzInvoiceNo = '';
+  zzInvoiceDate = '';
+  zzInvoiceError = '';
+  zzInvoiceValidated = false;
+  zzPopValidated = 0;
+  pendingApplyL1: { simple_alert: TemplateRef<any>; confirmQuoteCheck: TemplateRef<any> } | null = null;
   invoiceAmount: any;
   svcRemarks = '';
   isSVCActive = false;
@@ -1063,6 +1070,11 @@ export class TicketdetailComponent {
           }
           this.ticketId = '';
           this.ticketId = this.data.id;
+          this.zzInvoiceValidated = false;
+          this.zzPopValidated = 0;
+          this.zzInvoiceNo = '';
+          this.zzInvoiceDate = '';
+          this.zzInvoiceError = '';
           this.poNo = this.data.branch_code + this.ticketId;
           this.warrantyStatus = this.data.warranty_status;
           this.data.serial_no = this.data.serial_no.toUpperCase();
@@ -5749,6 +5761,145 @@ get showDeleteButton3() {
       });
   }
 
+  /** Normalize invoice dates to YYYY-MM-DD for type=date + API compares. */
+  normalizeZZInvoiceDate(value: any): string {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      const y = value.getFullYear();
+      const m = String(value.getMonth() + 1).padStart(2, '0');
+      const d = String(value.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    const raw = String(value).trim();
+    const isoPart = raw.split(/[ T]/)[0];
+    if (/^\d{4}-\d{2}-\d{2}$/.test(isoPart)) {
+      return isoPart;
+    }
+    // DD/MM/YYYY or MM/DD/YYYY — prefer DD/MM for India CRM
+    const slash = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if (slash) {
+      const a = parseInt(slash[1], 10);
+      const b = parseInt(slash[2], 10);
+      const y = slash[3];
+      if (a > 12) {
+        return `${y}-${String(b).padStart(2, '0')}-${String(a).padStart(2, '0')}`;
+      }
+      if (b > 12) {
+        return `${y}-${String(a).padStart(2, '0')}-${String(b).padStart(2, '0')}`;
+      }
+      // ambiguous (both <= 12): treat as DD/MM/YYYY
+      return `${y}-${String(b).padStart(2, '0')}-${String(a).padStart(2, '0')}`;
+    }
+    return isoPart;
+  }
+
+  openZZInvoiceModal() {
+    this.zzInvoiceError = '';
+    this.buttonSpin = true;
+    this.dataService.getTicketMoreInfo(this.ticketId).subscribe({
+      next: (data: any) => {
+        this.buttonSpin = false;
+        if (data?.status === true && data.items) {
+          this.zzInvoiceNo = (data.items.zz_invoice_no || '').trim();
+          this.zzInvoiceDate = this.normalizeZZInvoiceDate(data.items.zz_invoice_date);
+          this.zzPopValidated = data.items.zz_pop_validated != null ? data.items.zz_pop_validated : 0;
+        }
+        this.openModal(this.zzInvoiceTemp);
+      },
+      error: () => {
+        this.buttonSpin = false;
+        this.openModal(this.zzInvoiceTemp);
+      }
+    });
+  }
+
+  submitZZInvoice() {
+    if (!this.zzInvoiceNo?.trim() || !this.zzInvoiceDate) {
+      this.zzInvoiceError = 'Please enter Invoice Number and Invoice Date';
+      return;
+    }
+    this.buttonSpin = true;
+    this.zzInvoiceError = '';
+    const formNo = this.zzInvoiceNo.trim();
+    const formDate = this.normalizeZZInvoiceDate(this.zzInvoiceDate);
+    this.zzInvoiceDate = formDate;
+
+    // First entry (diagnosis) or no saved invoice yet → save, don't compare
+    if (this.data.status_id === '300') {
+      this.zzPopValidated = 0;
+      this.saveZZInvoiceAndClose(formNo, formDate, this.zzPopValidated);
+      return;
+    }
+
+    this.dataService.getTicketMoreInfo(this.ticketId).subscribe({
+      next: (data: any) => {
+        if (data.status !== true || !data.items) {
+          this.buttonSpin = false;
+          this.zzInvoiceError = data.message || 'Failed to fetch invoice details';
+          return;
+        }
+        const apiNo = (data.items.zz_invoice_no || '').trim();
+        const apiDate = this.normalizeZZInvoiceDate(data.items.zz_invoice_date);
+
+        // Nothing saved yet (deleted / first time at L1 or L2) → save entered values
+        if (!apiNo && !apiDate) {
+          this.zzPopValidated = this.data.status_id === '900' ? 1 : 0;
+          this.saveZZInvoiceAndClose(formNo, formDate, this.zzPopValidated);
+          return;
+        }
+
+        if (apiNo === formNo && apiDate === formDate) {
+          if (this.data.status_id === '900') {
+            this.zzPopValidated = 1;
+            this.saveZZInvoiceAndClose(formNo, formDate, this.zzPopValidated);
+          } else {
+            this.buttonSpin = false;
+            this.zzInvoiceValidated = true;
+            this.zzInvoiceError = '';
+            this.modalService.dismissAll();
+            this.clicked = false;
+          }
+        } else {
+          this.buttonSpin = false;
+          this.zzInvoiceError = 'Invoice Number or Invoice Date does not match';
+        }
+      },
+      error: () => {
+        this.buttonSpin = false;
+        this.zzInvoiceError = 'Failed to fetch invoice details';
+      }
+    });
+  }
+
+  private saveZZInvoiceAndClose(formNo: string, formDate: string, zzPopValidated: string | number) {
+    this.dataService.updateZZInvoiceNo(this.ticketId, formNo, formDate, zzPopValidated).subscribe({
+      next: (data: any) => {
+        this.buttonSpin = false;
+        if (data.status === true) {
+          this.zzInvoiceValidated = true;
+          this.zzInvoiceError = '';
+          this.modalService.dismissAll();
+          this.clicked = false;
+        } else {
+          this.zzInvoiceError = data.message || 'Failed to update invoice';
+        }
+      },
+      error: () => {
+        this.buttonSpin = false;
+        this.zzInvoiceError = 'Failed to update invoice';
+      }
+    });
+  }
+
+  cancelZZInvoice() {
+    this.zzInvoiceError = '';
+    this.pendingApplyL1 = null;
+    this.clicked = false;
+    this.hideModel();
+  }
+
   applyL1Approve(simple_alert: TemplateRef<any>, confirmQuoteCheck: TemplateRef<any>) {
     this.buttonSpin = true;
 
@@ -5772,6 +5923,11 @@ get showDeleteButton3() {
       if (this.userBranch === 'SMT') {
         this.checkPOPFile();
         this.getPOPRequiredList();
+      }
+
+      if ((this.data.serial_no.substring(0, 2).toLowerCase() === 'zz') && (this.data.status_id === '300') && !this.zzInvoiceValidated) {
+        this.openZZInvoiceModal();
+        return;
       }
       if ((this.consumablesCheck === true) && ((this.componentCode !== '26113') && (this.componentCode !== '26113A') && (this.componentCode !== '26113B') && (this.componentCode !== 'NSP01'))) {
         for (let h = 0; h < this.selectedParts.length; h++) {
@@ -6611,6 +6767,7 @@ get showDeleteButton3() {
 
 
   L1Validation(stage: any, simple_alert: TemplateRef<any>, confirmQuoteCheck: TemplateRef<any>, case_id_temp: TemplateRef<any>) {
+
     this.buttonSpin = true;
     let quoteCheck = false;
     let quoteAvailable = false;
@@ -6621,6 +6778,10 @@ get showDeleteButton3() {
     if ((stage === 'L1-Approved') && ((this.data.raf_email_send === 'N') || (this.data.raf_email_send === ''))) {
       alert(`Please send the RAF before L1 Approve`);
       this.buttonSpin = false;
+      return;
+    }
+    if ((this.data.status_id === '600') && (this.repairType === 'CIN') && (this.data.serial_no.substring(0, 2).toLowerCase() === 'zz') && !this.zzInvoiceValidated) {
+      this.openZZInvoiceModal();
       return;
     }
 
@@ -6791,6 +6952,10 @@ get showDeleteButton3() {
   }
 
   L2Approve(l2_approve_confirm_temp: TemplateRef<any>) {
+    if ((this.data.status_id === '900') && (this.repairType === 'CIN') && (this.data.serial_no.substring(0, 2).toLowerCase() === 'zz') && !this.zzInvoiceValidated) {
+      this.openZZInvoiceModal();
+      return;
+    }
     this.openModal(l2_approve_confirm_temp);
   }
 
@@ -6808,12 +6973,18 @@ get showDeleteButton3() {
       return;
     }
 
+    if (this.popAppleReviewHold === false && this.selectedParts.some((part: any) => part.fromConsignedStock === true)) {
+      alert('Enable POP Apple Review Hold when consignment part is used');
+      this.buttonSpin = false;
+      return;
+    }
+
+    
     if ((this.repairType === 'CIN') && (!this.oocCheck) && (this.diagnosisHd.additional_part !== '1')) {
       alert('POP is not validated, its force Mail-In to Apple RC');
       this.buttonSpin = false;
       return;
     }
-   
     let popReview: any;
     if (this.popAppleReviewHold === false) {
       popReview = 0;

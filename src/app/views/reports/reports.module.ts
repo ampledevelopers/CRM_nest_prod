@@ -47,10 +47,11 @@ import { PUDreportComponent } from './PUDreport/pudreport.component';
 import { KbbReturnReportComponent } from './kbb-return-report/kbb-return-report.component';
 import { AdhesiveConsumptionReportComponent } from './adhesive-consumption-report/adhesive-consumption-report.component';
 import { EnquiryReportTekneComponent } from './enquiry-report-tekne/enquiry-report-tekne.component';
+import { PopValidatedReportComponent } from './pop-validated-report/pop-validated-report.component';
 @NgModule({
     declarations: [ReportsComponent,InventoryreportComponent,ConsignmentstockstatusreportComponent, InventoryReportsComponent, FootfallCustomerReportsComponent,OnsitereportComponent,PUDreportComponent,QuarterlyreportComponent,
       EnquiryreportComponent,FeedbackreportComponent, ComplianceReportsComponent, RepairdeviationfraudreportComponent, MenulogreportComponent,AgentreportComponent,AppointmentsreportComponent, RepairsReportTekneComponent,
-      AtlasreportComponent, AgeingticketsreportComponent, GsxLookupReportComponent, RepairsReportsComponent, RepairsreportComponent, SvrreportComponent, AccessoryenquiryreportComponent, StatusreportComponent, KbbReturnReportComponent, AdhesiveConsumptionReportComponent, EnquiryReportTekneComponent,TokenreportComponent ],
+      AtlasreportComponent, AgeingticketsreportComponent, GsxLookupReportComponent, RepairsReportsComponent, RepairsreportComponent, SvrreportComponent, AccessoryenquiryreportComponent, StatusreportComponent, KbbReturnReportComponent, AdhesiveConsumptionReportComponent, EnquiryReportTekneComponent, TokenreportComponent, PopValidatedReportComponent ],
     imports: [
         CommonModule,
         FormsModule,
