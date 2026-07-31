@@ -35,6 +35,8 @@ export class KbbFormComponent {
   nrdcNo: any = '';
   outwardDate = new Date().toLocaleString();
   eWayBillNo = '';
+  ewayBillFile: File | null = null;
+  ewayBillUploadSpin = false;
   personName = localStorage.getItem('userName');
   personMobile = localStorage.getItem('UserMobile');
   partList: any;
@@ -1177,8 +1179,8 @@ check_battery_compitia(): Promise<boolean> {
   }
 
   printNrdc() {
-    const url = localStorage.getItem('nestUrl') + 'kbb_outward/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.nrdcNo.slice(3) + '&approved=' + 'N';
-    const tab = window.open(url);
+    const url = localStorage.getItem('rootUrl') + 'api/returns/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.nrdcNo.slice(3);
+    window.open(url);
   }
 
   onImagePicked(event: any) {
@@ -1364,6 +1366,7 @@ check_battery_compitia(): Promise<boolean> {
   }
 
 
+  /*
   updateEwayBill() {
     let result: any = [];
     this.dataService.eWayBillUpdate(this.nrdcNo.slice(3), this.eWayBillNo)
@@ -1379,6 +1382,40 @@ check_battery_compitia(): Promise<boolean> {
             }, // success path
             error: (error: any) => this.error = error // error path
         });
+  }
+  */
+
+  onEwayBillFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.ewayBillFile = input.files?.[0] || null;
+  }
+
+  uploadEwayBill() {
+    if (!this.ewayBillFile) {
+      alert('Please select a CSV/Excel file to upload');
+      return;
+    }
+    this.ewayBillUploadSpin = true;
+    this.dataService.generateEwayBill(this.ewayBillFile, 'KBB', Number(this.nrdcNo.slice(3)))
+      .subscribe({
+        next: (data: any) => {
+          this.ewayBillUploadSpin = false;
+          if (data.status === true) {
+            if (data.eway_bill_no || data.eway_bill) {
+              this.eWayBillNo = data.eway_bill_no || data.eway_bill;
+            }
+            alert(data.message || 'E-Way Bill generated successfully');
+            window.location.reload();
+          } else {
+            alert(data.message || 'Failed to generate E-Way Bill');
+          }
+        },
+        error: (error: any) => {
+          this.ewayBillUploadSpin = false;
+          this.error = error;
+          alert(error?.error?.message || 'Failed to upload file');
+        }
+      });
   }
 
   checkSerial(part: any, index: any) {

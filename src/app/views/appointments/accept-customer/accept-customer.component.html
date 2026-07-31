@@ -45,19 +45,17 @@
       </tr>
     </thead>
     <tbody style="padding-left: 1rem;">
-      <tr *ngFor="let appoints of reservationsData; let i = index ">
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.reservation_id}}</td>
-        <!-- <td *ngIf="appoints.current_status === 'RESCHEDULED' || appoints.rescheduled_to !== ''"> {{appoints.rescheduled_to}}</td> -->
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.customer_firstname +' '+ appoints.customer_lastlame}}</td>
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.current_status}}</td>
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''" style="color: #0785b7;">{{appoints.reservation_date | date:'dd/MM/yyyy h:mm a' || 'NA'}}</td>
-        <!-- <td *ngIf="appoints.current_status === 'RESCHEDULED' || appoints.rescheduled_to !== ''" style="color: #0785b7;">{{appoints.rescheduled_date | date:'dd/MM/yyyy h:mm a' || 'NA'}}</td> -->
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.product_code|| 'NA'}}</td>
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.product_serial_number || 'NA'}}</td>
-        <td *ngIf="appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === ''">{{appoints.product_issue_reported || 'NA'}}</td>
-        <td *ngIf="(appoints.current_status !== 'RESCHEDULED' && appoints.rescheduled_to === '')">
-          <button [disabled]="acceptanceLoading" *ngIf="appoints.customer_status === '' && appoints.current_status !== 'CANCELLED'" class="btn btn-block btn-outline-primary" (click)="customerArrived(confirm_temp,appoints.reservation_id, appoints.customer_firstname +' '+ appoints.customer_lastlame, (appoints.current_status === 'RESCHEDULED'? appoints.rescheduled_date : appoints.reservation_date),appoints.customer_phone_number)">Arrived</button>
-          <span *ngIf="appoints.customer_status !== '' || appoints.current_status === 'CANCELLED'">{{appoints.customer_status || 'NA'}}</span>
+      <tr *ngFor="let appoints of reservationsData">
+        <td>{{ (appoints.current_status === 'RESCHEDULED' || appoints.rescheduled_to) ? (appoints.rescheduled_to || appoints.reservation_id) : appoints.reservation_id }}</td>
+        <td>{{ appoints.customer_firstname + ' ' + appoints.customer_lastlame }}</td>
+        <td>{{ appoints.current_status }}</td>
+        <td style="color: #0785b7;">{{ (appoints.current_status === 'RESCHEDULED' || appoints.rescheduled_to) ? (appoints.rescheduled_date | date:'dd/MM/yyyy h:mm a') : (appoints.reservation_date | date:'dd/MM/yyyy h:mm a') }}</td>
+        <td>{{ appoints.product_code || 'NA' }}</td>
+        <td>{{ appoints.product_serial_number || 'NA' }}</td>
+        <td>{{ appoints.product_issue_reported || 'NA' }}</td>
+        <td>
+          <button [disabled]="acceptanceLoading" *ngIf="appoints.customer_status === '' && appoints.current_status === 'RESERVED'" class="btn btn-block btn-outline-primary" (click)="customerArrived(confirm_temp, appoints.reservation_id, appoints.customer_firstname + ' ' + appoints.customer_lastlame, appoints.reservation_date, appoints.customer_phone_number)">Arrived</button>
+          <span *ngIf="appoints.customer_status !== '' || appoints.current_status !== 'RESERVED'">{{ appoints.customer_status || appoints.current_status }}</span>
         </td>
         <!-- <td>
         <span *ngIf="appoints.reservation_type === 'PUD' && (appoints.ticket_id === '0' || appoints.ticket_id === null)">

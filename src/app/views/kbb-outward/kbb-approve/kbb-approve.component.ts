@@ -241,15 +241,8 @@ export class KbbApproveComponent implements OnInit {
 
   printNrdc() {
     this.modalService.dismissAll();
-    this.dataService.viewKbb(this.viewNrdcNo).subscribe({
-      next: (data: Blob) => {
-        const tab = window.open();
-        if (tab) {
-          tab.location.href = URL.createObjectURL(data);
-        }
-      },
-      error: (error: any) => this.error = error
-    });
+    const url = localStorage.getItem('rootUrl') + 'api/returns/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.viewNrdcNo;
+    window.open(url);
   }
 
   kbbShipped(nrdcId: any, shippedRemarks: TemplateRef<any>) {

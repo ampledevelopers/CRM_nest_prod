@@ -98,8 +98,11 @@
                   </label>
               </div>
               <div class="col-md-8">
-                  <input class="information" placeholder="E Way Bill No" [(ngModel)]="eWayBillNo" style="background: transparent; width: 70%;" type="text">
-                  <a class="ewayupdate" *ngIf="(bulkReturnId !== '') && (bulkReturnId !== null) && ((branchType === 'I') || (branchType === 'A'))" (click)="updateEwayBill()">Update</a>
+                  <input class="information" placeholder="E Way Bill No" [(ngModel)]="eWayBillNo" style="background: transparent; width: 45%;" type="text" readonly>
+                  <ng-container *ngIf="(bulkReturnId !== '') && (bulkReturnId !== null) && ((branchType === 'I') || (branchType === 'A'))">
+                    <input type="file" accept=".csv,.xlsx,.xls" style="width: 45%; display: inline-block;" (change)="onEwayBillFileSelected($event)">
+                    <a class="ewayupdate" (click)="uploadEwayBill()" [class.disabled]="ewayBillUploadSpin">{{ ewayBillUploadSpin ? 'Uploading...' : 'Upload' }}</a>
+                  </ng-container>
               </div>
             </div>
             <div class="info_row">

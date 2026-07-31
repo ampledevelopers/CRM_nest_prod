@@ -6122,10 +6122,12 @@ get showDeleteButton3() {
     //Adhesive Check
     if ((this.repairType === 'CIN') && (this.data.product_family === 'iPhone') && ((this.componentCode !== '26113') && (this.componentCode !== '26113A') && (this.componentCode !== '26113B') && (this.componentCode !== 'NSP01')) && (this.data.branch_code !== 'FIC') && ((this.data.product_description !== 'iPhone 6') && (this.data.product_description !== 'iPhone 6 Plus') && (this.data.product_description !== 'iPhone SE (1st generation)')) && (this.data.product_category !== 'Others') && (this.data.product_family !== 'Pencil') && (this.data.product_description !== 'iPhone MagSafe Battery Pack') && (this.data.product_description !== 'iPhone MagSafe Charger') && (!this.data.product_description.includes('Smart Battery Case'))) {
       if (this.adhesiveParts === false) {
-        alert('Adhesive parts are required for this Repair');
-        createFlag = false;
-        this.buttonSpin = false;
-        return;
+        if (!confirm('Adhesive parts are required for this Repair. Do you want to continue as this is a Whole unit Repair?')) {
+          createFlag = false;
+          this.buttonSpin = false;
+          return;
+        }
+        createFlag = true;
       } else {
         createFlag = true;
       }
@@ -6923,7 +6925,7 @@ get showDeleteButton3() {
       return;
     }
 
-    if (this.popAppleReviewHold === false && this.selectedParts.some((part: any) => part.fromConsignedStock === true)) {
+    if (this.popAppleReviewHold === false && this.selectedParts.some((part: any) => part.fromConsignedStock === true) && (this.data.serial_no.substring(0, 2).toLowerCase() === 'zz') ) {
       alert('Enable POP Apple Review Hold when consignment part is used');
       this.buttonSpin = false;
       return;
