@@ -29,13 +29,13 @@ export class PudServicesService {
     getBranch(branchCode: string) {
       const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
       '&branch_code=' + branchCode;
-      return this.http.post(this.rootUrl + 'api/tickets/get_branch', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'kbb_outward/get_branch', form, {headers : this.getHeaders()});
     }
 
     getProduct(serial_no: string, ticketId: string) {
       const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
       '&serial_no=' + serial_no + '&ticket_id=' + ticketId;
-      return this.http.post(this.rootUrl + 'api/gsxapi/get_product_details', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'gsxapi/get_product_details', form, {headers : this.getHeaders()});
     }
 
     getAmpleAcknowledge(serial_no: string, ticketId: string,remarks:any,visibleDamage:any, diagnosisCharges:any, pudType:any, pudTicketId:any) {
@@ -58,7 +58,7 @@ export class PudServicesService {
 
     getDetail(id: string | null) {
       const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-      return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+      return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
     }
 
     getOTP(serial_no: string, ticketId: string, pudTicketId: string, pickupOTP: any, pudUserId: any,pudType: any) {
@@ -84,9 +84,9 @@ export class PudServicesService {
     }
 
     checkQuoteStatuses(tId: string, qId: string, transId: string) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + tId + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'ticket_id=' + tId + '&user_id=' + localStorage.getItem('userId') +
       '&transaction_id=' + transId + '&quotation_id=' + qId;
-      return this.http.post(this.rootUrl + 'api/ticketsv3/get_paynow_status', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'tickets_v2/get_paynow_status', form, {headers : this.getHeaders()});
     }
 
     registerAmplePickup(id: string, pudType: any, dropBranchCode: any, pickupAssigned: any, firstCustomer_name:any,lastCustomer_name:any, customer_primary_phone:any
@@ -117,7 +117,7 @@ export class PudServicesService {
 
     getPUDAgent() {
       const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-      return this.http.get(this.rootUrl + 'api/pud/get_pud_agents?' + form, {headers : this.reqHeader});
+      return this.http.get(this.nestUrl + 'reservation/get_pud_agents?' + form, {headers : this.getHeaders()});
     }
 
     getDocuments(id: string | null) {
@@ -133,7 +133,7 @@ export class PudServicesService {
     makeCall(tId: string, phone: string) {
       const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
       '&ticket_id=' + tId + '&customer_number=' + phone;
-      return this.http.get(this.rootUrl + 'api/call/start?' + form, {headers : this.reqHeader});
+      return this.http.get(this.nestUrl + 'call/start?' + form, {headers : this.getHeaders()});
     }
 
     sendRAF(id: string | null) {
@@ -142,13 +142,13 @@ export class PudServicesService {
     }
 
     updateGSXStatus(gNumber: string, repairStatus: string) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + gNumber +
+      const form = '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + gNumber +
       '&repair_type=' + 'OSR' + '&repair_status=' + repairStatus;
-      return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
      }
     rdoAdditionalPart(ticket_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') +'&user_id=' + localStorage.getItem('userId') +'&ticket_id=' + ticket_id  ;
-    return this.http.post(this.rootUrl + 'api/gsxapi/rdo_additional_part', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/rdo_additional_part', form, { headers: this.getHeaders() });
     }
 
   }

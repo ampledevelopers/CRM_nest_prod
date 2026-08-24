@@ -25,7 +25,7 @@ export class KbbOutwardService {
 
   getDetail(id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   checkPartSerialNo(tId: string) {

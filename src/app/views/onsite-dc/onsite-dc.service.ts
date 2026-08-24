@@ -51,7 +51,7 @@ export class OnsiteDcService {
     } else {
       form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&branch_code=' + code + '&user_id=' + localStorage.getItem('userId');
     }
-    return this.http.post(this.rootUrl + 'api/returns/get_branch', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'kbb_outward/get_branch', form, {headers : this.getHeaders()});
   }
 
   getCustomer(phone: any) {
@@ -119,7 +119,7 @@ export class OnsiteDcService {
 
   shipmentConfirm(nrdcId: any, remarks: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&nrdc_no=' + nrdcId + '&remarks=' + remarks;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/nrdc_shipment_confirmation', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'kbb_outward/nrdc_shipment_confirmation', form, {headers : this.getHeaders()});
 
   }
 

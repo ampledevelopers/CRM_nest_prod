@@ -46,9 +46,9 @@ export class DashboardService {
   }
 
   getStatusCount(ticket_type: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_type=' + ticket_type;
-    return this.http.post(this.rootUrl + 'api/tickets/get_status_count', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_status_count', form, {headers : this.getHeaders()});
   }
 
   getOptions() {
@@ -99,7 +99,7 @@ export class DashboardService {
   validateAdvance(rafId: string, invoice_id: string, rafDate: string, q_id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&invoice_id=' + invoice_id + '&raf_no=' + rafId + '&raf_date=' + rafDate + '&quotation_id=' + q_id;
-    return this.http.post(this.rootUrl + 'api/bill/validate_advance', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'bill/validate_advance', form, {headers : this.getHeaders()});
   }
 
   pudInvoiceIdCheck(rafId: string, invoice_id: string, rafDate: string) {
@@ -114,9 +114,9 @@ export class DashboardService {
   }
 
   reGenerateToken(tokenNo: string, branchCode: string, priorityType: string, priorityRemarks: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&token_no=' + tokenNo + '&branch_code=' + branchCode +
+    const form = '&user_id=' + localStorage.getItem('userId') + '&token_no=' + tokenNo + '&branch_code=' + branchCode +
     '&priority_type=' + priorityType + '&priority_remarks=' + priorityRemarks;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/update_token_priority', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'itickets/update_token_priority', form, {headers : this.getHeaders()});
   }
 
   getCustomerInfo(c_id: string, phone_no: string) {
@@ -179,15 +179,15 @@ export class DashboardService {
   }
 
   qcRequest(ticketId: string, hdId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + ticketId + '&hd_id=' + hdId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/send_for_qc', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/send_for_qc', form, {headers : this.getHeaders()});
   }
 
   qcProcess(ticketId: string, hdId: string, status: string, review: string, deliveryType: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&delivery_type=' + deliveryType + '&ticket_id=' + ticketId + '&hd_id=' + hdId + '&qc_status=' + status + '&qc_declined_remarks=' + review;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/qc_approve_decline', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/qc_approve_decline', form, {headers : this.getHeaders()});
   }
 
   closeTicket(ticketId: string, remarks: string) {
@@ -204,7 +204,7 @@ export class DashboardService {
   repairEligibilityFull(tId: string, hdId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId +
     '&hd_id=' + hdId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_eligibility_full', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/repair_eligibility_full', form, {headers : this.getHeaders()});
   }
 
   KDOptionUpdate(ticketId: string, kd_status: string) {
@@ -216,13 +216,13 @@ export class DashboardService {
   makeCall(tId: string, phone: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&customer_number=' + phone;
-    return this.http.get(this.rootUrl + 'api/call/start?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'call/start?' + form, {headers : this.getHeaders()});
   }
 
   getPhoneCalls(tId: string, phone: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&customer_number=' + phone;
-    return this.http.get(this.rootUrl + 'api/call/get_calls?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'call/get_calls?' + form, {headers : this.getHeaders()});
   }
 
   deviceAwayOTP(mobile: string, email: string, tId: string) {
@@ -253,8 +253,8 @@ export class DashboardService {
   }
 
   checkPartSerialNo(tId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/check_display_repair', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
+    return this.http.post(this.nestUrl + 'tickets_v2/check_display_repair', form, {headers : this.getHeaders()});
   }
 
   kbbImageSerialVerify(tId: string) {
@@ -286,7 +286,7 @@ export class DashboardService {
   diagnosisStatusChange(t_id: string, repairStage: string, hd_id: string, remarks: string, popReview: string, opfNo: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
     '&repair_stage=' + repairStage + '&hd_id=' + hd_id + '&l2_remarks=' + remarks + '&pop_review_hold=' + popReview + '&opf_ref_no=' + opfNo;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/diagnosis_stage_update_v1', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/diagnosis_stage_update_v1', form, {headers : this.getHeaders()});
   }
 
   declinedGRepairs(t_id: string) {
@@ -310,13 +310,13 @@ export class DashboardService {
   }
 
   getConsignment(asn_no: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&asn_no=' + asn_no;
-    return this.http.get(this.rootUrl + 'api/ticketsv3/consignment_asn?' + form, {headers : this.reqHeader});
+    const form = 'asn_no=' + asn_no;
+    return this.http.get(this.nestUrl + 'tickets_v2/consignment_asn?' + form, {headers : this.getHeaders()});
   }
 
   consignmentBlock(t_id: string, asn_no: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&asn_no=' + asn_no + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/consignment_validate', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + t_id + '&asn_no=' + asn_no + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'gsxapi/consignment_validate', form, {headers : this.getHeaders()});
   }
 
   updatePartConsignment(t_id: string, asn_no: string, asn_type: any, flag: any, part_no: any) {
@@ -411,20 +411,20 @@ export class DashboardService {
   gsxRepairUpdate(formData: string, parts: any) {
     const additionalParts = JSON.stringify(parts);
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + formData;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
   }
 
   getEscalationDetails(id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&escalation_id=' + id;
-    return this.http.post(this.rootUrl + 'api/gsxapi/escalation_details', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&escalation_id=' + id;
+    return this.http.post(this.nestUrl + 'gsxapi/escalation_details', form, {headers : this.getHeaders()});
 
   }
 
    /******* Details *********/
 
   updateProductName(t_id: string, product: string) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&product_name=' + product;
-  return this.http.post(this.rootUrl + 'api/tickets/product_name_update', form, {headers : this.reqHeader});
+  const form = 'ticket_id=' + t_id + '&product_name=' + product;
+  return this.http.post(this.nestUrl + 'tickets_v2/product_name_update', form, {headers : this.getHeaders()});
   }
 
   updateWarrantyStatus(t_id: string, warranty: string) {
@@ -460,9 +460,9 @@ export class DashboardService {
 
   uploadDocuments(id: string, docs: any) {
     const documents = JSON.stringify(docs);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
                 '&documents=' + documents;
-    return this.http.post(this.rootUrl + 'api/tickets/uploads', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/uploads', form, {headers : this.getHeaders()});
   }
 
   deleteDocument(id: string, ticket_id: string) {
@@ -482,19 +482,20 @@ export class DashboardService {
   quotationRefUpdate(t_id: string, rafNo: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&quotation_ref_no=' + rafNo +
     '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/quotation_ref', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/quotation_ref', form, {headers : this.getHeaders()});
   }
 
   quotationDraft(id: string, hd_id: string, serviceCharge: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&hd_id=' + hd_id + '&user_id=' + localStorage.getItem('userId') +
     '&service_charge=' + serviceCharge;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/quotation_draft', form, {headers : this.reqHeader});
+    // return this.http.post(this.rootUrl + 'api/ticketsv3/quotation_draft', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/quotation_draft', form, {headers : this.getHeaders()});
   }
 
   rcQuotationDraft(id: string, hd_id: string, serviceCharge: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&hd_id=' + hd_id + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + id + '&hd_id=' + hd_id + '&user_id=' + localStorage.getItem('userId') +
     '&service_charge=' + serviceCharge;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/rc_quotation_draft', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/rc_quotation_draft', form, {headers : this.getHeaders()});
   }
 
   getQuotation(id: string | null) {
@@ -508,9 +509,8 @@ export class DashboardService {
   }
 
   generateQuotation(data: string) {
-const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    // return this.http.post(this.nestUrl + 'tickets_v2/generate_quotation', form, {headers : this.getHeaders()});
-    return this.http.post(this.rootUrl + 'api/ticketsv3/quotation_draft', form, {headers : this.reqHeader});
+  const form =  '&user_id=' + localStorage.getItem('userId') + data;
+    return this.http.post(this.nestUrl + 'tickets_v2/generate_quotation', form, {headers : this.getHeaders()});
   }
 
   generateRCQuotation(data: string) {
@@ -519,14 +519,14 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   updateCoverageOption(tId: string, hdId: string, coverageOption: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId +
     '&hd_id=' + hdId + '&coverage_option=' + coverageOption;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/update_coverage_option', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/update_coverage_option', form, {headers : this.getHeaders()});
   }
 
   viewQuotation(id: string, qid: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&quotation_id=' + qid;
-    return this.http.post(this.rootUrl + 'api/tickets/view_quotation', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + id + '&quotation_id=' + qid;
+    return this.http.post(this.nestUrl + 'tickets_v2/view_quotation', form, {headers : this.getHeaders()});
   }
 
   approveRejectQuote(id: string, approveReject: ApproveReject, status_id: string) {
@@ -536,9 +536,9 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   quotationStatusCheck(tId: string, qId: string, transId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + tId + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + tId + '&user_id=' + localStorage.getItem('userId') +
     '&transaction_id=' + transId + '&quotation_id=' + qId;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/get_paynow_status', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_paynow_status', form, {headers : this.getHeaders()});
   }
 
   resendQuotation(id: string, qid: string) {
@@ -568,9 +568,9 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   updateGSXReQuoteStatus(repairType: string, repair_id: string, repair_status: string, ticketId: string, quoteId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + repair_id +
+    const form =  '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + repair_id +
     '&repair_type=' + repairType + '&repair_status=' + repair_status + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
    }
 
    appleDeclineReturn(t_id: string, rerepair: string) {
@@ -602,33 +602,33 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   /******* GSX Repair *********/
 
   repairCreateAck(t_id: string, ack_id: string, ack_val: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
       '&action_ack_id=' + ack_id + '&ack_value=' + ack_val;
-    return this.http.post(this.rootUrl + 'api/gsxapi/update_action_ack', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/update_action_ack', form, { headers: this.getHeaders() });
   }
 
   repairCreateDraft(t_id: string, hd_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
       '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_create_draft', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/repair_create_draft', form, { headers: this.getHeaders() });
   }
 
   repairCreateAuto(t_id: string, repairStage: string, hd_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
       '&repair_stage=' + repairStage + '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_create_auto', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/repair_create_auto', form, { headers: this.getHeaders() });
   }
 
   repairCreateNTF(t_id: string, repairStage: string, hd_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
       '&repair_stage=' + repairStage + '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_create_ntf', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/repair_create_ntf', form, { headers: this.getHeaders() });
   }
 
   repairCreateSCR(t_id: string, hd_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
       '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_create_scr', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/repair_create_scr', form, { headers: this.getHeaders() });
   }
 
   checkGSXStatus() {
@@ -639,7 +639,7 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   getProduct(serial_no: string, tId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&serial_no=' + serial_no + '&ticket_id=' + tId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/get_product_details', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/get_product_details', form, {headers : this.getHeaders()});
   }
   getRepair (r_id: string, t_id: string) {
     const form = 'repair_id=' + r_id + '&ticket_id=' + t_id;
@@ -670,9 +670,9 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
 
   uploadPics(t_id: string, serial_no: string, docSize: string, doc: any, uploadType: string) {
     const documents = JSON.stringify(doc);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&serial_no=' + serial_no + '&size=' + docSize + '&ticket_id=' + t_id + '&type=' + uploadType + '&documents=' + documents;
-    return this.http.post(this.rootUrl + 'api/gsxapi/upload_pic2', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/upload_pic2', form, {headers : this.getHeaders()});
   }
 
   uploadAccess(serial_no: string, docSize: string, docName: string) {
@@ -695,19 +695,21 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
 
   getComponentRetry(serial_no: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&serial_no=' + serial_no;
-    return this.http.post(this.rootUrl + 'api/gsxapi/componentissue_refresh', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/componentissue_refresh', form, {headers : this.getHeaders()});
   }
 
   getRepairDetail(repairId: string, t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&repair_id=' + repairId +
+    const form = 'repair_id=' + repairId +
     '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_details', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/repair_details', form, {headers : this.getHeaders()});
   }
 
-  getBlueDartTracking(trackNumber: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&tracking_no=' + trackNumber +
-    '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_shipping_tracking', form, {headers : this.reqHeader});
+  getBlueDartTracking(trackNumber: string, ticketId?: string, repairId?: string) {
+    const form = 'tracking_no=' + trackNumber +
+    '&user_id=' + localStorage.getItem('userId') +
+    '&ticket_id=' + (ticketId || '') +
+    '&repair_id=' + (repairId || '');
+    return this.http.post(this.nestUrl + 'gsxapi/repair_shipping_tracking', form, {headers : this.getHeaders()});
    }
 
    checkCinKgbPart(t_id: string) {
@@ -716,36 +718,42 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
    }
 
    updateKgbDetails(data: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + data;
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
    }
 
    getGsxStatusCode() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/get_repair_status', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'gsxapi/get_repair_status', form, {headers : this.getHeaders()});
    }
 
    applyGPRDOA(data: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    const form =  '&user_id=' + localStorage.getItem('userId') + data;
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
    }
 
    updateTechnicianNotes(techNotes: string | number | boolean, repairId: string, ticketId: string, repairType: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&technician_notes=' + encodeURIComponent(techNotes) +
     '&repair_id=' + repairId + '&update_type=' + 'UpdateTechnicianNotes' + '&ticket_id=' + ticketId + '&repair_type=' + repairType;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
    }
 
-   updateGSXStatus(repairType: string, repair_id: string, repair_status: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + repair_id +
+   updateGSXStatus(repairType: string, repair_id: string, repair_status: string, ticket_id?: string) {
+    let form = '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + repair_id +
     '&repair_type=' + repairType + '&repair_status=' + repair_status;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    if (ticket_id) {
+      form += '&ticket_id=' + ticket_id;
+    }
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
    }
 
-   updateGSXStatusDcall(repairType: string, repair_id: string, repair_status: string, partDate: any, repairDate: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + repair_id +
+   updateGSXStatusDcall(repairType: string, repair_id: string, repair_status: string, partDate: any, repairDate: any, ticket_id?: string) {
+    let form = '&user_id=' + localStorage.getItem('userId') + '&update_type=' + 'UpdateRepairStatus' + '&repair_id=' + repair_id +
     '&repair_type=' + repairType + '&repair_status=' + repair_status + '&service_completion_date=' + repairDate + '&onsite_arrival_date=' + partDate;
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_update', form, {headers : this.reqHeader});
+    if (ticket_id) {
+      form += '&ticket_id=' + ticket_id;
+    }
+    return this.http.post(this.nestUrl + 'gsxapi/repair_update', form, {headers : this.getHeaders()});
    }
 
    closeReviveRepair(ticketId: string) {
@@ -756,7 +764,7 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
    inboxLetterDownload(repairId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&doc_type=' + 'inboxLetter'
     + '&repair_id=' + repairId; //G610358399
-    return this.http.post(this.rootUrl + 'api/gsxapi/document_download', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/document_download', form, {headers : this.getHeaders()});
   }
 
   /******* Service Report *********/
@@ -775,8 +783,8 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   generateSVCAuto(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/ticketsv3/generate_svc_auto', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'tickets_v2/generate_svc_auto', form, {headers : this.getHeaders()});
   }
 
   getSVC(t_id: string | null) {
@@ -791,15 +799,15 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   getRepairDetails(r_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&repair_id=' + r_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/repair_audit_details', form, {headers : this.reqHeader});
+    const form = 'repair_id=' + r_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'gsxapi/repair_audit_details', form, {headers : this.getHeaders()});
   }
 
   printReturnLabel(r_id: any, sqNo: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&repair_id=' + r_id + '&user_id=' + localStorage.getItem('userId') +
     '&sequence_number=' + sqNo + '&doc_type=' + 'CI_ON_REPAIR_RETURN_KBB';
-    return this.http.post(this.rootUrl + 'api/gsxapi/document_download', form,
-    {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    return this.http.post(this.nestUrl + 'gsxapi/document_download', form,
+    {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
     return new Blob([res], { type: 'application/pdf', });
     }));
   }
@@ -825,13 +833,13 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
 
   submitHomeDelivery(id: string, docs: any, mobile: string, otp: string) {
     const documents = JSON.stringify(docs);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
                 '&documents=' + documents;
-    const response1 =  this.http.post(this.rootUrl + 'api/tickets/uploads', form, {headers : this.reqHeader});
+    const response1 =  this.http.post(this.nestUrl + 'tickets_v2/uploads', form, {headers : this.getHeaders()});
 
-    const form1 = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&mobile=' + mobile +
+    const form1 = 'user_id=' + localStorage.getItem('userId') + '&mobile=' + mobile +
     '&home_delivery_otp=' + otp + '&ticket_id=' + id;
-    const response2 = this.http.post(this.rootUrl + 'api/ticketsv3/check_home_delivery_otp', form1, {headers : this.reqHeader});
+    const response2 = this.http.post(this.nestUrl + 'tickets_v2/check_home_delivery_otp', form1, {headers : this.getHeaders()});
 
     return forkJoin([response1, response2]);
   }
@@ -873,7 +881,7 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
 
     const form1 = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&quotation_ref_no=' + rafNo +
     '&user_id=' + localStorage.getItem('userId');
-    const response2 = this.http.post(this.rootUrl + 'api/tickets/quotation_ref', form1, {headers : this.reqHeader});
+    const response2 = this.http.post(this.nestUrl + 'tickets_v2/quotation_ref', form1, {headers : this.getHeaders()});
 
     return response2;
     // return forkJoin([response1, response2]);
@@ -941,45 +949,45 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   // Uncomment it for POS invoice validation
   getPaymentDetails(rafNo: string, raf_date: string, ticket_id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&raf_no=' + rafNo + '&raf_date=' + raf_date + '&ticket_id=' + ticket_id;
-    return this.http.get(this.rootUrl + 'api/bill/get_invoice?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'bill/get_invoice?' + form, {headers : this.getHeaders()});
   }
 
 
   /************ Enquiry ************/
   getEnquiry(t_id: string | null) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/enquiry/get_cc_enquiry', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_cc_enquiry', form, {headers : this.getHeaders()});
   }
 
   /************ Messages ************/
   getMessage(t_id: string | null) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/message/get_ticket_message', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_ticket_message', form, {headers : this.getHeaders()});
   }
 
   /************ Diagnosis Approve ************/
 
   getDiagnosisList() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/diagnosis_approve?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'tickets_v2/diagnosis_approve?' + form, {headers : this.getHeaders()});
   }
 
   diagnosisSubmit(ticket_id: string, id: string, status: string, remarks: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + ticket_id + '&id=' + id + '&approved=' + status + '&remarks=' + remarks;
-    return this.http.post(this.rootUrl + 'api/tickets/diagnosis_approve', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/diagnosis_approve', form, {headers : this.getHeaders()});
   }
 
   /************ Notifications ************/
 
   getNotification(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.get(this.rootUrl + 'api/ticketsv3/notifications?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.get(this.nestUrl + 'tickets_v2/notifications?' + form, {headers : this.getHeaders()});
   }
 
   getMsgNotification(ticketId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.get(this.rootUrl + 'api/message/get_notifications?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'tickets_v2/get_notifications?' + form, {headers : this.getHeaders()});
   }
 
   sendSMSEmail(t_id: string, message: string) {
@@ -990,16 +998,16 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   /************ Customer Dis-Sat ************/
 
   getCustomerDisSat(phone: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
-    return this.http.get(this.rootUrl + 'api/ticketsv3/ticket_customer_rating?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
+    return this.http.get(this.nestUrl + 'tickets_v2/ticket_customer_rating?' + form, {headers : this.getHeaders()});
   }
 
 
   /* ********** Reservation ********* */
 
   createReservation(data: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId')  + data ;
-    return this.http.post(this.rootUrl + 'api/gsxapi/reservation_create', form, {headers : this.reqHeader})
+    const form = 'user_id=' + localStorage.getItem('userId')  + data ;
+    return this.http.post(this.nestUrl + 'gsxapi/reservation_create', form, {headers : this.getHeaders()})
   }
 /*   createDlvryReservation(data: any, ticketId: any) {
     const form = 'X_API_KEY=' + 'Ti@vlp123' + '&user_id=' + localStorage.getItem('userId')  + data + '&ticket_id=' + ticketId ;
@@ -1009,24 +1017,24 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   reservationUpdate(id: any, date: any, ticketId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&reservation_id=' + id + '&cancel_reason=' + 'CUSTOMER_CANCELLED' + '&modified_status=' + 'RESCHEDULED' + '&user_id=' + localStorage.getItem('userId')  + '&ship_to_code=' + localStorage.getItem('shipTo') + '&new_reservation_date=' + date
     + '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/reservation_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/reservation_update', form, {headers : this.getHeaders()});
   }
 
   getReservation(mobile: any, email: any, id: any) {
     email = email === null? '': email;
     const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&mobile=' + mobile + '&email=' + email + '&branch_code=' + '' + '&user_id=' + localStorage.getItem('userId')  + '&reservation_id=' + id;
-    return this.http.get(this.rootUrl + 'api/reservation/get?'+ form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'reservation/get?'+ form, {headers : this.getHeaders()});
   }
 
   getReservationDetails(reservationId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&reservation_id=' + reservationId + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post( this.rootUrl + 'api/gsxapi/reservation_details', form, {headers : this.reqHeader});
+    return this.http.post( this.nestUrl + 'gsxapi/reservation_details', form, {headers : this.getHeaders()});
   }
 
 
   getReservationDetailsbyId(reservationId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&reservation_id=' + reservationId + '&user_id=' + localStorage.getItem('userId') + '&ship_to=' + localStorage.getItem('shipTo');
-    return this.http.post( this.rootUrl + 'api/gsxapi/reservation_details', form, {headers : this.reqHeader});
+    return this.http.post( this.nestUrl + 'gsxapi/reservation_details', form, {headers : this.getHeaders()});
   }
 
   /* ********** Adhesive ********* */
@@ -1063,7 +1071,7 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
 
   mapOnsiteRepair(ticketId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/gsxapi/map_repair_details', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/map_repair_details', form, {headers : this.getHeaders()});
   }
 
   getPopRequiredList(product: any) {
@@ -1084,8 +1092,8 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   /* ********** PUD ********* */
 
   pudTicketCheck(ticketId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.get(this.rootUrl + 'api/ticketsv3/pud_ticket_check?' + form ,{headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.get(this.nestUrl + 'tickets_v2/pud_ticket_check?' + form ,{headers : this.getHeaders()});
   }
 
   createPUD(first_name: any, last_name: any, customer_primary_phone: string, customer_email: string,  customer_secondary_phone: string, address_line1: string, Address2: string, city: string,state: string,pin: string, customerQuery: string, branchCode: any, notes: any, ticket_id: any, pudType: any, serialNumber: any, dropAddress?: any, drop_request_flag: any = 0) {
@@ -1101,8 +1109,8 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
   }
 
   sendQuotePayment(ticketId: any, quoteId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId + '&quotation_pud=' + 1;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/send_quotation_and_paynow_link', form, { headers: this.reqHeader });
+    const form = '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId + '&quotation_pud=' + 1;
+    return this.http.post(this.nestUrl + 'tickets_v2/send_quotation_and_paynow_link', form, { headers: this.getHeaders() });
   }
 
   updateDropAddress(pudTicketId: any, dropAddress: any, dropRequestFlag: any, drop_exception_case: any = '') {
@@ -1115,7 +1123,7 @@ const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + lo
 
   createCase(ticketId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/suite/create_case', form ,{headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'suite/create_case', form ,{headers : this.getHeaders()});
   }
 
   createPO(ticketId: any, hdId: any) {

@@ -28,7 +28,7 @@ export class TekneTicketDetailsEditService {
 
   getDetail(id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   getCustomerInfo(site_id: string, c_id: string, phone_no: string) {
@@ -43,7 +43,7 @@ export class TekneTicketDetailsEditService {
                   '&email=' +  data.email + '&address1=' + data.address1 + '&address2=' + data.address2 +
                   '&city=' + data.city + '&state=' + data.state + '&pin=' + data.pin + '&gstn=' + data.gstn + '&customer_id=' + customerId
                   + '&ticket_id=' + ticketId + '&branch_code=' + localStorage.getItem('branchCode');
-    return this.http.post(this.rootUrl + 'api/tickets/customer_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'common/customer_update', form, {headers : this.getHeaders()});
   }
 
   updateDeviceInfo(data: Deviceinfo, ticketId: string, selectedFamily: string, device_condition: string | number | boolean, warrantyStatus: string, unitDate: string, unitTime: string, hdId: string,
@@ -55,13 +55,13 @@ export class TekneTicketDetailsEditService {
                   + '&ticket_id=' + ticketId + '&warranty_status=' + warrantyStatus + '&unit_received_date=' + unitDate
                   + '&unit_received_time=' + unitTime + '&hd_id=' + hdId + '&customer_query=' + customerQuery + '&technician_comment=' + techComment
                   + '&payment_date=' + paymentDate;
-    return this.http.post(this.rootUrl + 'api/tickets/ticket_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/ticket_update', form, {headers : this.getHeaders()});
   }
 
   updateRepairInfo(ticketId: string, hd_id: string, gNumber: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
                   '&ticket_id=' + ticketId + '&hd_id=' + hd_id + '&g_number=' + gNumber + '&direct=' + '1';
-    return this.http.post(this.rootUrl + 'api/gsxapi/update_g_number', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/update_g_number', form, {headers : this.getHeaders()});
   }
 
   getSVC(t_id: string) {
@@ -72,7 +72,7 @@ export class TekneTicketDetailsEditService {
   updateSvcRemarks(ticketId: string, svcId: string, svcRemarks: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
                   '&ticket_id=' + ticketId + '&hd_id=' + svcId + '&svc_remarks=' + svcRemarks;
-    return this.http.post(this.rootUrl + 'api/tickets/svc_remarks_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/svc_remarks_update', form, {headers : this.getHeaders()});
   }
 
 }

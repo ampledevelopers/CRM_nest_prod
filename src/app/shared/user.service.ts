@@ -90,7 +90,7 @@ export class UserService {
 
   getWidgetPermission(groupID: string, statusId: string) {
     const data = 'status_id=' + statusId + '&group_id=' + groupID;
-    return this.http.post(this.nestUrl + 'user/get_widget_permission', data, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'user/get_widget_permission', data, { headers: this.getHeaders() });
   }
 
   getUser(userId: string) {
@@ -112,7 +112,14 @@ export class UserService {
   }
 
   resetPassword(userId: any, user: any) {
-    const data = 'user_id=' + userId + '&data=' + user + '';
+    // URL-encode both values. Concatenating them raw corrupted any password
+    // containing '+', '&', '=' or '#': the body is
+    // application/x-www-form-urlencoded, so '+' decodes server-side as a space
+    // and '&' truncates the field — the new password was silently stored as
+    // something other than what the user typed, locking them out.
+    const data =
+      'user_id=' + encodeURIComponent(userId) +
+      '&data=' + encodeURIComponent(user);
     return this.http.post(this.nestUrl + 'auth/reset_password', data, { headers: this.getHeaders() });
   }
 
@@ -128,12 +135,12 @@ export class UserService {
     } else {
       form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&gsx_api_key=' + key;
     }
-    return this.http.post(this.rootUrl + 'api/gsxapi/get_auth_token', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/get_auth_token', form, { headers: this.getHeaders() });
   }
 
   dCallFetch(fromDate: any, toDate: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode') + '&from_date=' + fromDate + '&to_date=' + toDate;
-    return this.http.post(this.rootUrl + 'api/gsxapi/d_call', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/d_call', form, { headers: this.getHeaders() });
   }
 
   mapCrmGsx(ticketId: string) {
@@ -148,12 +155,12 @@ export class UserService {
 
   mapBlueDartTrack(ticketId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.post(this.rootUrl + 'api/gsxbatchapi/repair_shipping_tracking_auto', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/repair_shipping_tracking_auto', form, { headers: this.getHeaders() });
   }
 
   logoutGSX() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/authenticate_end_session', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/authenticate_end_session', form, { headers: this.getHeaders() });
   }
 
   getMessageBoard(data: string) {
@@ -454,9 +461,9 @@ async uploadVideoS3Bucket(
   
     const res: any = await firstValueFrom(
       this.http.post(
-        this.rootUrl + 'api/cdata/delete_from_s3',
+        this.nestUrl + 's3/delete_from_s3',
         body,
-        { headers: this.reqHeader }
+        { headers: this.getHeaders() }
       )
     );
   
@@ -513,7 +520,7 @@ async uploadVideoS3Bucket(
 
   invoiceSummaryFetch() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
-    return this.http.post(this.rootUrl + 'api/gsxapi/invoice_summary', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/invoice_summary', form, { headers: this.getHeaders() });
   }
 
   getAWSconfig() {
@@ -536,11 +543,9 @@ async uploadVideoS3Bucket(
     return this.s3;
   }
   getBinAgeingBranch(data: { user_id: string | null, branch_code: string | null }) {
-  const form = '&user_id=' + data.user_id +
-               '&user_id=' + data.user_id +
-               '&branch_code=' + data.branch_code;
-  return this.http.post(this.nreportUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
-}
+    const form = 'user_id=' + data.user_id + '&branch_code=' + data.branch_code;
+    return this.http.post(this.nreportUrl + 'reports/branch_bin_ageing_dashboard', form, { headers: this.getHeaders() });
+  }
   getBranchAgeingTicketList(family: string, type: string, statusId: string, countType: string, branchId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&family=' + family + '&type=' + type  + '&status_id=' + statusId + '&count_type=' + countType + '&branch_id=' + branchId ;

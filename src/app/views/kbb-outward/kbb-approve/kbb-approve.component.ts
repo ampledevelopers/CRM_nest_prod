@@ -274,39 +274,65 @@ export class KbbApproveComponent implements OnInit {
   }
 
   printReturnLabels() {
-    const tab: any = window.open();
+    const request$ = this.isSingleItem
+      ? this.dataService.labelSinglePrint(this.viewNrdcNo, this.bulkReturnId)
+      : this.dataService.labelPrint(this.viewNrdcNo, this.bulkReturnId);
 
-    if (this.isSingleItem) {
-      this.dataService.labelSinglePrint(this.viewNrdcNo, this.bulkReturnId)
-        .subscribe({
-          next: (data: Blob | MediaSource) => {
-            const fileUrl = URL.createObjectURL(data);
-            tab.location.href = fileUrl;
-          }, // success path
-          error: (error: any) => this.error = error // error path
-        });
-    } else {
-      this.dataService.labelPrint(this.viewNrdcNo, this.bulkReturnId)
-        .subscribe({
-          next: (data: Blob | MediaSource) => {
-            const fileUrl = URL.createObjectURL(data);
-            tab.location.href = fileUrl;
-          }, // success path
-          error: (error: any) => this.error = error // error path
-        });
-    }
+    request$.subscribe({
+      next: async (data: Blob) => {
+        const headText = await data.slice(0, 32).text();
+        if (headText.trim().startsWith('{')) {
+          try {
+            const json = JSON.parse(await data.text());
+            alert(json.message || 'GSX Error, Please try again');
+          } catch {
+            alert('GSX Error, Please try again');
+          }
+          return;
+        }
 
+        const bytes = new Uint8Array(await data.slice(0, 5).arrayBuffer());
+        const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B;
+        const fileId = this.bulkReturnId || this.viewNrdcNo;
+        if (isZip) {
+          saveAs(data, `bulk-return-labels-${fileId}.zip`);
+          return;
+        }
+        const fileUrl = URL.createObjectURL(data);
+        const tab: any = window.open();
+        if (tab) {
+          tab.location.href = fileUrl;
+        } else {
+          saveAs(data, `return-label-${fileId}.pdf`);
+        }
+      },
+      error: (error: any) => this.error = error
+    });
   }
 
   printPackingList() {
-    const tab: any = window.open();
     this.dataService.packListPrint(this.viewNrdcNo, this.bulkReturnId)
       .subscribe({
-        next: (data: Blob | MediaSource) => {
+        next: async (data: Blob) => {
+          const head = await data.slice(0, 32).text();
+          if (head.trim().startsWith('{')) {
+            try {
+              const json = JSON.parse(await data.text());
+              alert(json.message || 'GSX Error, Please try again');
+            } catch {
+              alert('GSX Error, Please try again');
+            }
+            return;
+          }
           const fileUrl = URL.createObjectURL(data);
-          tab.location.href = fileUrl;
-        }, // success path
-        error: (error: any) => this.error = error // error path
+          const tab: any = window.open();
+          if (tab) {
+            tab.location.href = fileUrl;
+          } else {
+            saveAs(data, `packing-list-${this.bulkReturnId || this.viewNrdcNo}.pdf`);
+          }
+        },
+        error: (error: any) => this.error = error
       });
   }
 

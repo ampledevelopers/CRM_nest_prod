@@ -29,7 +29,7 @@ export class TekneConsignmentsService {
 
   saveConsignment(data: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl + 'api/accy/add_consignment', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accy/add_consignment', form, {headers : this.getHeaders()});
   }
 
   unBlockConsignment(asn_no: any) {
@@ -39,6 +39,6 @@ export class TekneConsignmentsService {
 
   getConsignmentlist() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + localStorage.getItem('branchCode');
-    return this.http.get(this.rootUrl + 'api/accy/get_consignment?'+ form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accy/get_consignment?'+ form, {headers : this.getHeaders()});
   }
 }

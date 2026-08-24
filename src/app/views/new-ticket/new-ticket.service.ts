@@ -30,8 +30,8 @@ export class NewTicketService {
   }
 
   getAMC(sNo: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&serial_no=' + sNo + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/ticketsv3/amc_data?' + form, {headers : this.reqHeader});
+    const form = 'serial_no=' + sNo + '&user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'tickets_v2/amc_data?' + form, {headers : this.getHeaders()});
   }
 
   getBranch() {
@@ -66,7 +66,7 @@ export class NewTicketService {
 
   getGsxData(sNo: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&serial_no=' + sNo + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/get_product_details', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/get_product_details', form, {headers : this.getHeaders()});
   }
 
   createTicket(data: any, customer_id: any) {
@@ -77,8 +77,8 @@ export class NewTicketService {
 
   uploadDocuments(id: string, docs: any) {
     const documents = JSON.stringify(docs);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
                 '&documents=' + documents;
-    return this.http.post(this.rootUrl + 'api/tickets/uploads', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/uploads', form, {headers : this.getHeaders()});
   }
 }

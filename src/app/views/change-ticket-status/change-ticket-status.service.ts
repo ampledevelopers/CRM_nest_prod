@@ -33,13 +33,13 @@ export class ChangeTicketStatusService {
 
   getDetail(id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   changeStatus(reqData: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
                   reqData;
-    return this.http.post(this.rootUrl + 'api/tickets/change_status_manual', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/change_status', form, {headers : this.getHeaders()});
   }
 
   getDriveFiles(ticket_id: string) {

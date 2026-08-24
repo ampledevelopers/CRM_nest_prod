@@ -27,7 +27,7 @@ export class DCallServicesService {
 
   getPUDAgent() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/pud/get_pud_agents?' + form, { headers: this.reqHeader });
+    return this.http.get(this.nestUrl + 'reservation/get_pud_agents?' + form, { headers: this.getHeaders() });
   }
 
   dcallSetType(id: string | null, dcall_type: any, pickup_assigned_to: any, pickup_scheduled_time: any, assigned_user_id: any, assigned_user_id_time: any, gNumber: any) {
@@ -39,7 +39,7 @@ export class DCallServicesService {
       form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + id + '&dcall_type=' + dcall_type + '&assigned_user_id=' + assigned_user_id
         + '&assigned_user_id_time=' + assigned_user_id_time + '&g_number=' + gNumber;
     }
-    return this.http.post(this.rootUrl + 'api/gsxapi/set_type', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/set_type', form, { headers: this.getHeaders() });
   }
 
   getAssignees() {
@@ -49,6 +49,6 @@ export class DCallServicesService {
 
   fetchDcall(fromDate: any, toDate:any, branchCode: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&from_date=' + fromDate + '&to_date=' + toDate + '&branch_code=' + branchCode;
-    return this.http.post(this.rootUrl + 'api/gsxapi/d_call', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/d_call', form, {headers : this.getHeaders()});
   }
 }

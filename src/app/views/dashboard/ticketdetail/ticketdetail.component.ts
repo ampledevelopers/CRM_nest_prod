@@ -1225,7 +1225,7 @@ export class TicketdetailComponent {
           if (this.data.pending_type === '') {
             this.data.pending_type = 'Select Pending Status';
           }
-          if (this.data.g_number === '') {
+          if (!this.data.g_number || this.data.g_number === '0') {
             this.serviceData = { gsxNo: '', serviceType: 'Select Value', diagnosis: '' };
           } else {
             this.gsxNo = this.data.g_number;
@@ -1484,6 +1484,8 @@ export class TicketdetailComponent {
           this.getIsPud(resul.pud_ticket);
           this.getQuotation(this.ticketId);
           this.getGsxInvoice(this.ticketId);
+          this.analysisList = [];
+          this.ccAnalysisList = [];
           if (resul.analysis.status === true) {
             analysisTemp = resul.analysis.analysis;
             for (let i = 0; i < analysisTemp.length; i++) {
@@ -2527,7 +2529,7 @@ export class TicketdetailComponent {
   sendDcallQcApproval() {
     let result;
     // if(this.repairType === 'SVNR' || this.dCallCloseReason !== '') {
-    this.dataService.updateGSXStatusDcall(this.repairType, this.data.g_number, this.dCallCloseReason, this.dCallArrivalDate, this.dCallCompletionDate)
+    this.dataService.updateGSXStatusDcall(this.repairType, this.data.g_number, this.dCallCloseReason, this.dCallArrivalDate, this.dCallCompletionDate, this.ticketId)
       .subscribe(
         (data: any) => {
           result = data;
@@ -2737,7 +2739,7 @@ export class TicketdetailComponent {
       } else {
         if ((this.data.site_type_id === '1') && ((this.repairType === 'CIN') || (this.repairType === 'OSR') || (this.repairType === 'OSCR'))) {
           if (((this.selectedParts.length === 1) && ((this.selectedParts[0].number === '011-00211') || (this.selectedParts[0].number === '011-00224')))) {
-            this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'RFPU')
+            this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'RFPU', this.ticketId)
               .subscribe(
                 (data: any) => {
                   result = data;
@@ -2760,7 +2762,7 @@ export class TicketdetailComponent {
           if (((this.data.ticket_date < '2024-11-06') && (this.data.branch_code === 'SNB')) || ((this.data.branch_code === 'STC') && (this.data.ticket_date < '2024-10-25'))) {
             this.callQCApprove(this.qcStatus, reviveRepair);
           } else { //Correct SHIP TO
-            this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'RFPU')
+            this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'RFPU', this.ticketId)
               .subscribe(
                 (data: any) => {
                   result = data;
@@ -6627,6 +6629,11 @@ get showDeleteButton3() {
                   gsxErrorMsg = result.message;
                 }
 
+                const createdRepairId = result.repairId || this.gsxNo;
+                if (this.repairType === 'CIN') {
+                  this.postCinSerialNotes(createdRepairId);
+                }
+
                 this.buttonSpin = false;
                 this.clicked = false;
               } else {
@@ -6656,40 +6663,39 @@ get showDeleteButton3() {
             }, // success path
             error: (error: any) => this.error = error // error path
           });
-        if (this.repairType === 'CIN') {
-          const parts = this.diagnosisDt;
-          let serialSummary = "";
-
-          for (let i = 0; i < parts.length; i++) {
-            const serial = parts[i].kbb_serial_no;
-            const partNo = parts[i].part_number;
-
-            // Skip if serial empty/null
-            if (!serial || serial.trim() === "") {
-              continue;
-            }
-            serialSummary += `${partNo} : ${serial}\n`;
-          }
-          this.dataService.updateTechnicianNotes(
-            serialSummary,this.gsxNo, this.ticketId,this.repairType
-          ).subscribe({
-            next: (data: any) => {
-              if (data.status === true) {
-                this.getdata(this.ticketId);
-              } else {
-                alert(data.message);
-              }
-            },
-            error: (error: any) => this.error = error
-          });
-        }
-
-
       } else {
         alert('The AST diagnosis event results are beyond 30 mins. Please initiate the AST MRI again to create a repair.');
         this.buttonSpin = false;
       }
     }
+  }
+
+  /** CIN KBB serials go to GSX technician notes after create has a real G#. */
+  postCinSerialNotes(repairId: string) {
+    if (!repairId || repairId === '0') {
+      return;
+    }
+    const parts = this.diagnosisDt || [];
+    let serialSummary = '';
+    for (let i = 0; i < parts.length; i++) {
+      const serial = parts[i].kbb_serial_no;
+      const partNo = parts[i].part_number;
+      if (!serial || String(serial).trim() === '') {
+        continue;
+      }
+      serialSummary += `${partNo} : ${serial}\n`;
+    }
+    if (!serialSummary) {
+      return;
+    }
+    this.dataService.updateTechnicianNotes(
+      serialSummary, repairId, this.ticketId, this.repairType
+    ).subscribe({
+      next: () => {
+        this.getdata(this.ticketId);
+      },
+      error: (error: any) => this.error = error
+    });
   }
 
   confirmAck(ackValue: any) {
@@ -7185,7 +7191,7 @@ get showDeleteButton3() {
 
   closeReviveRepair() {
     let result;
-    this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'SPCM')
+    this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'SPCM', this.ticketId)
       .subscribe(
         (data: any) => {
           result = data;
@@ -7233,7 +7239,7 @@ get showDeleteButton3() {
         isReviveRepair = true;
         r = confirm('Are sure want to close the Revive Repair?. This will not reversible');
         if (r === true) {
-          this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'SPCM')
+          this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'SPCM', this.ticketId)
             .subscribe(
               (data: any) => {
                 result = data;
@@ -7399,42 +7405,63 @@ get showDeleteButton3() {
           next: (data: any) => {
             result = data;
             this.modalService.dismissAll();
-            // this.getdata(this.ticketId);
-            this.UpdateToteTracker(this.ticketId, this.kgbToteId);
-            if (this.data.status_id === '1600') {
-              this.buttonSpin = false;
-              const kgbdetails = 'KGB Part Detail: ' + this.kgbSelectedPart  + 'KGB Serial Number: ' + encodeURIComponent(this.kgbDeviceDetail);
+            this.UpdateToteTracker(this.ticketId, this.kgbToteId, false);
+
+            if (result.status === true) {
+              const kgbdetails =
+                'KGB Part Detail: ' + this.kgbSelectedPart +
+                ' KGB Serial Number: ' + this.kgbDeviceDetail;
+              const analysisText = [
+                this.kgbSelectedPart,
+                this.kgbDeviceDetail,
+                this.kgbAWBNo,
+                this.kgbToteId
+              ].filter((v) => v !== '' && v != null).join(' ');
+
               this.dataService.updateTechnicianNotes(kgbdetails, this.gsxNo, this.ticketId, this.repairType)
                 .subscribe({
-                  next: (data: any) => {
-                    if (data.status === true) {
-                      this.getdata(this.ticketId);
-                    } else {
-                      alert(data.message);
+                  next: (notesData: any) => {
+                    if (notesData.status !== true) {
+                      alert(notesData.message);
                     }
+                    this.dataService.uploadAnalysis(this.ticketId, analysisText)
+                      .subscribe({
+                        next: () => {
+                          this.getdata(this.ticketId);
+                          this.getAnalysis(this.ticketId);
+                          this.buttonSpin = false;
+                        },
+                        error: () => {
+                          this.getdata(this.ticketId);
+                          this.getAnalysis(this.ticketId);
+                          this.buttonSpin = false;
+                        }
+                      });
                   },
-                  error: (error: any) => this.error = error
+                  error: (error: any) => {
+                    this.error = error;
+                    this.getdata(this.ticketId);
+                    this.buttonSpin = false;
+                  }
                 });
             } else {
-              if (result.gsx_response.errors) {
-                alert(result.gsx_response.errors[0].message);
-                this.buttonSpin = false;
-              } else {
-                alert(result.message);
-                this.buttonSpin = false;
-              }
+              const gsxErr = result.gsx_response?.errors?.[0]?.message;
+              alert(gsxErr || result.message || 'GSX Repair update failed');
+              this.buttonSpin = false;
             }
-          }, // success path
-          error: (error: any) => this.error = error // error path
+          },
+          error: (error: any) => this.error = error
         });
     }
   }
-  UpdateToteTracker(ticketId: string, kgbToteId: string) {
+  UpdateToteTracker(ticketId: string, kgbToteId: string, refreshTicket = true) {
 
   this.dataService.updateToteTracker(ticketId, kgbToteId).subscribe({
     next: (data: any) => {
       this.modalService.dismissAll();
-      this.getdata(ticketId);
+      if (refreshTicket) {
+        this.getdata(ticketId);
+      }
     },
     error: () => {
       console.error('Tote tracker update failed');
@@ -7592,6 +7619,7 @@ get showDeleteButton3() {
             this.simpleAlert = { title: 'Technician Notes', msg: result.message };
             this.openModal(simple_alert);
             this.getdata(this.ticketId);
+            this.getAnalysis(this.ticketId);
           } else {
             alert(result.message);
           }
@@ -8757,7 +8785,7 @@ get showDeleteButton3() {
   getBlueDartData(trackNumber: any, blueDart_details: TemplateRef<any>) {
     this.buttonSpin = true;
     let result: any;
-    this.dataService.getBlueDartTracking(trackNumber).subscribe(
+    this.dataService.getBlueDartTracking(trackNumber, this.ticketId, this.data?.g_number).subscribe(
       (data: any) => {
         result = data;
         if (result.status === true) {
@@ -9788,7 +9816,7 @@ get showDeleteButton3() {
             this.modalService.dismissAll();
             this.buttonSpin = false;
           } else { //Correct SHIP TO
-            this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'RFPU')
+            this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'RFPU', this.ticketId)
               .subscribe(
                 (data: any) => {
                   result = data;
@@ -9821,7 +9849,7 @@ get showDeleteButton3() {
           }
         }
       } else {
-        this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'SPCM')
+        this.dataService.updateGSXStatus(this.repairType, this.data.g_number, 'SPCM', this.ticketId)
           .subscribe(
             (data: any) => {
               result = data;
@@ -10294,7 +10322,7 @@ get showDeleteButton3() {
   dCallRepairClose() {
     let result: any;
     if ((this.dcallCloseStatus !== 'Select the Status') && ((this.partReceivedDate !== '') && (this.partReceivedDate !== undefined)) && ((this.repairCompleteDate !== '') && (this.repairCompleteDate !== undefined))) {
-      this.dataService.updateGSXStatusDcall(this.repairType, this.data.g_number, this.dcallCloseStatus, this.partReceivedDate, this.repairCompleteDate)
+      this.dataService.updateGSXStatusDcall(this.repairType, this.data.g_number, this.dcallCloseStatus, this.partReceivedDate, this.repairCompleteDate, this.ticketId)
         .subscribe(
           (data: any) => {
             result = data;

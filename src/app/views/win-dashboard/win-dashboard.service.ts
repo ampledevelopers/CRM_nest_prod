@@ -35,13 +35,13 @@ export class WinDashboardService {
        }
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&offset=' + 0 + '&limit=' + 2000 + '&user_id=' +
                   localStorage.getItem('userId') + '&status_id=' + sId + '&ticket_type=' + tType;
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   getStatusCount(ticket_type: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_type=' + ticket_type;
-    return this.http.post(this.rootUrl + 'api/tickets/get_status_count', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/get_status_count', form, {headers : this.getHeaders()});
   }
 
   getOptions() {
@@ -71,7 +71,7 @@ export class WinDashboardService {
 
   getDetail(id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   getAssignees() {
@@ -100,13 +100,13 @@ export class WinDashboardService {
   makeCall(tId: string, phone: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&customer_number=' + phone;
-    return this.http.get(this.rootUrl + 'api/call/start?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'call/start?' + form, {headers : this.getHeaders()});
   }
 
   getPhoneCalls(tId: string, phone: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + tId + '&customer_number=' + phone;
-    return this.http.get(this.rootUrl + 'api/call/get_calls?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'call/get_calls?' + form, {headers : this.getHeaders()});
   }
 
   /******* Diagnosis *********/
@@ -120,14 +120,14 @@ export class WinDashboardService {
   changeStatus(reqData: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
                   reqData;
-    return this.http.post(this.rootUrl + 'api/tickets/change_status_manual', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticket_edit/change_status', form, {headers : this.getHeaders()});
   }
 
    /******* Details *********/
 
   updateProductName(t_id: string | null, product: string) {
-  const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&product_name=' + product;
-  return this.http.post(this.rootUrl + 'api/tickets/product_name_update', form, {headers : this.reqHeader});
+  const form = 'ticket_id=' + t_id + '&product_name=' + product;
+  return this.http.post(this.nestUrl + 'tickets_v2/product_name_update', form, {headers : this.getHeaders()});
   }
 
   updateWarrantyStatus(t_id: string | null, warranty: string) {
@@ -157,9 +157,9 @@ export class WinDashboardService {
 
   uploadDocuments(id: string, docs: any) {
     const documents = JSON.stringify(docs);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'ticket_id=' + id + '&user_id=' + localStorage.getItem('userId') +
                 '&documents=' + documents;
-    return this.http.post(this.rootUrl + 'api/tickets/uploads', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/uploads', form, {headers : this.getHeaders()});
   }
 
   deleteDocument(id: string, ticket_id: string) {
@@ -170,9 +170,9 @@ export class WinDashboardService {
   /******* Quotation *********/
 
   updateCoverageOption(tId: string, hdId: string, coverageOption: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId +
     '&hd_id=' + hdId + '&coverage_option=' + coverageOption;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/update_coverage_option', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'tickets_v2/update_coverage_option', form, {headers : this.getHeaders()});
   }
 
   /************ Onsite ************/
@@ -238,15 +238,13 @@ export class WinDashboardService {
 
   /************ window part detail ************/
   addPart(tId: string,partType:any, partNo: string, description:any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + 
-    '&ticket_id=' + tId + '&part_type=' + partType + '&part_no=' + partNo + '&description=' + description;
-    return this.http.post(this.rootUrl + 'api/ticketsv3/windows_part', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + tId + '&part_type=' + partType + '&part_no=' + partNo + '&description=' + description;
+    return this.http.post(this.nestUrl + 'tickets_v2/windows_part', form, {headers : this.getHeaders()});
   }
 
   getWinParts(tId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') +
-    '&ticket_id=' + tId;
-    return this.http.get(this.rootUrl + 'api/ticketsv3/win_parts?' + form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + tId;
+    return this.http.get(this.nestUrl + 'tickets_v2/win_parts?' + form, {headers : this.getHeaders()});
   }
   //  getNotifications(data: string) {
   //   return this.http.post(this.rootUrl + 'api/tickets/get_notifications', data, { headers: this.reqHeader });

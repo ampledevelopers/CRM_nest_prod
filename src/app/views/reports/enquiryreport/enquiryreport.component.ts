@@ -30,7 +30,8 @@ export class EnquiryreportComponent {
   dlBranchList: any = [];
   userRole = localStorage.getItem('userRole');
 
-  columns = ['id','branch_code','new_branch_code','g_number','serial_no','entrytime','product_description','customer_name','customer_phone_no','customer_email_id','customer_query','user_name','enquiry_flag','dl_branch_code','technician_comment','warranty_status','Purchased_in','t1_type','t1_invoice_id','token_accepted_date','ledge_no','Protect_plus_details','service_nonrepair_type','repair_type','purchased_in','customer_exist','customer_denied_process','emi_offered','trade_in_offered','internal_assets','department_name'];
+  // internal_asset (Yes/No) + department_name placed early so they show without scrolling far right
+  columns = ['id','branch_code','new_branch_code','g_number','serial_no','entrytime','product_description','customer_name','customer_phone_no','customer_email_id','customer_query','internal_asset','department_name','user_name','enquiry_flag','dl_branch_code','technician_comment','warranty_status','Purchased_in','t1_type','t1_invoice_id','token_accepted_date','ledge_no','Protect_plus_details','service_nonrepair_type','repair_type','purchased_in','customer_exist','customer_denied_process','emi_offered','trade_in_offered'];
 
   constructor(
     public dataService: EnquiryreportService,
@@ -230,6 +231,17 @@ export class EnquiryreportComponent {
             } else if (finalData[j].repair_type == 4) {
               finalData[j].repair_type = 'Yet to Determine';
             }
+
+            // Internal Asset (Yes/No) + Department Name — from create_enquiry / ticket_more_info
+            const ia = finalData[j].internal_asset ?? finalData[j].internal_assets;
+            if (ia === 1 || ia === '1' || ia === 'Yes' || ia === 'yes') {
+              finalData[j].internal_asset = 'Yes';
+            } else if (ia === 0 || ia === '0' || ia === 'No' || ia === 'no') {
+              finalData[j].internal_asset = 'No';
+            } else {
+              finalData[j].internal_asset = ia ? 'Yes' : 'No';
+            }
+            finalData[j].department_name = finalData[j].department_name ?? '';
           }
           finalData = finalData.filter(function (elem: any, index: any, self: any) {
             return index === self.findIndex((t: { id: any; }) => t.id === elem.id)

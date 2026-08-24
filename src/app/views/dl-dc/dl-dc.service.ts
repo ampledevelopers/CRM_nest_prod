@@ -8,7 +8,16 @@ import { Observable, map } from 'rxjs';
 })
 export class DlDcService {
   rootUrl = localStorage.getItem('rootUrl');
+  nestUrl = localStorage.getItem('nestUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'No-Auth': 'True',
+      'x-api-key': token || ''
+    });
+  }
 
   constructor(private http: HttpClient) {
   }
@@ -27,7 +36,7 @@ export class DlDcService {
 
   getPUDAgent() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/pud/get_pud_agents?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'reservation/get_pud_agents?' + form, {headers : this.getHeaders()});
   }
 
   createNrdc(hd: any, dt: any, cartonBoxes: any, toteBoxes: any): Observable<any> {

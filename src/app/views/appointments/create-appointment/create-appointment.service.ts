@@ -20,12 +20,12 @@ export class CreateAppointmentService {
   }
   getAvailableSlots(productCode: any, shipTo: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&product_code=' + productCode + '&ship_to=' + shipTo;
-    return this.http.post(this.rootUrl + 'api/gsxapi/fetch_available_slots', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/fetch_available_slots', form, {headers : this.getHeaders()});
   }
 
   createReservation(data: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId')  + data ;
-    return this.http.post(this.rootUrl + 'api/gsxapi/reservation_create', form, {headers : this.reqHeader})
+    const form = 'user_id=' + localStorage.getItem('userId')  + data ;
+    return this.http.post(this.nestUrl + 'gsxapi/reservation_create', form, {headers : this.getHeaders()})
   }
 
   getCustomer(phone: any) {
@@ -40,16 +40,16 @@ export class CreateAppointmentService {
 
   createCustomer(firstName: any, lastName : any, phone: any, email: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&first_name=' + firstName + '&last_name=' + lastName + '&phone=' + phone  + '&email=' + email ;
-    return this.http.post(this.rootUrl + 'api/reservation/create_customer', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'reservation/create_customer', form, {headers : this.getHeaders()});
   }
 
   reservationUpdate( shipTo: any, date: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&reservation_id=' + localStorage.getItem('reservationId') + '&cancel_reason=' + 'CUSTOMER_CANCELLED' + '&modified_status=' + 'RESCHEDULED' + '&user_id=' + localStorage.getItem('userId') + '&ship_to_code=' + shipTo + '&new_reservation_date=' + date + '&ticket_id=' + localStorage.getItem('ticketId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/reservation_update', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'gsxapi/reservation_update', form, {headers : this.getHeaders()});
   }
 
   createDlvryReservation(data: any, ticketId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId')  + data + '&ticket_id=' + ticketId ;
-    return this.http.post(this.rootUrl + 'api/gsxapi/reservation_create', form, {headers : this.reqHeader})
+    const form = 'user_id=' + localStorage.getItem('userId')  + data + '&ticket_id=' + ticketId ;
+    return this.http.post(this.nestUrl + 'gsxapi/reservation_create', form, {headers : this.getHeaders()})
   }
 }

@@ -23,12 +23,12 @@ export class CustomerCareService {
   getWarrantyDetails(SerialNo: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&serial_no=' + SerialNo ;
-        return this.http.post(this.rootUrl + 'api/gsxapi/get_product_details', form, {headers : this.reqHeader});
+        return this.http.post(this.nestUrl + 'gsxapi/get_product_details', form, {headers : this.getHeaders()});
   }
 
   getTicketDetails(ticketId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + ticketId + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/tickets/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'common/get?' + form, {headers : this.getHeaders()});
   }
 
   getCustomerInfo(site_id: any, c_id: any, phone_no: any) {

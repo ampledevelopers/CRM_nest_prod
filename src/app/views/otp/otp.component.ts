@@ -28,6 +28,8 @@ export class OtpComponent {
     gsxAuthError :any= '';
     gsxApiKey: any= '';
     loading = false;
+    defaultPage: any = '';
+    userGroupId: any = '';
     datePipe = new DatePipe('en-US');
     constructor(private userService: UserService, private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
       this.route
@@ -41,9 +43,21 @@ export class OtpComponent {
 
     OnSubmit(otp: any) {
       this.loading = true;
-        this.userService.userOtpAuthentication(this.mobile, this.otpInput).subscribe({ next: (otpData: any) => {
+      this.gsxAuthError = '';
+
+      // OTP is single-use on Nest. After it succeeds and GSX is expired, Submit
+      // must only refresh the GSX token — do not call otplogin again.
+      if (this.gsxApiInput) {
+        this.updateGsxAndEnter(this.gsxApiKey || '');
+        return;
+      }
+
+      this.userService.userOtpAuthentication(this.mobile, this.otpInput).subscribe({ next: (otpData: any) => {
             if (otpData.user.key) {
-              localStorage.setItem('isGsxUser', otpData.user.gsx_user);
+              if (otpData.user.gsx_user !== undefined && otpData.user.gsx_user !== null) {
+                localStorage.setItem('isGsxUser', otpData.user.gsx_user);
+                this.isGsxUser = String(otpData.user.gsx_user);
+              }
               localStorage.setItem('userToken', otpData.user.key);
               localStorage.setItem('userId', otpData.user.user_id);
               localStorage.setItem('userRole', otpData.user.group_id);
@@ -56,41 +70,12 @@ export class OtpComponent {
               localStorage.setItem('branchCode', otpData.user.branch_code);
               localStorage.setItem('l2Approval', otpData.user.level2_approver);
               localStorage.setItem('drop_location_flag', otpData.user.drop_location_flag);
+              localStorage.setItem('defaultPage', otpData.user.default_page);
+              this.defaultPage = otpData.user.default_page;
+              this.userGroupId = String(otpData.user.group_id);
               // localStorage.setItem('shipTo', otpData.user.drop_location_flag);
-              let authKey: any;
               if (this.isGsxUser === 'true') {
-                if (this.gsxApiKey === '') {
-                  authKey = '';
-                } else {
-                  authKey = this.gsxApiKey;
-                }
-                this.userService.authenticateGSX(authKey)
-                .subscribe({
-                  next:(data: any) => {
-                  this.gsxAuth = data.status;
-                  if (this.gsxAuth === true) {
-                    if ((otpData.user.group_id === '2') || (otpData.user.group_id === '18') || (otpData.user.group_id === '10') || (otpData.user.group_id === '6') || (otpData.user.group_id === '8') || (otpData.user.group_id === '20')) {
-                      this.mapCrmGSX();
-                      this.mapBlueDartTrack();
-                      this.mapPartConstraint();
-                    }
-                    if (otpData.user.group_id === '18') {
-                      this.dCallFetch();
-                      this.invoiceSummaryFetch();
-                    }
-                    this.loading = false;
-                    this.router.navigate([otpData.user.default_page]);
-                  } else {
-                    this.loading = false;
-                    this.gsxApiInput = true;
-                    if (this.gsxApiKey !== '') {
-                      this.gsxAuthError = 'Enter Valid GSX Authentication Token';
-                    }
-                  }
-                },
-                error:(error: HttpErrorResponse) => {
-                    console.log(HttpErrorResponse);
-                }});
+                this.updateGsxAndEnter(this.gsxApiKey || '');
               } else {
                 this.loading = false;
                 this.router.navigate([otpData.user.default_page]);
@@ -105,6 +90,40 @@ export class OtpComponent {
           this.loading = false;
             alert('Invalid OTP');
     }});
+    }
+
+    updateGsxAndEnter(authKey: string) {
+      this.userService.authenticateGSX(authKey)
+      .subscribe({
+        next:(data: any) => {
+        this.gsxAuth = data.status;
+        if (this.gsxAuth === true) {
+          const groupId = this.userGroupId || localStorage.getItem('userRole');
+          if ((groupId === '2') || (groupId === '18') || (groupId === '10') || (groupId === '6') || (groupId === '8') || (groupId === '20')) {
+            this.mapCrmGSX();
+            this.mapBlueDartTrack();
+            this.mapPartConstraint();
+          }
+          if (groupId === '18') {
+            this.dCallFetch();
+            this.invoiceSummaryFetch();
+          }
+          this.loading = false;
+          this.router.navigate([this.defaultPage || localStorage.getItem('defaultPage')]);
+        } else {
+          this.loading = false;
+          this.gsxApiInput = true;
+          if (this.gsxApiKey !== '') {
+            this.gsxAuthError = 'Enter Valid GSX Authentication Token';
+          }
+        }
+      },
+      error:(error: HttpErrorResponse) => {
+          this.loading = false;
+          this.gsxApiInput = true;
+          this.gsxAuthError = 'Enter Valid GSX Authentication Token';
+          console.log(error);
+      }});
     }
 
     dCallFetch() {

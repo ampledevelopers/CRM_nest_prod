@@ -34,7 +34,7 @@ export class TekneTicketdetailService {
     }
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&offset=' + 0 + '&limit=' + 2000 + '&user_id=' +
                   localStorage.getItem('userId') + '&status_id=' + sId + '&ticket_type=' + tType;
-    return this.http.get(this.rootUrl + 'api/accy/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accy/get?' + form, {headers : this.getHeaders()});
 
   }
 
@@ -46,13 +46,13 @@ export class TekneTicketdetailService {
 
   getOptions() {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/accy/get_options?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accy/get_options?' + form, {headers : this.getHeaders()});
   }
 
   getTicketDetail(t_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + t_id;
-    return this.http.get(this.rootUrl + 'api/accytickets/get_details?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accytickets/get_details?' + form, {headers : this.getHeaders()});
   }
 
   checkTicketCount(ticket_type: string) {
@@ -68,14 +68,13 @@ export class TekneTicketdetailService {
   }
 
   issueToken(inputdata: string) {
-    const reqHeader1 = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded'});
     const form = 'user_id=' + localStorage.getItem('userId') + inputdata;
-    return this.http.post(this.rootUrl + 'customer/token/generate_token', form, {headers : reqHeader1});
+    return this.http.post(this.nestUrl + 'token/generate_token', form, {headers : this.getHeaders()});
   }
 
   getDetail(id: string | null) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/accy/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accy/get?' + form, {headers : this.getHeaders()});
   }
 
   getAssignees(userId: any) {
@@ -92,7 +91,7 @@ export class TekneTicketdetailService {
   navigateTo(id: string, branch: string, navTo: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id + '&branch_code=' + branch +
                   '&navigate_to=' + navTo + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/accy/get?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accy/get?' + form, {headers : this.getHeaders()});
   }
 
 
@@ -113,22 +112,22 @@ export class TekneTicketdetailService {
     });
     const userToken: any= localStorage.getItem('userToken');
     const diagHeader: any = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True',
-    'X-API-KEY': userToken });
-    return this.http.post(this.rootUrl + 'api/accytickets/service_notes_save', JSON.stringify(diagnosisData), {headers : diagHeader});
+    'x-api-key': userToken });
+    return this.http.post(this.nestUrl + 'accytickets/service_notes_save', JSON.stringify(diagnosisData), {headers : diagHeader});
   }
 
   getConsignment(ticket_id: any, branch_code: any, part_no: any, consignment_type: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + ticket_id + '&user_id=' + localStorage.getItem('userId') + '&branch_code=' + branch_code + '&part_no=' + part_no + '&consignment_type=' + consignment_type;
-    return this.http.get(this.rootUrl + 'api/accytickets/get_consignment?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'accytickets/get_consignment?' + form, {headers : this.getHeaders()});
   }
 
   blockConsignment(ticket_id: any, asn_no: any, part_no: any, consignmentType: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + ticket_id + '&user_id=' + localStorage.getItem('userId') + '&consignment_asn_no=' + asn_no + '&consignment_type=' + consignmentType + '&part_no=' + part_no;
-    return this.http.post(this.rootUrl + 'api/accytickets/block_consignment', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/block_consignment', form, {headers : this.getHeaders()});
   }
    unblockConsignment(ticket_id: any, asn_no: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + ticket_id + '&user_id=' + localStorage.getItem('userId') + '&consignment_asn_no=' + asn_no ;
-    return this.http.post(this.rootUrl + 'api/accytickets/unblock_consignment', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/unblock_consignment', form, {headers : this.getHeaders()});
   }
 
   updatePartConsignment(t_id: string, asn_no: string, asn_type: any, flag: any, part_no: any) {
@@ -138,26 +137,26 @@ export class TekneTicketdetailService {
 
   deletePart(data: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl + 'api/accytickets/delete_part', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/delete_part', form, {headers : this.getHeaders()});
   }
 
   checkPhysicalLocation(t_id: string, location: string, branch_code: string, family: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&branch_code=' + branch_code + '&physical_location=' + location
                 + '&ticket_id=' + t_id + '&product_family=' + family;
-    return this.http.post(this.rootUrl + 'api/accytickets/check_physical_location', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/check_physical_location', form, {headers : this.getHeaders()});
   }
 
   /******* Timeline *********/
 
   timelineData(id: string | null) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id /* + '&user_id=' + localStorage.getItem('userId') */;
-    return this.http.post(this.rootUrl + 'api/accytickets/timeline', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/timeline', form, {headers : this.getHeaders()});
   }
 
   getParts(serial_no: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
     '&serial_no=' + serial_no;
-    return this.http.post(this.rootUrl + 'api/accytickets/parts_summary', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/parts_summary', form, {headers : this.getHeaders()});
   }
 
   uploadPics(t_id: string, serial_no: string, docSize: string, doc: any, uploadType: string) {
@@ -175,7 +174,7 @@ export class TekneTicketdetailService {
 
   getComponent(ticket_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticket_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/componentissue', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/componentissue', form, {headers : this.getHeaders()});
   }
 
   /******* Service Report *********/
@@ -183,7 +182,7 @@ export class TekneTicketdetailService {
   updateSvcRemarks(remarks: string, tId: string, hdId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&svc_remarks=' + encodeURIComponent(remarks) +
     '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId + '&hd_id=' + hdId;
-    return this.http.post(this.rootUrl + 'api/accytickets/update_svc_remarks', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/update_svc_remarks', form, {headers : this.getHeaders()});
   }
 
   generateSVC(t_id: string, gsx: string, data: any) {
@@ -194,8 +193,8 @@ export class TekneTicketdetailService {
   }
 
   generateSVCAuto(t_id: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/ticketsv3/generate_svc_auto', form, {headers : this.reqHeader});
+    const form = 'ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'tickets_v2/generate_svc_auto', form, {headers : this.getHeaders()});
   }
 
   getSVC(t_id: string | null) {
@@ -211,7 +210,7 @@ export class TekneTicketdetailService {
 
   showSVC(t_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/accytickets/svc_print', form, {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    return this.http.post(this.nestUrl + 'accytickets/svc_print', form, {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
       return new Blob([res], { type: 'application/pdf', });
     }));
   }
@@ -226,7 +225,7 @@ export class TekneTicketdetailService {
 
   getAnalysis(t_id: string | null) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/get_analysis', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/get_analysis', form, {headers : this.getHeaders()});
   }
 
   viewRaf(t_id: string) {
@@ -238,67 +237,67 @@ export class TekneTicketdetailService {
 
   viewEnquiry(t_id: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + t_id;
-    return this.http.get(this.rootUrl + 'api/accy/view_enquiry?'+ form, {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    return this.http.get(this.nestUrl + 'accy/view_enquiry?'+ form, {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
       return new Blob([res], { type: 'application/pdf', });
     }));
   }
 
   sendRAF(id: string | null) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + id ;
-    return this.http.post(this.rootUrl + 'api/Accytickets/send_raf_mail', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/send_raf_mail', form, {headers : this.getHeaders()});
   }
 
   /************ Notifications ************/
 
   getNotification(ticketId: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.get(this.rootUrl + 'api/ticketsv3/notifications?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
+    return this.http.get(this.nestUrl + 'tickets_v2/notifications?' + form, {headers : this.getHeaders()});
   }
 
   getMsgNotification(ticketId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId;
-    return this.http.get(this.rootUrl + 'api/message/get_notifications?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'tickets_v2/get_notifications?' + form, {headers : this.getHeaders()});
   }
 
   getExceptionApprovers(ticketId: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId ;
-    return this.http.post(this.rootUrl + 'api/accytickets/get_exception_approvers', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/get_exception_approvers', form, { headers: this.getHeaders() });
   }
 
   getExceptionOTP(ticketId: any, exceptionUser: any, branchCode: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&exception_user=' +  exceptionUser + '&branch_code=' + 'IUB';
-    return this.http.post(this.rootUrl + 'api/accytickets/send_exception_otp', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/send_exception_otp', form, { headers: this.getHeaders() });
   }
 
   updateException(ticketId: any, exceptionUser: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&exception_user=' +  exceptionUser;
-    return this.http.post(this.rootUrl + 'api/accytickets/update_exception', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/update_exception', form, { headers: this.getHeaders() });
   }
 
   validateL1POP(ticketId: any, invoice_id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&l1_invoice_id=' +  invoice_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/update_l1_invoice_no', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/update_l1_invoice_no', form, { headers: this.getHeaders() });
   }
 
   approveL1(ticketId: any,  hd_id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/approve_l1', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/approve_l1', form, { headers: this.getHeaders() });
   }
 
   rejectL1(ticketId: any,  hd_id: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/accytickets/reject_l1', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/reject_l1', form, { headers: this.getHeaders() });
   }
 
   sendForQc(ticketId: any, selectedOption: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&selected_option=' + selectedOption;
-    return this.http.post(this.rootUrl + 'api/accytickets/send_for_qc', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'accytickets/send_for_qc', form, { headers: this.getHeaders() });
   }
 
   approveQc(ticketId: string, hdId: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId')
     + '&ticket_id=' + ticketId + '&hd_id=' + hdId;
-    return this.http.post(this.rootUrl + 'api/accytickets/qc_approve_decline', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'accytickets/qc_approve_decline', form, {headers : this.getHeaders()});
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -25,7 +25,7 @@ export class CreatePudTicketService {
 
   createPUD(data: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + data;
-    return this.http.post(this.rootUrl + 'api/pud/create_pud_ticket' , form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'reservation/create_pud_ticket' , form, {headers : this.getHeaders()});
   }
   getCustomer(phone: any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
@@ -34,7 +34,7 @@ export class CreatePudTicketService {
 
   createCustomer(firstName: any, lastName : any, phone: any, email: any, address1: any, address2: any, city: any, state: any, pin: any) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&first_name=' + firstName + '&last_name=' + lastName + '&phone=' + phone  + '&email=' + email  + '&address1=' + address1 + '&address2=' + address2 + '&city=' + city + '&state=' + state + '&pin=' + pin;
-    return this.http.post(this.rootUrl  + 'api/reservation/create_customer', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'reservation/create_customer', form, {headers : this.getHeaders()});
   }
 
   generateQuote(data: any){
@@ -43,7 +43,7 @@ export class CreatePudTicketService {
   }
 
   sendQuotePayment(ticketId: any, quoteId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId + '&quotation_pud=' + 1;
-    return this.http.post(this.rootUrl  + 'api/ticketsv3/send_quotation_and_paynow_link', form, {headers : this.reqHeader});
+    const form = '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId + '&quotation_pud=' + 1;
+    return this.http.post(this.nestUrl + 'tickets_v2/send_quotation_and_paynow_link', form, {headers : this.getHeaders()});
   }
 }
