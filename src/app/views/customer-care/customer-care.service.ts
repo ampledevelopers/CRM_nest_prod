@@ -57,33 +57,30 @@ export class CustomerCareService {
 
 
   getAppitems(family: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&familyId=' + family ;
-        return this.http.post(this.rootUrl + 'api/customercare/get_app_products', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&familyId=' + family;
+        return this.http.post(this.nestUrl + 'customercare/get_app_products', form, {headers : this.getHeaders()});
   }
 
   getAppitemDetails(family: any, itemId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&familyId=' + family + '&itemId=' + itemId ;
-        return this.http.post(this.rootUrl + 'api/customercare/get_app_item_details', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&familyId=' + family + '&itemId=' + itemId;
+        return this.http.post(this.nestUrl + 'customercare/get_app_item_details', form, {headers : this.getHeaders()});
    }
 
    saveAppLink(family: any, itemId: any, firstName: any, mobileNo: any, price: any, emailId: any, deviceSlno: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&familyId=' + family + '&itemId=' + itemId + '&firstName=' + firstName + '&mobileNo=' + mobileNo + '&price=' + price +
-    '&emailId=' + emailId + '&deviceSlno=' + deviceSlno ;
-        return this.http.post(this.rootUrl + 'api/customercare/save_app_link', form, {headers : this.reqHeader});
+    '&emailId=' + emailId + '&deviceSlno=' + deviceSlno;
+        return this.http.post(this.nestUrl + 'customercare/save_app_link', form, {headers : this.getHeaders()});
    }
 
    sendPaymentLink(orderId: any, status: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
-    '&orderId=' + orderId + '&status=' + status ;
-        return this.http.post(this.rootUrl + 'api/customercare/approve_payment_link', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&orderId=' + orderId + '&status=' + status;
+        return this.http.post(this.nestUrl + 'customercare/approve_payment_link', form, {headers : this.getHeaders()});
    }
 
    getSavedLinks() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') ;
-        return this.http.post(this.rootUrl + 'api/customercare/get_saved_links', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+        return this.http.post(this.nestUrl + 'customercare/get_saved_links', form, {headers : this.getHeaders()});
    }
 
 

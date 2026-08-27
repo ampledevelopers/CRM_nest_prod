@@ -74,7 +74,7 @@ export class AppointmentsService {
   }
 
   customerAttened(reservationId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&reservation_id=' + reservationId + '&customer_status=' + 'concierge_attended';
+    const form = '&user_id=' + localStorage.getItem('userId') + '&reservation_id=' + reservationId + '&customer_status=' + 'concierge_attended';
     return this.http.post(this.nestUrl + 'reservation/update_customer_status', form, {headers : this.getHeaders()});
   }
 
@@ -84,7 +84,7 @@ export class AppointmentsService {
   }
 
   updateStatusToNoShowCRM(reservationId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&reservation_id=' + reservationId + '&customer_status=' + 'COMPLETED';
+    const form = '&user_id=' + localStorage.getItem('userId') + '&reservation_id=' + reservationId + '&customer_status=' + 'COMPLETED';
     return this.http.post(this.nestUrl + 'reservation/update_customer_status', form, {headers : this.getHeaders()});
   }
 
@@ -94,17 +94,17 @@ export class AppointmentsService {
   }
 
    updateCustPhone(reservationId: any, phone : any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&reservation_id=' + reservationId + '&customer_phone_number=' + phone;
+    const form ='&user_id=' + localStorage.getItem('userId') + '&reservation_id=' + reservationId + '&customer_phone_number=' + phone;
     return this.http.post(this.nestUrl + 'reservation/update_customer_mobile', form, {headers : this.getHeaders()});
   }
 
   getDeliveryTicketDetails(ticketId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&ticket_id=' + ticketId + '&user_id=' + localStorage.getItem('userId');
+    const form = '&ticket_id=' + ticketId + '&user_id=' + localStorage.getItem('userId');
     return this.http.get( this.nestUrl + 'reservation/delivery_reservation?'+ form, {headers : this.getHeaders()});
   }
 
   getDeliveryReservationDetails(reservationId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&reservation_id=' + reservationId + '&user_id=' + localStorage.getItem('userId');
+    const form = '&reservation_id=' + reservationId + '&user_id=' + localStorage.getItem('userId');
     return this.http.get( this.nestUrl + 'reservation/delivery_reservation?'+ form, {headers : this.getHeaders()});
   }
 

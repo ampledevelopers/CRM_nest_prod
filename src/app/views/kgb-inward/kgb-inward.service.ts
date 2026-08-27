@@ -56,9 +56,9 @@ export class KgbInwardService {
   }
 
   updateGsxRepair(tId: any, repairId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
       '&ticket_id=' + tId + '&repair_id=' + repairId;
-    return this.http.post(this.rootUrl + 'api/tickets/update_gsx_repair', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'gsxapi/update_gsx_repair', form, { headers: this.getHeaders() });
   }
 
 }

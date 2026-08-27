@@ -8,6 +8,7 @@ import { map } from 'rxjs';
 })
 export class AddEditCompanyService {
   rootUrl = localStorage.getItem('rootUrl');
+  nestUrl = localStorage.getItem('nestUrl');
   reqHeader = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'True'});
   nreportUrl = localStorage.getItem('nreportUrl');
   private getHeaders(): HttpHeaders {
@@ -27,9 +28,9 @@ export class AddEditCompanyService {
   }
 
   createOrg(name: any, add1: any, add2: any, city: any, state: any, pin: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&company_name=' + name + '&address1=' + add1 + '&address2=' + add2 + '&city=' + city + '&state=' + state + '&pin=' + pin;
-    return this.http.post(this.rootUrl + 'api/common/create_company', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'ticketsv1/create_company', form, {headers : this.getHeaders()});
   }
 
 }

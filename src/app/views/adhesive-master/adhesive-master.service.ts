@@ -53,8 +53,8 @@ export class AdhesiveMasterService {
   } */
 
   addAdhesive(data: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data;
-    return this.http.post(this.rootUrl + 'api/adhesives/adhesives_add', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + data;
+    return this.http.post(this.nestUrl + 'consignment/add_adhesives', form, {headers : this.getHeaders()});
   }
 }
 

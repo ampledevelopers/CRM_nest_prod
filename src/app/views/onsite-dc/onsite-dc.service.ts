@@ -130,9 +130,9 @@ export class OnsiteDcService {
     } else {
       status = 'Assigned - Return';
     }
-    const form = 'X_API_KEY=' + 'Ti@vlp123' + '&user_id=' + localStorage.getItem('userId') + '&status=' + status +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&status=' + status +
     '&pud_type=' + 'DL' + '&pickup_status=' + '' + '&drop_status=' + '';
-    return this.http.get(this.rootUrl + 'api/pud/get_pud_tickets?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'pud/get_pud_tickets?' + form, {headers : this.getHeaders()});
   }
 
   getBranches() {

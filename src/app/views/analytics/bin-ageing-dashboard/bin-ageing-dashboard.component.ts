@@ -88,10 +88,10 @@ export class BinAgeingDashboardComponent {
             this.branch = result.data.branch;
             this.allBranches = result.data.branches || [];
             this.allBranches = this.allBranches.filter((branch: any) => {
-              if (branch.branch_type === 'D') {
+              if (String(branch.branch_type || '') === 'D') {
                 return false;
               }
-              if (branch.drop_location_flag != null && branch.drop_location_flag !== '0') {
+              if (String(branch.drop_location_flag ?? '0') !== '0') {
                 return false;
               }
               return true;

@@ -63,9 +63,9 @@ export class DashboardService {
   }
 
   checkTicketCount(ticket_type: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_type=' + ticket_type;
-    return this.http.get(this.rootUrl + 'api/tickets/get_count?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'ticketsv1/get_count?' + form, {headers : this.getHeaders()});
   }
 
   /* checkInvoiceId(rafId: string, invoice_id: string, rafDate: string) {
@@ -284,7 +284,7 @@ export class DashboardService {
   }
 
   diagnosisStatusChange(t_id: string, repairStage: string, hd_id: string, remarks: string, popReview: string, opfNo: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
+    const form = '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + t_id +
     '&repair_stage=' + repairStage + '&hd_id=' + hd_id + '&l2_remarks=' + remarks + '&pop_review_hold=' + popReview + '&opf_ref_no=' + opfNo;
     return this.http.post(this.nestUrl + 'tickets_v2/diagnosis_stage_update_v1', form, {headers : this.getHeaders()});
   }
@@ -372,7 +372,7 @@ export class DashboardService {
     });
     const userToken: any=localStorage.getItem('userToken');
     const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True', 'X-API-KEY':userToken });
-    return this.http.post(this.nestUrl + 'tickets_v2/additional_part_add', JSON.stringify(diagnosisData), {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'tickets_v2/additional_part_add', JSON.stringify(diagnosisData), {headers : diagHeader});
   }
 
   appendRCParts(tid: any, gsxId: any, hdId: any, data: any) {
@@ -386,7 +386,7 @@ export class DashboardService {
     const userToken: any= localStorage.getItem('userToken');
     const diagHeader: any = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True',
     'X-API-KEY': userToken });
-    return this.http.post(this.nestUrl + 'tickets_v2/rc_requote_part_add', JSON.stringify(diagnosisData), {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'tickets_v2/rc_requote_part_add', JSON.stringify(diagnosisData), {headers : diagHeader});
   }
 
   additionalPartsForSVC(tid: any, gsxId: any, hdId: any, data: any) {
@@ -399,7 +399,7 @@ export class DashboardService {
     });
     const userToken: any=localStorage.getItem('userToken');
     const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True', 'X-API-KEY':userToken });
-    return this.http.post(this.nestUrl + 'tickets_v2/part_add', JSON.stringify(diagnosisData), {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'tickets_v2/part_add', JSON.stringify(diagnosisData), {headers : diagHeader});
   }
 
   deleteAdditionalPart(tId: string, hd_id: string, partNo: string) {
@@ -1110,7 +1110,7 @@ export class DashboardService {
 
   sendQuotePayment(ticketId: any, quoteId: any) {
     const form = '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId + '&quotation_pud=' + 1;
-    return this.http.post(this.nestUrl + 'tickets_v2/send_quotation_and_paynow_link', form, { headers: this.getHeaders() });
+    return this.http.post(this.nestUrl + 'paynimo/send_quotation_and_paynow_link', form, { headers: this.getHeaders() });
   }
 
   updateDropAddress(pudTicketId: any, dropAddress: any, dropRequestFlag: any, drop_exception_case: any = '') {

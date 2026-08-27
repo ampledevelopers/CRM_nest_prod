@@ -30,13 +30,13 @@ export class StockTransferInService {
   }
 
   consignmentAck(dc_no:any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId') + '&dc_no=' + dc_no;
-    return this.http.post(this.rootUrl + 'api/stock/consignment_acknowledge', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&dc_no=' + dc_no;
+    return this.http.post(this.nestUrl + 'stock/consignment_acknowledge', form, {headers : this.getHeaders()});
   }
 
   adhesivesAck(dc_no:any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken')  + '&user_id=' + localStorage.getItem('userId') + '&dc_no=' + dc_no;
-    return this.http.post(this.rootUrl + 'api/adhesives/adhesives_acknowledge', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&dc_no=' + dc_no;
+    return this.http.post(this.nestUrl + 'stock/adhesives_acknowledge', form, {headers : this.getHeaders()});
   }
 
 }

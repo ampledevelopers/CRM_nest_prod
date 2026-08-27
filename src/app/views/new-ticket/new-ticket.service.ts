@@ -35,8 +35,8 @@ export class NewTicketService {
   }
 
   getBranch() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/get_user_branch', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'ticketsv1/get_user_branch', form, {headers : this.getHeaders()});
   }
 
   getCompany() {
@@ -55,13 +55,13 @@ export class NewTicketService {
   }
 
   getCallTypes() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/tickets/get_onsite_repair_types', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'ticketsv1/get_onsite_repair_types', form, {headers : this.getHeaders()});
   }
 
   getLogTypes() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken');
-    return this.http.post(this.rootUrl + 'api/tickets/get_call_log_types', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'ticketsv1/get_call_log_types', form, {headers : this.getHeaders()});
   }
 
   getGsxData(sNo: any) {

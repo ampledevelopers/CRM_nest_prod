@@ -21,9 +21,9 @@ export class PudServicesService {
   constructor(private http: HttpClient) {}
 
      getPUDtickets() {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&status=' + '' +
+      const form = 'user_id=' + localStorage.getItem('userId') + '&status=' + '' +
       '&pud_type=' + '';
-      return this.http.get(this.rootUrl + 'api/pud/get_pud_tickets?' + form, {headers : this.reqHeader});
+      return this.http.get(this.nestUrl + 'pud/get_pud_tickets?' + form, {headers : this.getHeaders()});
     }
 
     getBranch(branchCode: string) {
@@ -39,21 +39,21 @@ export class PudServicesService {
     }
 
     getAmpleAcknowledge(serial_no: string, ticketId: string,remarks:any,visibleDamage:any, diagnosisCharges:any, pudType:any, pudTicketId:any) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
       '&serial_no=' + serial_no + '&ticket_id=' +  ticketId + '&remarks=' + remarks + '&visible_damage=' + visibleDamage + '&diagnosis_charges_accepted=' + diagnosisCharges + '&pud_type=' + pudType + '&pud_ticket_id=' + pudTicketId;
-      return this.http.post(this.rootUrl + 'api/pud/acknowledge_pickup_device', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/acknowledge_pickup_device', form, {headers : this.getHeaders()});
     }
 
     getAcknowledge(serial_no: string, ticketId: string, pudTicketId:string,remarks:any, branch_code:any,pudType: any,pack_received_with_damage:any,awbNo:any) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
       '&serial_no=' + serial_no + '&ticket_id=' +  ticketId + '&pud_ticket_id=' + pudTicketId + '&remarks=' + remarks + '&branch_code=' + branch_code + '&pud_type=' + pudType + '&pack_received_with_damage=' + pack_received_with_damage + '&pickup_awb=' + awbNo;
-      return this.http.post(this.rootUrl + 'api/pud/acknowledge_pickup_device', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/acknowledge_pickup_device', form, {headers : this.getHeaders()});
     }
 
     acknowledgeAtDrop(serial_no: string, ticketId: string, pudTicketId:string,remarks:any, branch_code:any,pudType: any,pack_received_with_damage:any,awbNo:any) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
       '&serial_no=' + serial_no + '&ticket_id=' +  ticketId + '&pud_ticket_id=' + pudTicketId + '&remarks=' + remarks + '&branch_code=' + branch_code + '&pud_type=' + pudType + '&pack_received_with_damage=' + pack_received_with_damage + '&drop_awb=' + awbNo;
-      return this.http.post(this.rootUrl + 'api/pud/acknowledge_drop_device_test', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/acknowledge_drop_device_test', form, {headers : this.getHeaders()});
     }
 
     getDetail(id: string | null) {
@@ -62,15 +62,15 @@ export class PudServicesService {
     }
 
     getOTP(serial_no: string, ticketId: string, pudTicketId: string, pickupOTP: any, pudUserId: any,pudType: any) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
       '&serial_no=' + serial_no + '&ticket_id=' + ticketId + '&pud_ticket_id=' + pudTicketId + '&pickup_otp=' + pickupOTP + '&pud_user_id=' + pudUserId + '&pud_type=' + pudType;
-      return this.http.post(this.rootUrl + 'api/pud/validate_otp_pickup', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/validate_otp_pickup', form, {headers : this.getHeaders()});
     }
 
     getDropOTP(serial_no: string, pudTicketId: string, dropOTP: any, ticketId:any,pudType: any ) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
       '&serial_no=' + serial_no + '&pud_ticket_id=' + pudTicketId + '&drop_otp=' + dropOTP + '&ticket_id=' + ticketId + '&pud_type=' + pudType;
-      return this.http.post(this.rootUrl + 'api/pud/validate_otp_drop', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/validate_otp_drop', form, {headers : this.getHeaders()});
     }
 
     getQuotation(id: string | null) {
@@ -91,28 +91,28 @@ export class PudServicesService {
 
     registerAmplePickup(id: string, pudType: any, dropBranchCode: any, pickupAssigned: any, firstCustomer_name:any,lastCustomer_name:any, customer_primary_phone:any
       , customer_secondry_phone:any, customer_email:any, address_line1:any, address_line2:any, city:any, state:any, pin:any, landmark:any, serial_no:any, pickup_scheduled_time:any, customer_query:any, exceptionCase:any) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
        '&pud_ticket_id=' + id + '&pud_type=' + pudType + '&branch_code=' + dropBranchCode + '&pickup_assigned_to=' + pickupAssigned + '&assigned_user_id=' + pickupAssigned +
        '&customer_firstname=' + firstCustomer_name + '&customer_lastname=' +  lastCustomer_name + '&customer_primary_phone=' + customer_primary_phone + '&customer_secondry_phone=' + customer_secondry_phone + '&customer_email=' + customer_email
         + '&address_line1=' + address_line1 + '&address_line2=' + address_line2 + '&city=' + city + '&state=' + state + '&pin=' + pin + '&landmark=' + landmark + '&serial_no=' + serial_no + '&pickup_scheduled_time=' + pickup_scheduled_time
          + '&customer_query=' + customer_query + '&technician_comment=' + '' + '&technician_note=' + '' + '&dl_branch_code=' + '' + '&condition_of_device=' + '' + '&exception_case=' + exceptionCase;
-      return this.http.post(this.rootUrl + 'api/pud/register_pickup', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/register_pickup', form, {headers : this.getHeaders()});
     }
 
     registerPickup(id: string, pudType: any, branch_code: any, dropBranchCode: any, pickupAssigned: any, customer_name:any, customer_primary_phone:any
       , customer_secondry_phone:any, customer_email:any, address_line1:any, address_line2:any, city:any, state:any, pin:any, landmark:any, serial_no:any, pickup_scheduled_time:any, customer_query:any, visible_damage:any, diagnosis_charges_accepted:any) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
        '&pud_ticket_id=' + id + '&drop_branch_code=' + dropBranchCode + '&pud_type=' + pudType + '&branch_code=' + branch_code + '&pickup_assigned_to=' + pickupAssigned + '&assigned_user_id=' + pickupAssigned +
        '&customer_name=' + customer_name + '&customer_primary_phone=' + customer_primary_phone + '&customer_secondry_phone=' + customer_secondry_phone + '&customer_email=' + customer_email
         + '&address_line1=' + address_line1 + '&address_line2=' + address_line2 + '&city=' + city + '&state=' + state + '&pin=' + pin + '&landmark=' + landmark + '&serial_no=' + serial_no + '&pickup_scheduled_time=' + pickup_scheduled_time
          + '&customer_query=' + customer_query + '&visible_damage=' + visible_damage + '&diagnosis_charges_accepted=' + diagnosis_charges_accepted;
-      return this.http.post(this.rootUrl + 'api/pud/register_pickup', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/register_pickup', form, {headers : this.getHeaders()});
     }
 
     requestDrop(id: string, pudType: any, branch_code: any, dropBranchCode: any, drop_assigned: any,) {
-      const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+      const form = 'user_id=' + localStorage.getItem('userId') +
        '&pud_ticket_id=' + id + '&drop_branch_code=' + dropBranchCode + '&pud_type=' + pudType + '&branch_code=' + branch_code + '&drop_assigned_to=' + drop_assigned;
-      return this.http.post(this.rootUrl + 'api/pud/register_drop', form, {headers : this.reqHeader});
+      return this.http.post(this.nestUrl + 'pud/register_drop', form, {headers : this.getHeaders()});
     }
 
     getPUDAgent() {

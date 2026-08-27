@@ -21,8 +21,8 @@ export class DCallServicesService {
   constructor(private http: HttpClient) { }
 
   getDcalltickets() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/dcall/d_call?' + form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'dcall/d_call?' + form, { headers: this.getHeaders() });
   }
 
   getPUDAgent() {

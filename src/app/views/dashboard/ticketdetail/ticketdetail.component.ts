@@ -1437,6 +1437,12 @@ export class TicketdetailComponent {
                   this.repairTypes = [
                     { label: 'Service Non-Repair Case', value: 'SVNR' }
                   ];
+                  if (this.data.repair_type === 'Hardware - Accy') {
+                    this.repairTypes = [
+                      { label: 'Carry-In', value: 'CIN' },
+                      { label: 'Service Non-Repair Case', value: 'SVNR' }
+                    ];
+                  }
                 } else {
                   this.showConvertToPud = false;
                   // this.repairTypes = [];
@@ -1843,11 +1849,8 @@ export class TicketdetailComponent {
       this.enableCreateRepairBtn = false;
     }
 
-    if (this.data.pop_review_hold === '0') {
-      this.popAppleReviewHold = false;
-    } else {
-      this.popAppleReviewHold = true;
-    }
+    // PHP if ($pop_review_hold): 0 / "0" / empty = off. Nest common/get returns number 0.
+    this.popAppleReviewHold = this.phpFlagOn(this.data.pop_review_hold);
 
     if (this.diagnosisHd.request_review_by_apple === '1') {
       this.requestAppleReview = true;
@@ -1917,16 +1920,16 @@ export class TicketdetailComponent {
         }
 
         let fromConsignment = false;
-        if (this.diagnosisDt[j].from_consigned_stock === '0') {
-          fromConsignment = false;
-        } else {
+        if (this.phpFlagOn(this.diagnosisDt[j].from_consigned_stock)) {
           fromConsignment = true;
+        } else {
+          fromConsignment = false;
         }
         if (this.repairType === 'WUMS') {
           const statusID: number = parseInt(this.data.status_id);
           if (this.data.site_type_id === '1') {
             if (((statusID >= 2100) && (statusID <= 2800)) && ((statusID !== 2820)) && (!this.isReQuoted)) {
-              if ((this.diagnosisDt[j].additional_part === '1') && (this.diagnosisDt[j].rc_added_part !== '1')) {
+              if ((this.phpFlagOn(this.diagnosisDt[j].additional_part)) && (!this.phpFlagOn(this.diagnosisDt[j].rc_added_part))) {
                 checkAddPart = false;
               } else {
                 checkAddPart = true;
@@ -2006,7 +2009,7 @@ export class TicketdetailComponent {
           const statusID: number = parseInt(this.data.status_id);
           if (this.data.site_type_id === '1') {
             if ((statusID >= 1100) && ((statusID <= 1600)) && (!this.isReQuoted)) {
-              if (this.diagnosisDt[j].additional_part === '1') {
+              if (this.phpFlagOn(this.diagnosisDt[j].additional_part)) {
                 checkAddPart = false;
               } else {
                 checkAddPart = true;
@@ -2025,7 +2028,7 @@ export class TicketdetailComponent {
               checkAddPart = true;
             }
 
-            if ((this.diagnosisDt[j].additional_part === '1') && (this.diagnosisDt[j].rc_added_part !== '1') && ((statusID == 8750) || (statusID == 8500))) {
+            if ((this.phpFlagOn(this.diagnosisDt[j].additional_part)) && (!this.phpFlagOn(this.diagnosisDt[j].rc_added_part)) && ((statusID == 8750) || (statusID == 8500))) {
               checkAddPart = false;
             }
           }
@@ -2296,7 +2299,7 @@ export class TicketdetailComponent {
       this.serviceData.serviceType = 'Select';
     }
 
-    if ((this.data.status_id === '900') && (this.isC3)) {
+    if ((String(this.data.status_id) === '900') && (this.isC3)) {
       this.isPopAppleReview = false;
     } else {
       this.isPopAppleReview = true;
@@ -2372,7 +2375,7 @@ export class TicketdetailComponent {
 
   getAssignee() {
     let userId: any = '';
-    if ((this.data.repair_type === 'Software') && (((this.data.dl_branch_code != '') && (this.data.dl_branch_code != null)))) {
+    if ((this.data.repair_type === 'Software' || this.data.repair_type === 'Hardware - Accy') && this.data.dl_branch_code !== '' && this.data.dl_branch_code !== null) {
       userId = this.data.assigned_user_id;
     } else {
       userId = this.userID;
@@ -4748,6 +4751,7 @@ get showDeleteButton3() {
       this.getASNList(this.consignmentPartNumber,this.consignment);
       this.openModal(consignment_temp);
     }
+   
   } else {
       let r;
       r = confirm('Are sure want to remove Consignment?');
@@ -5308,29 +5312,70 @@ get showDeleteButton3() {
     const newPartsTemp: any = [];
     let newParts: any = [];
     let partAvail = false;
+    console.log('[additional_part] 1 save start', {
+      ticketId: this.ticketId,
+      gsxNo: this.gsxNo,
+      hdId: this.diagnosisHd && this.diagnosisHd.id,
+      selectedCount: this.selectedParts.length,
+      diagnosisCount: this.diagnosisDt.length,
+      diagPartsFilledBefore: this.diagPartsFilled,
+    });
     for (let i = 0; i < this.selectedParts.length; i++) {
       partAvail = false;
+      const p = this.selectedParts[i];
+      console.log('[additional_part] 2 selected row', i, {
+        number: p.number,
+        readOnly: p.readOnly,
+        kbb_serial_no: p.kbb_serial_no,
+        issueCode: p.issueCode,
+        reproducibility: p.reproducibility,
+        additional_part_flag: p.additional_part_flag,
+      });
       if (this.selectedParts[i].readOnly === false) {
         for (let j = 0; j < this.diagnosisDt.length; j++) {
-          if (this.selectedParts[i].number === this.diagnosisDt[j].part_number) {
+          const samePart = String(this.selectedParts[i].number) === String(this.diagnosisDt[j].part_number);
+          console.log('[additional_part] 3 compare', {
+            selected: String(this.selectedParts[i].number),
+            diagnosis: String(this.diagnosisDt[j].part_number),
+            match: samePart,
+          });
+          if (samePart) {
             partAvail = true;
           }
         }
         if (partAvail === false) {
+          console.log('[additional_part] 4 KEEP new part', p.number);
           newPartsTemp.push(this.selectedParts[i]);
+        } else {
+          console.log('[additional_part] 4 SKIP already on diagnosisDt', p.number);
         }
+      } else {
+        console.log('[additional_part] 4 SKIP readOnly', p.number, p.readOnly);
       }
     }
 
     newParts = Array.from(new Set(newPartsTemp));
+    this.diagPartsFilled = false;
+    console.log('[additional_part] 5 after filter', {
+      newPartsCount: newParts.length,
+      newParts: newParts.map((x: any) => ({ number: x.number, kbb: x.kbb_serial_no })),
+    });
 
     for (let j = 0; j < newParts.length; j++) {
       this.diagPartsFilled = true;
       newParts[j].additional_part === '1';
+      console.log('[additional_part] 6 serial check', j, {
+        number: newParts[j].number,
+        kbb_serial_no: newParts[j].kbb_serial_no,
+        kbbLen: newParts[j].kbb_serial_no && newParts[j].kbb_serial_no.length,
+        exKBBDisplayPartNo: this.exKBBDisplayPartNo,
+      });
       if (((newParts[j].kbb_serial_no != '') || (newParts[j].kbb_serial_no != undefined))) {
         const serialNoCheck = this.checkingSerialNumber(newParts[j].kbb_serial_no);
+        console.log('[additional_part] 7 specialChars', serialNoCheck);
         if (serialNoCheck) {
           this.diagPartsFilled = false;
+          console.log('[additional_part] STOP serial has special chars');
         } else if (this.exKBBDisplayPartNo === newParts[j].number) {
           if (newParts[j].kbb_serial_no === 'ASTNOTAVAILABLE') {
             this.diagPartsFilled = true;
@@ -5339,6 +5384,7 @@ get showDeleteButton3() {
               this.diagPartsFilled = true;
             } else {
               this.diagPartsFilled = false;
+              console.log('[additional_part] STOP display kbb length < 10');
             }
           }
         } else if ((newParts[j].kbb_serial_no != 'NONSERIALIZED')) {
@@ -5346,12 +5392,14 @@ get showDeleteButton3() {
             this.diagPartsFilled = true;
           } else {
             this.diagPartsFilled = false;
+            console.log('[additional_part] STOP kbb length < 10');
           }
         } else {
           this.diagPartsFilled = true;
         }
       } else {
         this.diagPartsFilled = false;
+        console.log('[additional_part] STOP kbb empty');
       }
 
       if (!this.diagPartsFilled) {
@@ -5363,6 +5411,7 @@ get showDeleteButton3() {
       }
     }
 
+    console.log('[additional_part] 8 call API?', this.diagPartsFilled, 'newParts', newParts.length);
     if (this.diagPartsFilled) {
       this.buttonSpin = true;
       let result: any;
@@ -5370,6 +5419,7 @@ get showDeleteButton3() {
         .subscribe({
           next: (data: any) => {
             result = data;
+            console.log('[additional_part] 9 API response', result);
             if (result.status === true) {
               this.getdata(this.ticketId);
               this.buttonSpin = false;
@@ -5381,6 +5431,7 @@ get showDeleteButton3() {
           error: (error: any) => this.error = error // error path
         });
     } else {
+      console.log('[additional_part] STOP no API — fill-fields alert');
       alert(`Please check and fill all the part's fields`);
       this.buttonSpin = false;
     }
@@ -6177,10 +6228,12 @@ get showDeleteButton3() {
     //Adhesive Check
     if ((this.repairType === 'CIN') && (this.data.product_family === 'iPhone') && ((this.componentCode !== '26113') && (this.componentCode !== '26113A') && (this.componentCode !== '26113B') && (this.componentCode !== 'NSP01')) && (this.data.branch_code !== 'FIC') && ((this.data.product_description !== 'iPhone 6') && (this.data.product_description !== 'iPhone 6 Plus') && (this.data.product_description !== 'iPhone SE (1st generation)')) && (this.data.product_category !== 'Others') && (this.data.product_family !== 'Pencil') && (this.data.product_description !== 'iPhone MagSafe Battery Pack') && (this.data.product_description !== 'iPhone MagSafe Charger') && (!this.data.product_description.includes('Smart Battery Case'))) {
       if (this.adhesiveParts === false) {
-        alert('Adhesive parts are required for this Repair');
-        createFlag = false;
-        this.buttonSpin = false;
-        return;
+        if (!confirm('Adhesive parts are required for this Repair. Do you want to continue as this is a Whole unit Repair?')) {
+          createFlag = false;
+          this.buttonSpin = false;
+          return;
+        }
+        createFlag = true;
       } else {
         createFlag = true;
       }
@@ -6979,7 +7032,9 @@ get showDeleteButton3() {
       return;
     }
 
-    if (this.popAppleReviewHold === false && this.selectedParts.some((part: any) => part.fromConsignedStock === true)) {
+    if (this.popAppleReviewHold === false
+        && this.selectedParts.some((part: any) => part.fromConsignedStock === true)
+        && (this.data.serial_no.substring(0, 2).toLowerCase() === 'zz')) {
       alert('Enable POP Apple Review Hold when consignment part is used');
       this.buttonSpin = false;
       return;
@@ -7046,6 +7101,8 @@ get showDeleteButton3() {
 
     // gsxStatusMatch = true; // L2 approval Exception
 
+    console.log("ticketId", this.ticketId, "stage", stage, "diagnosisHd.id", this.diagnosisHd.id, "L1L2DeclineReview", this.L1L2DeclineReview, "popReview", popReview, "gsxStatusMatch", gsxStatusMatch);
+    console.log("callL2Change", callL2Change, "kbbSerialVerified", kbbSerialVerified, "gsxStatusMatch", gsxStatusMatch);
     if ((callL2Change === true) && (kbbSerialVerified) && (gsxStatusMatch)) {
       this.dataService.diagnosisStatusChange(this.ticketId, stage, this.diagnosisHd.id, this.L1L2DeclineReview, popReview, '')
         .subscribe({
@@ -7300,10 +7357,10 @@ get showDeleteButton3() {
             this.kgbDeviceDetail = this.diagnosisDt[i].kgb_serial_no;
             this.kgbAWBNo = this.diagnosisDt[i].kgb_awb_no;
             this.kgbPartNo = this.kgbSelectedPart;
-            if (this.diagnosisDt[i].from_consigned_stock === '0') {
-              this.isConsignment = false;
-            } else {
+            if (this.phpFlagOn(this.diagnosisDt[i].from_consigned_stock)) {
               this.isConsignment = true;
+            } else {
+              this.isConsignment = false;
             }
           } else {
             this.kbbDeviceDetail = '';
@@ -7405,49 +7462,29 @@ get showDeleteButton3() {
           next: (data: any) => {
             result = data;
             this.modalService.dismissAll();
-            this.UpdateToteTracker(this.ticketId, this.kgbToteId, false);
-
-            if (result.status === true) {
-              const kgbdetails =
-                'KGB Part Detail: ' + this.kgbSelectedPart +
-                ' KGB Serial Number: ' + this.kgbDeviceDetail;
-              const analysisText = [
-                this.kgbSelectedPart,
-                this.kgbDeviceDetail,
-                this.kgbAWBNo,
-                this.kgbToteId
-              ].filter((v) => v !== '' && v != null).join(' ');
-
+            this.UpdateToteTracker(this.ticketId, this.kgbToteId);
+            if (this.data.status_id === '1600') {
+              this.buttonSpin = false;
+              const kgbdetails = 'KGB Part Detail: ' + this.kgbSelectedPart  + 'KGB Serial Number: ' + encodeURIComponent(this.kgbDeviceDetail);
               this.dataService.updateTechnicianNotes(kgbdetails, this.gsxNo, this.ticketId, this.repairType)
                 .subscribe({
-                  next: (notesData: any) => {
-                    if (notesData.status !== true) {
-                      alert(notesData.message);
+                  next: (data: any) => {
+                    if (data.status === true) {
+                      this.getdata(this.ticketId);
+                    } else {
+                      alert(data.message);
                     }
-                    this.dataService.uploadAnalysis(this.ticketId, analysisText)
-                      .subscribe({
-                        next: () => {
-                          this.getdata(this.ticketId);
-                          this.getAnalysis(this.ticketId);
-                          this.buttonSpin = false;
-                        },
-                        error: () => {
-                          this.getdata(this.ticketId);
-                          this.getAnalysis(this.ticketId);
-                          this.buttonSpin = false;
-                        }
-                      });
                   },
-                  error: (error: any) => {
-                    this.error = error;
-                    this.getdata(this.ticketId);
-                    this.buttonSpin = false;
-                  }
+                  error: (error: any) => this.error = error
                 });
             } else {
-              const gsxErr = result.gsx_response?.errors?.[0]?.message;
-              alert(gsxErr || result.message || 'GSX Repair update failed');
-              this.buttonSpin = false;
+              if (result.gsx_response?.errors) {
+                alert(result.gsx_response.errors[0].message);
+                this.buttonSpin = false;
+              } else {
+                alert(result.message);
+                this.buttonSpin = false;
+              }
             }
           },
           error: (error: any) => this.error = error
@@ -11367,6 +11404,11 @@ get showDeleteButton3() {
             this.getdata(this.ticketId);
           }
         });
+  }
+
+  /** PHP: 0 / "0" / empty = off; 1 / "1" = on. Nest returns numbers. */
+  phpFlagOn(value: any): boolean {
+    return value === true || value === 1 || value === '1';
   }
 }
 

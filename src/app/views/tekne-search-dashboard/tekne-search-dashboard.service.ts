@@ -21,10 +21,10 @@ export class TekneSearchDashboardService {
   }
 
   getData(invoicenumber: string, serialno: string, ticketid: string, phone: string, email: string, customername: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&invoice_number=' + invoicenumber + '&serial_no=' + serialno +
+    const form = '&invoice_number=' + invoicenumber + '&serial_no=' + serialno +
     '&ticket_id=' + ticketid + '&phone_no=' + phone + '&user_id=' + localStorage.getItem('userId') + '&email=' + email +
     '&customer_name=' + customername;
-    return this.http.post(this.rootUrl + 'api/accytickets/get_ticket_details_manual', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'dashboard/get_ticket_details_manual', form, {headers : this.getHeaders()});
   }
 
   viewRaf(t_id: string) {

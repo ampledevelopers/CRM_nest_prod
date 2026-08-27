@@ -21,8 +21,8 @@ export class StockTransferOutService {
   }
 
   getConsignment(asn_no: string, fromBranchCode:any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&status=' + 'A' + '&stock_type=' + 'Ample' + '&branch_code=' + fromBranchCode + '&asn_no=' + asn_no;
-    return this.http.get(this.rootUrl + 'api/stock/consignment?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&status=' + 'A' + '&stock_type=' + 'Ample' + '&branch_code=' + fromBranchCode + '&asn_no=' + asn_no;
+    return this.http.get(this.nestUrl + 'stock/consignment?' + form, {headers : this.getHeaders()});
   }
 
   getAdhesives(asn_no: string, fromBranchCode:any) {
@@ -60,9 +60,7 @@ export class StockTransferOutService {
       'dt': confirmAdData
     });
     form = JSON.stringify(consignTransData);
-    const userToken: any=localStorage.getItem('userToken');
-    const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True', 'X-API-KEY':userToken});
-    return this.http.post(this.rootUrl + 'api/adhesives/adhesives_transfer', form, {headers : diagHeader});
+    return this.http.post(this.nestUrl + 'stock/adhesives_transfer', form, {headers : this.getHeaders()});
   }
 
   stockTransList(fromBranchCode:any) {

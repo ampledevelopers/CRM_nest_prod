@@ -33,7 +33,7 @@ export class CreatePudTicketService {
   }
 
   createCustomer(firstName: any, lastName : any, phone: any, email: any, address1: any, address2: any, city: any, state: any, pin: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&first_name=' + firstName + '&last_name=' + lastName + '&phone=' + phone  + '&email=' + email  + '&address1=' + address1 + '&address2=' + address2 + '&city=' + city + '&state=' + state + '&pin=' + pin;
+    const form = '&first_name=' + firstName + '&last_name=' + lastName + '&phone=' + phone  + '&email=' + email  + '&address1=' + address1 + '&address2=' + address2 + '&city=' + city + '&state=' + state + '&pin=' + pin;
     return this.http.post(this.nestUrl + 'reservation/create_customer', form, {headers : this.getHeaders()});
   }
 
@@ -44,6 +44,6 @@ export class CreatePudTicketService {
 
   sendQuotePayment(ticketId: any, quoteId: any) {
     const form = '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&quotation_id=' + quoteId + '&quotation_pud=' + 1;
-    return this.http.post(this.nestUrl + 'tickets_v2/send_quotation_and_paynow_link', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'paynimo/send_quotation_and_paynow_link', form, {headers : this.getHeaders()});
   }
 }

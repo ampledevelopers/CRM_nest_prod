@@ -22,8 +22,8 @@ export class FreePhyLocationService {
   }
 
  /*  getPhyLocation() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/tickets/get_physical_locations', form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'ticketsv1/get_physical_locations', form, {headers : this.getHeaders()});
   } */
 
   getPhyLocation() {

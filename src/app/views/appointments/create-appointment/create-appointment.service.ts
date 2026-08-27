@@ -39,7 +39,7 @@ export class CreateAppointmentService {
   }
 
   createCustomer(firstName: any, lastName : any, phone: any, email: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&first_name=' + firstName + '&last_name=' + lastName + '&phone=' + phone  + '&email=' + email ;
+    const form =  '&first_name=' + firstName + '&last_name=' + lastName + '&phone=' + phone  + '&email=' + email ;
     return this.http.post(this.nestUrl + 'reservation/create_customer', form, {headers : this.getHeaders()});
   }
 

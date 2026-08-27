@@ -197,8 +197,8 @@ export class UserService {
   }
 
   sendMessage(inputData: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&from_user=' + localStorage.getItem('userId') + inputData;
-    return this.http.post(this.rootUrl + 'api/message/save_message', form, { headers: this.reqHeader });
+    const form = 'from_user=' + localStorage.getItem('userId') + inputData;
+    return this.http.post(this.nestUrl + 'ticketsv1/save_message', form, { headers: this.getHeaders() });
   }
 
   updateMessage(messageId: string) {
@@ -207,20 +207,20 @@ export class UserService {
   }
 
   switchType(siteType: string) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&site_type_id=' + siteType;
-    return this.http.post(this.rootUrl + 'api/common/change_site', form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + '&site_type_id=' + siteType;
+    return this.http.post(this.nestUrl + 'ticketsv1/change_site', form, { headers: this.getHeaders() });
   }
 
   getCertificates() {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/common/atlas_certifications?' + form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'ticketsv1/atlas_certifications?' + form, { headers: this.getHeaders() });
   }
 
   certificateRegister(docs: any, group: string, id: string, date: string) {
     const documents = JSON.stringify(docs);
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&documents=' + documents +
+    const form = 'user_id=' + localStorage.getItem('userId') + '&documents=' + documents +
       '&certification_group=' + group + '&certification_id=' + id + '&completion_date=' + date;
-    return this.http.post(this.rootUrl + 'api/common/atlas_certifications', form, { headers: this.reqHeader });
+    return this.http.post(this.nestUrl + 'ticketsv1/atlas_certifications', form, { headers: this.getHeaders() });
   }
 
   widgetClicked(widgetSelected: any) {
