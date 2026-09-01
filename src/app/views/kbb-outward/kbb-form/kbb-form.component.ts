@@ -9,7 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExcelService } from '../../reports/excel.service';
 import { UserService } from '../../../shared/user.service';
 import { Params } from '@angular/router';
-import { Console } from 'console';
+import { forkJoin, Observable } from 'rxjs';
 export interface SimpleAlert {
   title: any;
   msg: any;
@@ -116,6 +116,7 @@ export class KbbFormComponent {
         this.getLocationaddress('');
         const partlst: any = localStorage.getItem('partlist');
         this.partList = JSON.parse(partlst);
+        this.ensureDiagnosisSerials();
         this.getTotalValue();
         this.forUpdate = false;
         this.totalItems = this.partList.length;
@@ -1381,57 +1382,127 @@ check_battery_compitia(): Promise<boolean> {
         });
   }
 
-  checkSerial(part: any, index: any) {
-    // console.log(part.captured_serial_no);
-    // console.log(part.kbb_serial_no);
-    if(part.captured_serial_no != '') {
-       if (part.return_status === 'DOA' || part.return_status === 'GPR') {
-        // console.log(part.kgb_serial_no);
-      if (part.captured_serial_no.split('+')[0] === part.kgb_serial_no) {
-        part.invalid = false;
-        const datevalue = Date.now();
-        const date = new Date(datevalue);
-        const timeStamp = date.getFullYear() + '-' +
-          String(date.getMonth() + 1).padStart(2, '0') + '-' +
-          String(date.getDate()).padStart(2, '0') + ' ' +
-          String(date.getHours()).padStart(2, '0') + ':' +
-          String(date.getMinutes()).padStart(2, '0') + ':' +
-          String(date.getSeconds()).padStart(2, '0');
-        this.partList[index].captured_serial_no = part.captured_serial_no.split('+')[0];
-        this.partList[index].kbb_captured_date = timeStamp;
+  ensureDiagnosisSerials() {
+    if (!this.partList?.length) {
+      return;
+    }
 
+    const diagnosisRequests = this.partList.map((part: any) =>
+      this.dataService.checkPartDetails(
+        part.ticket_no,
+        undefined,
+        part.repair_no,
+        part.serial_no,
+        part.part_no,
+      ),
+    );
+
+    forkJoin(diagnosisRequests as Observable<any>[]).subscribe({
+      next: (diagnosisResults) => {
+        (diagnosisResults as any[]).forEach((result, idx) => {
+          const part = this.partList[idx];
+          const match = (result?.repair_dt || []).find(
+            (row: any) => row.part_number === part.part_no,
+          );
+          if (match) {
+            part.kbb_serial_no = match.kbb_serial_no;
+            part.kgb_serial_no = match.kgb_serial_no;
+          }
+        });
         localStorage.setItem('partlist', JSON.stringify(this.partList));
-        return;
-       }
       }
-      if (part.captured_serial_no.split('+')[0] !== part.kbb_serial_no) {
+    });
+  }
+
+  private setValidatedSerial(part: any, index: any, scanned: string) {
+    part.invalid = false;
+    const datevalue = Date.now();
+    const date = new Date(datevalue);
+    const timeStamp = date.getFullYear() + '-' +
+      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+      String(date.getDate()).padStart(2, '0') + ' ' +
+      String(date.getHours()).padStart(2, '0') + ':' +
+      String(date.getMinutes()).padStart(2, '0') + ':' +
+      String(date.getSeconds()).padStart(2, '0');
+    this.partList[index].captured_serial_no = scanned;
+    this.partList[index].kbb_captured_date = timeStamp;
+    localStorage.setItem('partlist', JSON.stringify(this.partList));
+  }
+
+  private validateCapturedSerial(part: any, index: any, scanned: string) {
+    if (part.return_status === 'DOA' || part.return_status === 'GPR') {
+      if (!part.kgb_serial_no) {
         part.invalid = true;
         part.captured_serial_no = '';
-      } else {
-        part.invalid = false;
-        const datevalue = Date.now();
-        const date = new Date(datevalue);
-        const timeStamp = date.getFullYear() + '-' +
-          String(date.getMonth() + 1).padStart(2, '0') + '-' +
-          String(date.getDate()).padStart(2, '0') + ' ' +
-          String(date.getHours()).padStart(2, '0') + ':' +
-          String(date.getMinutes()).padStart(2, '0') + ':' +
-          String(date.getSeconds()).padStart(2, '0');
-        // const index = this.partList.findIndex((item: any) => item.kbb_serial_no === part.kbb_serial_no);
-        // if (index !== -1) {
-        //   this.partList[index].captured_serial_no = part.captured_serial_no;
-        //   this.partList[index].kbb_captured_date = timeStamp;
-        //   localStorage.setItem('partlist', JSON.stringify(this.partList));
-        // }
-
-        this.partList[index].captured_serial_no = part.captured_serial_no.split('+')[0];
-        this.partList[index].kbb_captured_date = timeStamp;
-
-        localStorage.setItem('partlist', JSON.stringify(this.partList));
+        alert('KGB serial not found in diagnosis for part ' + part.part_no);
+        return;
       }
-    } else {
-      part.invalid = true;
+      if (scanned !== part.kgb_serial_no) {
+        part.invalid = true;
+        part.captured_serial_no = '';
+        alert('KGB serial mismatch for part ' + part.part_no);
+        return;
+      }
+      this.setValidatedSerial(part, index, scanned);
+      return;
     }
+
+    if (!part.kbb_serial_no) {
+      part.invalid = true;
+      part.captured_serial_no = '';
+      alert('KBB serial not found in diagnosis for part ' + part.part_no);
+      return;
+    }
+
+    if (scanned !== part.kbb_serial_no) {
+      part.invalid = true;
+      part.captured_serial_no = '';
+      alert('KBB serial mismatch for part ' + part.part_no);
+      return;
+    }
+
+    this.setValidatedSerial(part, index, scanned);
+  }
+
+  checkSerial(part: any, index: any) {
+    if (!part.captured_serial_no || part.captured_serial_no === '') {
+      part.invalid = true;
+      return;
+    }
+
+    const scanned = part.captured_serial_no.split('+')[0].trim();
+    const expectedSerial = (part.return_status === 'DOA' || part.return_status === 'GPR')
+      ? part.kgb_serial_no
+      : part.kbb_serial_no;
+
+    if (expectedSerial) {
+      this.validateCapturedSerial(part, index, scanned);
+      return;
+    }
+
+    this.dataService.checkPartDetails(
+      part.ticket_no,
+      undefined,
+      part.repair_no,
+      part.serial_no,
+      part.part_no,
+    ).subscribe({
+      next: (data: any) => {
+        const match = (data?.repair_dt || []).find((row: any) => row.part_number === part.part_no);
+        if (match) {
+          part.kbb_serial_no = match.kbb_serial_no;
+          part.kgb_serial_no = match.kgb_serial_no;
+          this.partList[index].kbb_serial_no = match.kbb_serial_no;
+          this.partList[index].kgb_serial_no = match.kgb_serial_no;
+        }
+        this.validateCapturedSerial(part, index, scanned);
+      },
+      error: () => {
+        part.invalid = true;
+        part.captured_serial_no = '';
+        alert('Unable to fetch diagnosis for part ' + part.part_no);
+      }
+    });
   }
   // checkSerialDoaGpr(part: any, index: any) {
 

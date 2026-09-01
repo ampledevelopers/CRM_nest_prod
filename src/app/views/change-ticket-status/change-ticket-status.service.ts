@@ -39,7 +39,7 @@ export class ChangeTicketStatusService {
   changeStatus(reqData: string) {
     const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
                   reqData;
-    return this.http.post(this.nestUrl + 'ticket_edit/change_status', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'ticket_edit/change_status_manual', form, {headers : this.getHeaders()});
   }
 
   getDriveFiles(ticket_id: string) {

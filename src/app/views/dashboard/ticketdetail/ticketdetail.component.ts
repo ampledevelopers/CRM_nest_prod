@@ -475,6 +475,7 @@ export class TicketdetailComponent {
   zzInvoiceDate = '';
   zzInvoiceError = '';
   zzInvoiceValidated = false;
+  zzvendorName = '';
   zzPopValidated = 0;
   pendingApplyL1: { simple_alert: TemplateRef<any>; confirmQuoteCheck: TemplateRef<any> } | null = null;
   invoiceAmount: any;
@@ -1075,6 +1076,7 @@ export class TicketdetailComponent {
           this.zzInvoiceNo = '';
           this.zzInvoiceDate = '';
           this.zzInvoiceError = '';
+          this.zzvendorName = '';
           this.poNo = this.data.branch_code + this.ticketId;
           this.warrantyStatus = this.data.warranty_status;
           this.data.serial_no = this.data.serial_no.toUpperCase();
@@ -4741,6 +4743,9 @@ get showDeleteButton3() {
 
   consignmentCheck(part: any, consignment_temp: TemplateRef<any>, simple_alert: TemplateRef<any>) {
     this.consignmentPartNumber = part.number;
+    if(this.data.repair_type == 'Hardware - Accy' && this.consignmentType == 'AP'){
+      this.consignmentType = '';
+    }
     if (part.fromConsignedStock === true) {
       if(this.consignmentType == 'AP'){
       this.consignment = 'Apple';
@@ -5850,22 +5855,22 @@ get showDeleteButton3() {
 
   openZZInvoiceModal() {
     this.zzInvoiceError = '';
-    this.buttonSpin = true;
-    this.dataService.getTicketMoreInfo(this.ticketId).subscribe({
-      next: (data: any) => {
-        this.buttonSpin = false;
-        if (data?.status === true && data.items) {
-          this.zzInvoiceNo = (data.items.zz_invoice_no || '').trim();
-          this.zzInvoiceDate = this.normalizeZZInvoiceDate(data.items.zz_invoice_date);
-          this.zzPopValidated = data.items.zz_pop_validated != null ? data.items.zz_pop_validated : 0;
-        }
-        this.openModal(this.zzInvoiceTemp);
-      },
-      error: () => {
-        this.buttonSpin = false;
-        this.openModal(this.zzInvoiceTemp);
-      }
-    });
+    this.zzInvoiceNo = '';
+    this.zzInvoiceDate = '';
+    this.zzvendorName = '';
+    if (this.data.status_id !== '300') {
+      this.dataService.getTicketMoreInfo(this.ticketId).subscribe({
+        next: (data: any) => {
+          if (data?.status === true && data.items) {
+            this.zzvendorName = (data.items.zz_vendor_name || '').trim();
+          }
+          this.openModal(this.zzInvoiceTemp);
+        },
+        error: () => this.openModal(this.zzInvoiceTemp)
+      });
+      return;
+    }
+    this.openModal(this.zzInvoiceTemp);
   }
 
   submitZZInvoice() {
@@ -5875,14 +5880,31 @@ get showDeleteButton3() {
     }
     this.buttonSpin = true;
     this.zzInvoiceError = '';
-    const formNo = this.zzInvoiceNo.trim();
-    const formDate = this.normalizeZZInvoiceDate(this.zzInvoiceDate);
-    this.zzInvoiceDate = formDate;
 
-    // First entry (diagnosis) or no saved invoice yet → save, don't compare
     if (this.data.status_id === '300') {
+      if (!this.zzvendorName?.trim()) {
+        this.buttonSpin = false;
+        this.zzInvoiceError = 'Please enter Vendor';
+        return;
+      }
       this.zzPopValidated = 0;
-      this.saveZZInvoiceAndClose(formNo, formDate, this.zzPopValidated);
+      this.dataService.updateZZInvoiceNo(this.ticketId, this.zzInvoiceNo.trim(), this.zzInvoiceDate, this.zzPopValidated, this.zzvendorName.trim()).subscribe({
+        next: (data: any) => {
+          this.buttonSpin = false;
+          if (data.status === true) {
+            this.zzInvoiceValidated = true;
+            this.zzInvoiceError = '';
+            this.modalService.dismissAll();
+            this.clicked = false;
+          } else {
+            this.zzInvoiceError = data.message || 'Failed to update invoice';
+          }
+        },
+        error: () => {
+          this.buttonSpin = false;
+          this.zzInvoiceError = 'Failed to update invoice';
+        }
+      });
       return;
     }
 
@@ -5895,53 +5917,50 @@ get showDeleteButton3() {
         }
         const apiNo = (data.items.zz_invoice_no || '').trim();
         const apiDate = this.normalizeZZInvoiceDate(data.items.zz_invoice_date);
+        const formNo = this.zzInvoiceNo.trim();
+        const formDate = this.normalizeZZInvoiceDate(this.zzInvoiceDate);
 
-        // Nothing saved yet (deleted / first time at L1 or L2) → save entered values
-        if (!apiNo && !apiDate) {
-          this.zzPopValidated = this.data.status_id === '900' ? 1 : 0;
-          this.saveZZInvoiceAndClose(formNo, formDate, this.zzPopValidated);
+        if (apiNo !== formNo) {
+          this.buttonSpin = false;
+          this.zzInvoiceError = 'Invoice Number is not valid';
+          return;
+        }
+        if (apiDate !== formDate) {
+          this.buttonSpin = false;
+          this.zzInvoiceError = 'Invoice Date is not valid';
           return;
         }
 
-        if (apiNo === formNo && apiDate === formDate) {
-          if (this.data.status_id === '900') {
-            this.zzPopValidated = 1;
-            this.saveZZInvoiceAndClose(formNo, formDate, this.zzPopValidated);
-          } else {
-            this.buttonSpin = false;
-            this.zzInvoiceValidated = true;
-            this.zzInvoiceError = '';
-            this.modalService.dismissAll();
-            this.clicked = false;
-          }
+        if (this.data.status_id === '900') {
+          this.zzPopValidated = 1;
+          this.dataService.updateZZInvoiceNo(this.ticketId, formNo, formDate, this.zzPopValidated).subscribe({
+            next: (updateData: any) => {
+              this.buttonSpin = false;
+              if (updateData.status === true) {
+                this.zzInvoiceValidated = true;
+                this.zzInvoiceError = '';
+                this.modalService.dismissAll();
+                this.clicked = false;
+              } else {
+                this.zzInvoiceError = updateData.message || 'Failed to update invoice';
+              }
+            },
+            error: () => {
+              this.buttonSpin = false;
+              this.zzInvoiceError = 'Failed to update invoice';
+            }
+          });
         } else {
           this.buttonSpin = false;
-          this.zzInvoiceError = 'Invoice Number or Invoice Date does not match';
+          this.zzInvoiceValidated = true;
+          this.zzInvoiceError = '';
+          this.modalService.dismissAll();
+          this.clicked = false;
         }
       },
       error: () => {
         this.buttonSpin = false;
         this.zzInvoiceError = 'Failed to fetch invoice details';
-      }
-    });
-  }
-
-  private saveZZInvoiceAndClose(formNo: string, formDate: string, zzPopValidated: string | number) {
-    this.dataService.updateZZInvoiceNo(this.ticketId, formNo, formDate, zzPopValidated).subscribe({
-      next: (data: any) => {
-        this.buttonSpin = false;
-        if (data.status === true) {
-          this.zzInvoiceValidated = true;
-          this.zzInvoiceError = '';
-          this.modalService.dismissAll();
-          this.clicked = false;
-        } else {
-          this.zzInvoiceError = data.message || 'Failed to update invoice';
-        }
-      },
-      error: () => {
-        this.buttonSpin = false;
-        this.zzInvoiceError = 'Failed to update invoice';
       }
     });
   }
@@ -5955,7 +5974,11 @@ get showDeleteButton3() {
 
   applyL1Approve(simple_alert: TemplateRef<any>, confirmQuoteCheck: TemplateRef<any>) {
     this.buttonSpin = true;
-
+    if(this.data.repair_type == 'Hardware - Accy' && !this.selectedParts.some((p:any) => p.fromConsignedStock === true)){
+      alert('Consignment parts is required send for L1 approval for Hardware - Accy repair');
+      this.buttonSpin = false;
+      return;
+    }
     let createFlag: any;
     let isBillingPart = false;
     let consumable1 = false;
@@ -7724,6 +7747,7 @@ get showDeleteButton3() {
           if (result.status === true) {
             this.buttonSpin = false;
             this.openModal(call_alert);
+            this.getAnalysis(this.ticketId);
           } else {
             this.buttonSpin = false;
             alert(result.message);
@@ -8580,14 +8604,20 @@ get showDeleteButton3() {
 
   checkQuoteStatuses() {
     for (let i = 0; i < this.quotations.length; i++) {
-      if ((this.quotations[i].transaction_id !== null) && (this.quotations[i].paynow_status !== 'Success') && (this.data.status_id === '700')) {
-        this.dataService.quotationStatusCheck(this.ticketId, this.quotations[i].id, this.quotations[i].transaction_id)
+      const txn = this.quotations[i].transaction_id;
+      if (txn && txn !== 'null' && this.quotations[i].paynow_status !== 'Success' && this.data.status_id === '700') {
+        this.dataService.quotationStatusCheck(this.ticketId, this.quotations[i].id, txn)
           .subscribe({
             next: (data1: any) => {
-              let paynowResult: any;
-              paynowResult = data1;
-            }, // success path
-            error: (error: any) => this.error = error // error path
+              const paynowResult: any = data1;
+              if (paynowResult?.pay_status) {
+                this.quotations[i].paynow_status = paynowResult.pay_status;
+              }
+              if (paynowResult?.pay_status === 'Success') {
+                this.getdata(this.ticketId);
+              }
+            },
+            error: (error: any) => this.error = error
           });
       }
     }
@@ -11349,7 +11379,7 @@ get showDeleteButton3() {
   // window.open(poUrl, '_blank');
 
   openGRN(grnId: any) {
-    const grnUrl = 'https://api.icareservice.co.in/api/suite/document?internal_id=' + grnId + '&type=itemreceipt&X_API_KEY=UI@PWD#'
+    const grnUrl = 'https://api.icareservice.co.in/suite/document?internal_id=' + grnId + '&type=itemreceipt&X_API_KEY=UI@PWD#'
     window.open(grnUrl, '_blank');
   }
 

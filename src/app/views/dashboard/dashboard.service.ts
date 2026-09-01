@@ -1127,9 +1127,9 @@ export class DashboardService {
   }
 
   createPO(ticketId: any, hdId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&ticket_id=' + ticketId + '&hd_id=' + hdId;
-    return this.http.post(this.rootUrl + 'api/suite/create_po', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'netsuite/create_po', form, {headers : this.getHeaders()});
   }
 
   grnInventoryAdjustment(ticketId: any) {
@@ -1154,14 +1154,14 @@ export class DashboardService {
   }
 
   pushPOToNetsuite(ticketId: any, hd_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&hd_id=' + hd_id;
-    return this.http.post(this.rootUrl + 'api/suite/create_po', form, { headers: this.reqHeader });
+    const form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + ticketId + '&hd_id=' + hd_id;
+    return this.http.post(this.nestUrl + 'netsuite/create_po', form, { headers: this.getHeaders() });
   }
 
   openPO(po_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&internal_id=' + po_id + '&type=' + 'purchaseorder' + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/suite/document', form,
-    {headers : this.reqHeader, responseType: 'blob'}).pipe(map((res: BlobPart) => {
+    const form = 'internal_id=' + po_id + '&type=' + 'purchaseorder' + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'suite/document', form,
+    {headers : this.getHeaders(), responseType: 'blob'}).pipe(map((res: BlobPart) => {
     return new Blob([res], { type: 'application/pdf', });
     }));
   }
@@ -1212,10 +1212,13 @@ export class DashboardService {
     this.nestUrl + 'tickets_v2/updateToteTracker',form, { headers: this.getHeaders() });
 }
 
-  updateZZInvoiceNo(ticketId: string, invoiceId: string, invoiceDate: string, zzPopValidated: string | number = 0) {
-    const form =  '&user_id=' + localStorage.getItem('userId')
+  updateZZInvoiceNo(ticketId: string, invoiceId: string, invoiceDate: string, zzPopValidated: string | number = 0, zzvendorName: string = '') {
+    let form =  '&user_id=' + localStorage.getItem('userId')
       + '&ticket_id=' + ticketId + '&zz_invoice_id=' + invoiceId + '&zz_invoice_date=' + invoiceDate
       + '&zz_pop_validated=' + zzPopValidated;
+    if (zzvendorName) {
+      form += '&zz_vendor_name=' + encodeURIComponent(zzvendorName);
+    }
     return this.http.post(this.nestUrl + 'tickets_v2/update_ticket_more_info', form, { headers: this.getHeaders() });
   }
 

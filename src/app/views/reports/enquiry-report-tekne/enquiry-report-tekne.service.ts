@@ -22,7 +22,7 @@ export class EnquiryReportTekneService {
   }
 
   getBranches() {
-    const form = 'X_API_KEY=' + 'UI@PWD#'  + '&user_id=' + '3370';
+    const form = '&user_id=' + '3370';
     return this.http.post(this.nestUrl + 'common/get_branches', form, {headers : this.getHeaders()});
 }
 

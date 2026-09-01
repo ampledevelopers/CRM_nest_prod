@@ -29,7 +29,7 @@ export class CreatePudTicketService {
   }
   getCustomer(phone: any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
-    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'common/get_customer_by_phone', form, {headers : this.getHeaders()});
   }
 
   createCustomer(firstName: any, lastName : any, phone: any, email: any, address1: any, address2: any, city: any, state: any, pin: any) {

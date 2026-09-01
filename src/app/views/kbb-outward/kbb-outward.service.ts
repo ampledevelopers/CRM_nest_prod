@@ -33,10 +33,25 @@ export class KbbOutwardService {
     return this.http.post(this.nestUrl + 'kbb_outward/check_display_repair', form, { headers: this.getHeaders() });
   }
 
-  checkPartDetails(tId: any, hdId?: any) {
+  checkPartDetails(
+    tId: any,
+    hdId?: any,
+    repairNo?: any,
+    serialNo?: any,
+    partNo?: any,
+  ) {
     let form = 'user_id=' + localStorage.getItem('userId') + '&ticket_id=' + tId;
     if (hdId) {
       form += '&hd_id=' + hdId;
+    }
+    if (repairNo) {
+      form += '&repair_no=' + encodeURIComponent(repairNo);
+    }
+    if (serialNo) {
+      form += '&serial_no=' + encodeURIComponent(serialNo);
+    }
+    if (partNo) {
+      form += '&part_number=' + encodeURIComponent(partNo);
     }
     return this.http.post(this.nestUrl + 'kbb_outward/get_diagnosis', form, { headers: this.getHeaders() });
   }
@@ -146,8 +161,8 @@ export class KbbOutwardService {
   }
 
   bulkReturnCreate(nrdcId: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + nrdcId + '&user_id=' + localStorage.getItem('userId');
-    return this.http.post(this.rootUrl + 'api/gsxapi/returns_manage', form, {headers : this.reqHeader});
+    const form = 'id=' + nrdcId + '&user_id=' + localStorage.getItem('userId');
+    return this.http.post(this.nestUrl + 'gsxapi/returns_manage', form, {headers : this.getHeaders()});
   }
 
   bulkReturnCreateV2(bulkReturnJSON: any) {

@@ -35,13 +35,13 @@ export class OnsiteDcService {
   }
 
   getDcTickets(comp_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&company_id=' + comp_id + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/mis/dc_tickets?' + form, {headers : this.reqHeader});
+    const form = 'company_id=' + comp_id + '&user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'mis/dc_tickets?' + form, {headers : this.getHeaders()});
   }
 
   getPudDcTickets() {
-    const form = 'X_API_KEY=' + 'Ti@vlp123' + '&user_id=' + localStorage.getItem('userId');
-    return this.http.get(this.rootUrl + 'api/mis/get_pud_dc?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId');
+    return this.http.get(this.nestUrl + 'mis/get_pud_dc?' + form, {headers : this.getHeaders()});
   }
 
   getLocation(code: any) {
@@ -56,7 +56,7 @@ export class OnsiteDcService {
 
   getCustomer(phone: any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
-    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'common/get_customer_by_phone', form, {headers : this.getHeaders()});
   }
 
   dcSubmit(hd: any, dt: any): Observable<any> {
@@ -66,8 +66,8 @@ export class OnsiteDcService {
     };
     const data = JSON.stringify(returnData);
     const usetkn: any = localStorage.getItem('userToken');
-    const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True','X-API-KEY': usetkn });
-    return this.http.post(this.rootUrl + 'api/mis/create', data, {headers : diagHeader});
+    const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True', 'x-api-key': usetkn });
+    return this.http.post(this.nestUrl + 'mis/create', data, {headers : diagHeader});
   }
 
   dlDcSubmit(hd: any, dt: any) {
@@ -77,34 +77,34 @@ export class OnsiteDcService {
     };
     const data = JSON.stringify(returnData);
     const usetkn: any = localStorage.getItem('userToken');
-    const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True','X-API-KEY': usetkn });
-    return this.http.post(this.rootUrl + 'api/mis/create_pud_dc', data, {headers : diagHeader});
+    const diagHeader = new HttpHeaders({'Content-Type': 'application/json', 'No-Auth': 'True', 'x-api-key': usetkn });
+    return this.http.post(this.nestUrl + 'mis/create_pud_dc', data, {headers : diagHeader});
   }
 
   downloadDC(dcId: any) {
-    const form = 'X_API_KEY=' + 'Ti@vlp123'  + '&id=' + dcId;
-    return this.http.get(this.rootUrl + 'api/mis/pud_dc_print?' + form, {headers : this.reqHeader});
+    const form = 'user_id=' + localStorage.getItem('userId') + '&id=' + dcId;
+    return this.http.get(this.nestUrl + 'mis/pud_dc_print?' + form, {headers : this.getHeaders()});
   }
 
   getDcList(dcId: any, ticketId: any, status: any) {
     let form;
     if (dcId !== '') {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&approved='
+      form = 'user_id=' + localStorage.getItem('userId') + '&approved='
       + status + '&id=' + dcId;
     } else if (ticketId !== '') {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&approved='
+      form = 'user_id=' + localStorage.getItem('userId') + '&approved='
       + '' + '&ticket_id=' + ticketId;
     } else {
-      form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + '&approved='
+      form = 'user_id=' + localStorage.getItem('userId') + '&approved='
       + status;
     }
-    return this.http.get(this.rootUrl + 'api/mis/get_dc?' + form, {headers : this.reqHeader});
+    return this.http.get(this.nestUrl + 'mis/get_dc?' + form, {headers : this.getHeaders()});
   }
 
   approveDeclineDc(id: any, status: any, ewaybill: any, remarks: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') +
+    const form = 'user_id=' + localStorage.getItem('userId') +
     '&dc_id=' + id + '&status=' + status + '&eway_bill=' + ewaybill + '&additional_note=' + remarks;
-    return this.http.post(this.rootUrl + 'api/mis/approve', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'mis/approve', form, {headers : this.getHeaders()});
   }
 
   /* viewDc(dcId) {

@@ -445,7 +445,7 @@ export class OnsiteDcFormComponent {
 
   downloadDC() {
     this.dcNo = this.dcNo.replace(this.branchCode, '');
-    const url = localStorage.getItem('rootUrl') + 'api/mis/pud_dc_print?X_API_KEY=' + 'Ti@vlp123' + '&id=' + this.dcNo;
+    const url = localStorage.getItem('nestUrl') + 'mis/pud_dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.dcNo + '&user_id=' + localStorage.getItem('userId');
     const tab = window.open(url);
   }
 

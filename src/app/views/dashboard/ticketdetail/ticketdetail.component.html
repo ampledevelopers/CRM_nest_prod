@@ -3998,7 +3998,7 @@
           style="border: 1px solid #d3d3d3; width: 100%; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
           <option value="">Select</option>
           <option value="AM">Ample</option>
-          <option value="AP" *ngIf="data.status_id !== '800' && data.status_id !== '1100'">Apple</option>
+          <option value="AP" *ngIf="data.status_id !== '800' && data.status_id !== '1100' && data.repair_type !== 'Hardware - Accy'">Apple</option>
         </select>
         <!-- <input class="form-control" [(ngModel)]="consignmentASN" type="text" placeholder="Enter Consignment ASN" style="margin-top: 0.5rem;"> -->
         <select [(ngModel)]="consignmentASN" class="form-control" style="border: 1px solid #d3d3d3; width: 100%; margin-top: 0.5em; border-radius: 3px; overflow: hidden; min-height: 30px; height: 30px;">
@@ -4727,6 +4727,12 @@
         <div class="form-group">
           <label>Invoice Date<sup style="color: red">*</sup></label>
           <input [(ngModel)]="zzInvoiceDate" class="form-control" type="date">
+        </div>
+        <div class="form-group">
+          <label>Vendor<sup *ngIf="data.status_id === '300'" style="color: red">*</sup></label>
+          <input [(ngModel)]="zzvendorName" class="form-control" type="text"
+                 placeholder="Enter Vendor"
+                 [readonly]="data.status_id !== '300'">
         </div>
         <div *ngIf="zzInvoiceError !== ''" style="color: red; margin-top: 0.5rem;">
           <i class="material-icons" style="margin-top: 0 !important">info</i>&nbsp; {{zzInvoiceError}}

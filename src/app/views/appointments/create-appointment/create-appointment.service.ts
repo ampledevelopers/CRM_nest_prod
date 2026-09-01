@@ -30,7 +30,7 @@ export class CreateAppointmentService {
 
   getCustomer(phone: any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
-    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'common/get_customer_by_phone', form, {headers : this.getHeaders()});
   }
 
   getUserDetail() {

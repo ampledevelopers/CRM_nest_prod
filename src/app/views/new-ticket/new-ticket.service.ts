@@ -51,7 +51,7 @@ export class NewTicketService {
 
   getCustomer(phone: any) {
     const form = 'user_id=' + localStorage.getItem('userId') + '&phone=' + phone;
-    return this.http.post(this.nestUrl + 'common/get_customer', form, {headers : this.getHeaders()});
+    return this.http.post(this.nestUrl + 'common/get_customer_by_phone', form, {headers : this.getHeaders()});
   }
 
   getCallTypes() {
@@ -70,9 +70,9 @@ export class NewTicketService {
   }
 
   createTicket(data: any, customer_id: any) {
-    const form = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + localStorage.getItem('userId') + data + '&customer_id=' +
+    const form = 'user_id=' + localStorage.getItem('userId') + data + '&customer_id=' +
     customer_id;
-    return this.http.post(this.rootUrl + 'api/tickets/create_call', form, {headers : this.reqHeader});
+    return this.http.post(this.nestUrl + 'mis/create_call', form, {headers : this.getHeaders()});
   }
 
   uploadDocuments(id: string, docs: any) {

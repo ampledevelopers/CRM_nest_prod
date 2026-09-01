@@ -167,7 +167,7 @@ export class OnsiteDcApproveComponent implements OnInit {
 
   printNrdc() {
     this.modalService.dismissAll();
-    const url = localStorage.getItem('rootUrl') + 'api/mis/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.viewdcNo + '&user_id=' + localStorage.getItem('userId');
+    const url = localStorage.getItem('nestUrl') + 'mis/print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + this.viewdcNo + '&user_id=' + localStorage.getItem('userId');
     const tab = window.open(url);
   }
   dcSortDirection: 'asc' | 'desc' = 'asc';

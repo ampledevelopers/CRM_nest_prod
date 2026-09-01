@@ -52,7 +52,7 @@ export class RepairApprovalDashboardComponent {
       { value: 'Dinesh Prasad', userId: '964', branch: ['SGM', 'SMH', 'SCD','SNB'] },
       { value: 'Neenu George', userId: '2893', branch: ['SCK', 'SWS', 'SHC', 'SCO','SLM'] },
       { value: 'Sunny Rajputs', userId: '3111', branch: ['SDG', 'SVD'] },
-      { value: 'Ashwini', userId: '591', branch: ['SMA', 'SUD', 'SMK','SEB','SOM'] },
+      { value: 'Ashwini', userId: '591', branch: ['SMA', 'SUD', 'SMK','SEB','SOM','STN'] },
       // { value: 'Shaheena', userId: '662', branch: ['SNB', 'SEB'] },
       { value: 'Hemamalini N', userId: '1240', branch: ['STC','SPV','SBA'] },
     ]

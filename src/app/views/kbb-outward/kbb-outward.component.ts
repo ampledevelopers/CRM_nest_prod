@@ -4,6 +4,7 @@ import { KbbOutwardService } from './kbb-outward.service';
 import * as _ from 'lodash';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../../shared/user.service';
+import { forkJoin, Observable } from 'rxjs';
 
 export interface SimpleAlert {
   title: any;
@@ -92,12 +93,10 @@ export class KbbOutwardComponent {
                       ticketId = gsxData[i].purchaseOrderNumber.substring(3);
                     } */
                     let ticketId: any;
-                    if (gsxData[i].referenceNumber.includes('DROPOFF')) {
-                      ticketId = gsxData[i].referenceNumber.replace('DROPOFF ', '');
-                    } else {
-                      let numbers = gsxData[i].purchaseOrderNumber.match(/\d+/g);
-                      ticketId = numbers ? numbers.join("") : "";
-                    }
+                    ticketId = this.resolveTicketNo(
+                      gsxData[i].purchaseOrderNumber,
+                      gsxData[i].referenceNumber,
+                    );
                     this.partList.push({
                       ticket_no: ticketId,
                       serial_no: gsxData[i].repairDevice.identifiers.serial,
@@ -170,12 +169,10 @@ export class KbbOutwardComponent {
                     //   ticketId = gsxData[i].purchaseOrderNumber.substring(3);
                     // }
                     let ticketId: any;
-                    if (gsxData[i].referenceNumber.includes('DROPOFF')) {
-                      ticketId = gsxData[i].referenceNumber.replace('DROPOFF ', '');
-                    } else {
-                      let numbers = gsxData[i].purchaseOrderNumber.match(/\d+/g);
-                      ticketId = numbers ? numbers.join("") : "";
-                    }
+                    ticketId = this.resolveTicketNo(
+                      gsxData[i].purchaseOrderNumber,
+                      gsxData[i].referenceNumber,
+                    );
                     this.partList.push({
                       ticket_no: ticketId,
                       serial_no: gsxData[i].repairDevice.identifiers.serial,
@@ -475,27 +472,72 @@ export class KbbOutwardComponent {
     }, 1000);
   }
 
-  getPartDetails(ticketId: any, partNo: any) {
-    let result: any = [];
-    let diagPartList: any = [];
-    this.dataService.checkPartDetails(ticketId)
-      .subscribe(
-        (data) => {
-          result = data;
-          if (result.status === true) {
-            diagPartList = result.repair_dt;
-            for (let k = 0; k < this.selectedPartListTemp.length; k++) {
-              if ((this.selectedPartListTemp[k].ticket_no === ticketId) && (this.selectedPartListTemp[k].part_no === partNo)) {
-                for (let i = 0; i < diagPartList.length; i++) {
-                  if ((this.selectedPartListTemp[k].part_no === diagPartList[i].part_number)) {
-                    this.selectedPartListTemp[k].kbb_serial_no = diagPartList[i].kbb_serial_no;
-                    this.selectedPartListTemp[k].kgb_serial_no = diagPartList[i].kgb_serial_no;
-                            // console.log("Updated:", this.selectedPartListTemp[k]);
-
-                  }
-                }
-              }
+  private applyDiagnosisSerials(ticketId: any, partNo: any, diagPartList: any[]) {
+    const lists = [this.selectedPartListTemp, this.selectedPartList];
+    for (const list of lists) {
+      for (let k = 0; k < list.length; k++) {
+        if (list[k].ticket_no === ticketId && list[k].part_no === partNo) {
+          for (let i = 0; i < diagPartList.length; i++) {
+            if (list[k].part_no === diagPartList[i].part_number) {
+              list[k].kbb_serial_no = diagPartList[i].kbb_serial_no;
+              list[k].kgb_serial_no = diagPartList[i].kgb_serial_no;
             }
+          }
+        }
+      }
+    }
+  }
+
+  private applyDiagnosisSerialsForTicket(ticketId: any, diagPartList: any[]) {
+    for (const part of this.selectedPartList) {
+      if (part.ticket_no !== ticketId) {
+        continue;
+      }
+      for (const row of diagPartList) {
+        if (part.part_no === row.part_number) {
+          part.kbb_serial_no = row.kbb_serial_no;
+          part.kgb_serial_no = row.kgb_serial_no;
+        }
+      }
+    }
+  }
+
+  private resolveTicketNo(purchaseOrderNumber: string, referenceNumber: string): string {
+    if (referenceNumber?.includes('DROPOFF')) {
+      return referenceNumber.replace('DROPOFF ', '').trim();
+    }
+
+    const po = purchaseOrderNumber || '';
+    if (po.length > 9 && po.length !== 12) {
+      return po.substring(5).trim();
+    }
+    if (po.length >= 3) {
+      return po.substring(3).trim();
+    }
+
+    const numbers = po.match(/\d+/g);
+    return numbers?.[0] || '';
+  }
+
+  getPartDetails(ticketId: any, partNo: any) {
+    const part = this.selectedPartListTemp.find(
+      (p: any) => p.ticket_no === ticketId && p.part_no === partNo,
+    ) || this.selectedPartList.find(
+      (p: any) => p.ticket_no === ticketId && p.part_no === partNo,
+    );
+
+    this.dataService.checkPartDetails(
+      ticketId,
+      undefined,
+      part?.repair_no,
+      part?.serial_no,
+      partNo,
+    )
+      .subscribe(
+        (data: any) => {
+          const diagPartList = data?.repair_dt || [];
+          if (diagPartList.length) {
+            this.applyDiagnosisSerials(ticketId, partNo, diagPartList);
           }
         });
   }
@@ -553,39 +595,54 @@ export class KbbOutwardComponent {
 
 goToForm(): void {
   const partNos = this.selectedPartList.map((p: any) => p.part_no);
+  const diagnosisRequests = this.selectedPartList.map((part: any) =>
+    this.dataService.checkPartDetails(
+      part.ticket_no,
+      undefined,
+      part.repair_no,
+      part.serial_no,
+      part.part_no,
+    ),
+  );
 
-  // console.log('Sending part_nos:', JSON.stringify(partNos));
+  const loadHsnAndNavigate = () => {
+    this.dataService.fetchPartDetails(partNos).subscribe((response: any) => {
+      const responseData = response?.data || [];
 
-  this.dataService.fetchPartDetails(partNos).subscribe((response: any) => {
-    const responseData = response?.data || [];
+      this.selectedPartList.forEach((part: any) => {
+        const match = responseData.find((item: any) => item.part_no === part.part_no);
 
-    this.selectedPartList.forEach((part: any) => {
-      const match = responseData.find((item: any) => item.part_no === part.part_no);
+        part.value = match?.value ?? 0;
+        part.hsn_code = match?.hsn_code ?? 0;
+        part._valueFromDB = part.value > 0;
+        part._hsnFromDB = part.hsn_code > 0;
+        part._valueLocked = false;
+        part._hsnLocked = false;
+        part._editing_value = false;
+        part._editing_hsn = false;
+      });
 
-      // Correctly assign value and hsn_code from the response
-      part.value = match?.value ?? 0;
-      part.hsn_code = match?.hsn_code ?? 0;
-
-      // Mark if fetched from DB
-      part._valueFromDB = part.value > 0;
-      part._hsnFromDB = part.hsn_code > 0;
-
-      // These control whether user is allowed to edit manually
-      part._valueLocked = false;
-      part._hsnLocked = false;
-      part._editing_value = false;
-      part._editing_hsn = false;
-
-      // console.log(`Matched Part ${part.part_no}:`, {
-      //   value: part.value,
-      //   hsn_code: part.hsn_code,
-      //   _valueFromDB: part._valueFromDB,
-      //   _hsnFromDB: part._hsnFromDB
-      // });
+      localStorage.setItem('partlist', JSON.stringify(this.selectedPartList));
+      this.router.navigate(['kbb-outward/kbbform']);
     });
+  };
 
-    localStorage.setItem('partlist', JSON.stringify(this.selectedPartList));
-    this.router.navigate(['kbb-outward/kbbform']);
+  if (!diagnosisRequests.length) {
+    loadHsnAndNavigate();
+    return;
+  }
+
+  forkJoin(diagnosisRequests as Observable<any>[]).subscribe({
+    next: (diagnosisResults) => {
+      (diagnosisResults as any[]).forEach((result, idx) => {
+        this.applyDiagnosisSerialsForTicket(
+          this.selectedPartList[idx].ticket_no,
+          result?.repair_dt || [],
+        );
+      });
+      loadHsnAndNavigate();
+    },
+    error: () => loadHsnAndNavigate()
   });
 }
 

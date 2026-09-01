@@ -99,8 +99,8 @@ export class UserService {
   }
 
   setUser(userId: any, user: any) {
-    const data = 'X_API_KEY=' + localStorage.getItem('userToken') + '&user_id=' + userId + '&data=' + user ;
-    return this.http.post(this.rootUrl + '/api/common/update_user', data, { headers: this.reqHeader });
+    const data = 'user_id=' + userId + '&data=' + encodeURIComponent(user);
+    return this.http.post(this.nestUrl + 'gsxapi/update_user', data, { headers: this.getHeaders() });
   }
   getTasks(data: string) {
     /// var data = "group=" + groupID+"user_id=" + userId+ "&data=" + user+'';

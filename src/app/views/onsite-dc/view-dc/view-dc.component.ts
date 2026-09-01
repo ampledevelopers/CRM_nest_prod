@@ -36,7 +36,7 @@ export class ViewDcComponent {
   }
 
   downloadDC(dcNo: any) {
-    const url = localStorage.getItem('rootUrl') + 'api/mis/pud_dc_print?X_API_KEY=' + 'Ti@vlp123' + '&id=' + dcNo;
+    const url = localStorage.getItem('nestUrl') + 'mis/pud_dc_print?X_API_KEY=' + localStorage.getItem('userToken') + '&id=' + dcNo + '&user_id=' + localStorage.getItem('userId');
     const tab = window.open(url);
   }
 
